@@ -1,0 +1,51 @@
+<section class="bg-soft-blue">
+  <button class="btn btn-danger" style="align-items: flex-end;" (click)="logoutSys()">SALIR</button>
+</section>
+
+<section class="bg-soft-blue min-vh-100 d-flex align-items-center">
+  <div class="container py-5">
+    <div class="row justify-content-center">
+      <div class="col-12 col-lg-10">
+        <div class="card shadow-sm">
+          <div class="card-body">
+            <h1 class="h4 text-center mb-4">Cuentas a confirmación de saldos</h1>
+
+
+            <div class="table-responsive">
+              <table #dTable class="table table-striped table-hover table-sm align-middle mb-0">
+                <thead class="table-light">
+                  <tr>
+                    <th>#</th>
+                    <th>Procesado</th>
+                    <th>Cuenta</th>
+                    <th>Fecha</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let item of datoscuenta">
+                    <td (click)="goToDetalle(item.uiRow)">{{ item.uiRow }}</td>
+                    <td class="text-center" (click)="$event.stopPropagation()">
+                        <input
+                            class="form-check-input"
+                            type="checkbox"
+                            [checked]="item.bProcesado"
+                            (change)="onProcesadoChange(item, $any($event.target).checked)"
+                            aria-label="Procesado"
+                            readonly
+                        />
+                    </td>
+                    <td>{{ item.sCuentaOracle }}</td>
+                    <td>{{ item.dtCreate  }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

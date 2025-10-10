@@ -1,0 +1,43 @@
+:root{
+  /* Azules corporativos */
+  --fana-navy:   #1E5485; /* Títulos, header, botones primarios */
+  --fana-steel:  #5F82A4; /* Textos destacados / bordes */
+  --fana-slate:  #84A1BF; /* Accentos suaves / hover */
+  --fana-sky:    #B2CFE9; /* Fondos claros / cards */
+  --fana-ice:    #E4F1F7; /* Fondo muy tenue general */
+
+  /* Aciento */
+  --fana-orange: #EA7347; /* Llamados a la acción / badges */
+}
+
+body, html {
+  height: 100%;
+}
+.bg-soft-blue {
+  background-color: var(--fana-navy); /* azul clarito */
+}
+
+.bg-fana           { background-color: var(--fana-ice) !important; }
+.bg-fana-soft      { background-color: var(--fana-sky) !important; }
+.text-fana         { color: var(--fana-navy) !important; }
+.text-fana-accent  { color: var(--fana-orange) !important; }
+.border-fana       { border-color: var(--fana-steel) !important; }
+
+.btn-fana{
+  background: var(--fana-navy);
+  color:#fff;
+  border-color: var(--fana-navy);
+}
+.btn-fana:hover{
+  background: var(--fana-steel);
+  border-color: var(--fana-steel);
+}
+
+.btn-fana-accent{
+  background: var(--fana-orange);
+  color:#fff;
+  border-color: var(--fana-orange);
+}
+.btn-fana-accent:hover{
+  filter: brightness(0.95);
+}
