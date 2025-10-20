@@ -1,3 +1,4 @@
+import { SendMailBodyRequest } from './../shared/sendMailClient.Model';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
@@ -10,13 +11,15 @@ import { CuentasSaldosPreguntasDto } from '../shared/cuentasPreguentasRequest';
 import { PreguntasResponse } from '../shared/preguntas.model';
 import { IncidenciasRequest } from '../shared/cuentasrowResponse.model';
 
+
 @Injectable({
   providedIn: 'root'
 })
 export class SaldosService{
-    private apiUrl = 'https://aplicacion.fanasa.com/SaldosService/SaldosApi'
-    private apiUrlAuth = 'https://aplicacion.fanasa.com/SaldosService/SaldosAuthenticator'
-
+    //private apiUrl = 'https://aplicacion.fanasa.com/SaldosService/SaldosApi'
+    //private apiUrlAuth = 'https://aplicacion.fanasa.com/SaldosService/SaldosAuthenticator'
+    private apiUrl = 'https://localhost:44367/SaldosApi'
+    private apiUrlAuth = 'https://localhost:44367/SaldosAuthenticator'
     constructor(private http: HttpClient){}
 
     consultaRegistros():Observable<AdmCuentasSaldos[]> {
@@ -27,12 +30,22 @@ export class SaldosService{
       return this.http.get<AdmCuentasSaldos>(`${this.apiUrl}/GetById/${idCuenta}`);
     }
 
-    consultaregistroPreguntas(idCuenta: Number): Observable<PreguntasResponse>{
-      return this.http.get<PreguntasResponse>(`${this.apiUrl}/GetByIdPreguntas/${idCuenta}`);
+    consultaregistroPreguntas(idCuenta: Number): Observable<PreguntasResponse[]>{
+      return this.http.get<PreguntasResponse[]>(`${this.apiUrl}/GetByIdPreguntas/${idCuenta}`);
+    }
+
+    getlastfolionumber(idCuenta: Number): Observable<string>{
+       return this.http.get(`${this.apiUrl}/GetLastFolioNumber/${idCuenta}`, {
+          responseType: 'text' as const
+        });
     }
 
     consultaporidecuentaconincidencia(idCuenta: Number){
       return this.http.get<IncidenciasRequest>(`${this.apiUrl}/GetCuentaConPreguntasBySumFlag/${idCuenta}/${1}`);
+    }
+
+    consultaporidecuentaconincidenciaAll(){
+      return this.http.get<IncidenciasRequest[]>(`${this.apiUrl}/GetCuentaConPreguntasBySumFlagAll/${1}`);
     }
     enviarIncidenciaBase64(json: any){
       console.log(json)
@@ -40,6 +53,9 @@ export class SaldosService{
     }
     consultaporidecuentasinincidencia(idCuenta: Number){
       return this.http.get<IncidenciasRequest>(`${this.apiUrl}/GetCuentaConPreguntasBySumFlag/${idCuenta}/${0}`);
+    }
+    consultaporidecuentasinincidenciaAll(){
+      return this.http.get<IncidenciasRequest[]>(`${this.apiUrl}/GetCuentaConPreguntasBySumFlagAll/${0}`);
     }
     consultaporidecuentaconincidenciabygerente(gerente: string){
       return this.http.get<IncidenciasRequest[]>(`${this.apiUrl}/GetByGerenteZonaSumFlag/${gerente}/${1}`);
@@ -73,5 +89,23 @@ export class SaldosService{
     getRolUser(uiIdUsuario: getRolUserRequest): Observable<UserRolResponse>{
 
       return this.http.post<UserRolResponse>(`${this.apiUrlAuth}/LoginUser`, uiIdUsuario)
+    }
+
+    getFirmaBlob(cuentaId: number) {
+      return this.http.get(`${this.apiUrl}/GetFirma/${cuentaId}`, {
+        responseType: 'blob'
+      });
+    }
+
+    getEvidenciaBlob(cuentaId: number) {
+      return this.http.get(`${this.apiUrl}/GetEvidencias/${cuentaId}`, {
+        responseType: 'blob',
+        observe: 'response'
+      });
+    }
+
+    /* Mailing */
+    sendMailtoClient(payload: SendMailBodyRequest){
+      return this.http.post(`${this.apiUrlAuth}/SendMailKit`, payload)
     }
 }

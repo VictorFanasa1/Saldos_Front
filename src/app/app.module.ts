@@ -8,11 +8,17 @@ import { AuthModule } from './auth/auth.module';
 import { HttpClientModule } from '@angular/common/http';
 import localeEsMx from '@angular/common/locales/es-MX';
 import { registerLocaleData } from '@angular/common';
+import { ServiceWorkerModule } from '@angular/service-worker';
+import { environment } from '../environments/environment';
+import { SpinOverlayComponent } from './shared/spin-overlay/spin-overlay.component';
+import { SignaturePadComponent } from './shared/signature-pad/signature-pad.component';
 registerLocaleData(localeEsMx);
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    SpinOverlayComponent,
+    SignaturePadComponent
   ],
   imports: [
     BrowserModule,
@@ -20,7 +26,11 @@ registerLocaleData(localeEsMx);
     AuthModule,
     FormsModule,
     HttpClientModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    ServiceWorkerModule.register('ngsw-worker.js', {
+      enabled: environment.production,
+      registrationStrategy: 'registerWhenStable:30000'
+    })
   ],
   providers: [{ provide: LOCALE_ID, useValue: 'es-MX' }],
   bootstrap: [AppComponent]

@@ -56,4 +56,6 @@ export interface CuentasSaldosCreateRequest {
 
   susuario_registra: string | null,
   susuario_actualiza: string | null,
+  periodo_inicio: string | null,
+  periodo_fin: string | null,
 }

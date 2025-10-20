@@ -44,10 +44,11 @@ export class DashboardComponent implements OnInit {
         const usuraioDto : getregistrossaldogerente = {
           gerenteZona : usuario ?? ''
         }
-        console.log(usuraioDto)
+
     this.saldosservice.consultaPorgerenteZona(usuraioDto).subscribe({
       next: (res)=>{
         this.datoscuenta = res
+        console.log(res)
          this.buildDT();
       },
       error: (err) => {

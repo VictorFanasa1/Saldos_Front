@@ -1,0 +1,12 @@
+.sig-wrap { width: 100%; }
+.sig-canvas {
+  width: 100%;
+  height: 180px;          /* debe coincidir con @Input height */
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: inset 0 0 0 1px #e5e7eb;
+  touch-action: none;     /* importante en móvil: evita scroll */
+  display: block;
+}
+.toolbar { margin-top: 6px; display: flex; gap: 8px; }
+button { padding: 6px 10px; border-radius: 8px; border: 0; background: #1976d2; color: #fff; }

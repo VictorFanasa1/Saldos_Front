@@ -15,6 +15,7 @@ declare const $: any;
   styleUrls: ['./dashboard.component.css']
 })
 export class DashboardComponent implements OnInit {
+
   @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
   @ViewChild('dTable', {static: false}) dTable!: ElementRef<HTMLTableElement>;
 
@@ -29,12 +30,49 @@ export class DashboardComponent implements OnInit {
   loading = false;
   errorMsg = '';
   dt: any;
+ showfirstcard= true;
    datoscuenta: IncidenciasRequest [] = []
+   todayISO = this.toISODate(new Date());
+maxInicioISO = this.toISODate(this.addMonths(new Date(), 3)); // opcional: limitar inicio a hoy+3m si lo deseas
+periodoInicio?: string;
+periodoFin?: string;
+rol = "0"
    private readonly USER_KEY = 'app_user';
   private readonly USER_ID = 'app_user_id';
   constructor(private excelSvc: SaldosService, private auth: AuthService, private router: Router,) { }
 
+get finMin(): string {
+  return this.periodoInicio ?? this.todayISO;
+}
+get finMax(): string {
+  const base = this.periodoInicio ? new Date(this.periodoInicio) : new Date();
+  return this.toISODate(this.addMonths(base, 3));
+}
 
+// Cuando cambia el inicio, valida el fin
+onInicioChange(value: string) {
+  this.periodoInicio = value;
+  // Si el fin actual queda fuera de rango, lo limpiamos
+  if (this.periodoFin && (this.periodoFin < this.finMin || this.periodoFin > this.finMax)) {
+    this.periodoFin = undefined;
+  }
+}
+
+// Utilidades de fecha
+private toISODate(d: Date): string {
+  const tz = new Date(
+    d.getFullYear(), d.getMonth(), d.getDate()
+  ); // normaliza a medianoche local
+  const y = tz.getFullYear();
+  const m = (tz.getMonth() + 1).toString().padStart(2, '0');
+  const day = tz.getDate().toString().padStart(2, '0');
+  return `${y}-${m}-${day}`;
+}
+
+private addMonths(d: Date, months: number): Date {
+  // Maneja fin de mes automáticamente (Date ajusta overflow)
+  return new Date(d.getFullYear(), d.getMonth() + months, d.getDate());
+}
   openPicker() {
     this.fileInput.nativeElement.value = '';
     this.fileInput.nativeElement.click();
@@ -125,12 +163,22 @@ export class DashboardComponent implements OnInit {
       // Flags/fechas
       bProcesado: false,         // o true si así lo deseas
       dtCreate: now,
-      dtModificacion: now
+      dtModificacion: now,
+      periodo_inicio : this.periodoInicio ?? '',
+      periodo_fin: this.periodoFin ?? ''
     };
   }
 
 
   ngOnInit(): void {
+    this.rol = localStorage.getItem('id_rol') ?? '0'
+
+    if(this.rol == '3'){
+      this.showfirstcard = false
+    }else{
+      this.showfirstcard = true
+    }
+
   }
   onFileSelected(evt: Event) {
     const input = evt.target as HTMLInputElement;
@@ -200,7 +248,21 @@ export class DashboardComponent implements OnInit {
     }else{
       this.verconincidencia = true
       this.verdasboard = false;
-      let usuario
+      if(this.rol === "3"){
+        this.excelSvc.consultaporidecuentaconincidenciaAll().subscribe({
+          next: (res)=>{
+          this.datoscuenta = res
+          console.log(res)
+          this.buildDT();
+        },
+        error: (err) => {
+          //this.errorMsg = 'Error cargando datos';
+          console.error(err);
+        },
+        complete: () => (this.loading = false),
+        })
+      }else{
+         let usuario
           this.auth.user$.pipe(take(1)).subscribe(u => {
                 console.log('username:', u?.username);
                 usuario = this.apellidosLuegoNombres(u?.username ?? '')
@@ -218,6 +280,8 @@ export class DashboardComponent implements OnInit {
         complete: () => (this.loading = false),
         })
       }
+
+      }
   }
   mostrarsinincidencias(){
     if(this.versinincidencia){
@@ -226,7 +290,20 @@ export class DashboardComponent implements OnInit {
     }else{
       this.versinincidencia = true
       this.verdasboard = false;
-      let usuario
+      if(this.rol === "3"){
+        this.excelSvc.consultaporidecuentasinincidenciaAll().subscribe({
+          next: (res)=>{
+          this.datoscuentaS = res
+          this.buildDT();
+        },
+        error: (err) => {
+          //this.errorMsg = 'Error cargando datos';
+          console.error(err);
+        },
+        complete: () => (this.loading = false),
+        })
+      }else{
+        let usuario
           this.auth.user$.pipe(take(1)).subscribe(u => {
                 console.log('username:', u?.username);
                 usuario = this.apellidosLuegoNombres(u?.username ?? '')
@@ -242,6 +319,8 @@ export class DashboardComponent implements OnInit {
         },
         complete: () => (this.loading = false),
         })
+      }
+
     }
   }
 

@@ -1,1 +1,8 @@
+<app-spin-overlay
+  [visible]="(visible$ | async)!"
+  [src]="(src$ | async)!"
+  [size]="(size$ | async)!"
+  [dismissible]="(dism$ | async)!"
+  (closed)="onClosed()">
+</app-spin-overlay>
 <router-outlet></router-outlet>

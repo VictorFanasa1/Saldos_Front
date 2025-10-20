@@ -20,6 +20,33 @@
     </div>
 
     <div class="col-12">
+  <div class="row align-items-center">
+    <label class="col-md-5 col-form-label mb-0">Correo del cliente:</label>
+
+    <div class="col-md-7">
+      <div class="row g-2 align-items-center">
+        <div class="col-8">
+          <input
+            type="email"
+            class="form-control"
+            placeholder="Correo electrónico"
+            formControlName="correocliente"
+            onchange="getCorreo()">
+        </div>
+        <div class="text-danger" *ngIf="formularioagente.get('correocliente')?.touched && formularioagente.get('correocliente')?.invalid">
+            <small *ngIf="formularioagente.get('correocliente')?.errors?.['required']">El correo es obligatorio.</small>
+            <small *ngIf="formularioagente.get('correocliente')?.errors?.['email']">Formato de correo inválido.</small>
+        </div>
+        <div class="col-4 text-end">
+          <button type="button" class="btn btn-primary w-100 w-md-auto" (click)="enviarotp()" *ngIf="cargandos">Solicitar OTP</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+    <div class="col-12">
       <div class="row align-items-center">
         <label class="col-md-5 col-form-label">Nombre corto:</label>
         <div class="col-md-7">
@@ -59,7 +86,7 @@
       <div class="row align-items-center">
         <label class="col-md-5 col-form-label">Cartera total:</label>
         <div class="col-md-7">
-          <input type="text" class="form-control" placeholder="0.00"
+          <input type="text" class="form-control align_money" placeholder="0.00"
                  formControlName="carteraTotal" readonly>
         </div>
       </div>
@@ -69,7 +96,7 @@
       <div class="row align-items-center">
         <label class="col-md-5 col-form-label">Cartera por vencer:</label>
         <div class="col-md-7">
-          <input type="text" class="form-control" placeholder="0.00"
+          <input type="text" class="form-control align_money" placeholder="0.00"
                  formControlName="carteraPorVencer" readonly>
         </div>
       </div>
@@ -79,7 +106,7 @@
       <div class="row align-items-center">
         <label class="col-md-5 col-form-label">Cartera vencida:</label>
         <div class="col-md-7">
-          <input type="text" class="form-control" placeholder="0.00"
+          <input type="text" class="form-control align_money" placeholder="0.00"
                  formControlName="carteraVencida" readonly>
         </div>
       </div>
@@ -89,7 +116,7 @@
       <div class="row align-items-center">
         <label class="col-md-5 col-form-label">Vencida a 7 días:</label>
         <div class="col-md-7">
-          <input type="text" class="form-control" placeholder="0.00"
+          <input type="text" class="form-control align_money" placeholder="0.00"
                  formControlName="vencida7" readonly>
         </div>
       </div>
@@ -99,7 +126,7 @@
       <div class="row align-items-center">
         <label class="col-md-5 col-form-label">Vencido de 8 a 14 días:</label>
         <div class="col-md-7">
-          <input type="text" class="form-control" placeholder="0.00"
+          <input type="text" class="form-control align_money" placeholder="0.00"
                  formControlName="vencida8a14" readonly>
         </div>
       </div>
@@ -109,7 +136,7 @@
       <div class="row align-items-center">
         <label class="col-md-5 col-form-label">Vencido de 15 a 21 días:</label>
         <div class="col-md-7">
-          <input type="text" class="form-control" placeholder="0.00"
+          <input type="text" class="form-control align_money" placeholder="0.00"
                  formControlName="vencida15a21" readonly>
         </div>
       </div>
@@ -119,7 +146,7 @@
       <div class="row align-items-center">
         <label class="col-md-5 col-form-label">Vencido mayor a 22 días:</label>
         <div class="col-md-7">
-          <input type="text" class="form-control" placeholder="0.00"
+          <input type="text" class="form-control align_money" placeholder="0.00"
                  formControlName="vencida22Plus" readonly>
         </div>
       </div>
@@ -196,7 +223,7 @@
           <label class="form-check-label" for="pagosPendNo">No</label>
         </div>
       </div>
-      <div class="mt-2" *ngIf="formularioagente.get('pagosPendientes')?.value === false">
+      <div class="mt-2" *ngIf="formularioagente.get('pagosPendientes')?.value === true">
           <textarea class="form-control" rows="2" placeholder="Describe el motivo"
                     formControlName="p3_razon"></textarea>
           <div class="text-danger small" *ngIf="
@@ -221,7 +248,7 @@
           <label class="form-check-label" for="devolPendNo">No</label>
         </div>
       </div>
-      <div class="mt-2" *ngIf="formularioagente.get('devolucionesPendientes')?.value === false">
+      <div class="mt-2" *ngIf="formularioagente.get('devolucionesPendientes')?.value === true">
           <textarea class="form-control" rows="2" placeholder="Describe el motivo"
                     formControlName="p4_razon"></textarea>
           <div class="text-danger small" *ngIf="
@@ -246,7 +273,7 @@
           <label class="form-check-label" for="reclaPendNo">No</label>
         </div>
       </div>
-       <div class="mt-2" *ngIf="formularioagente.get('reclamacionesPendientes')?.value === false">
+       <div class="mt-2" *ngIf="formularioagente.get('reclamacionesPendientes')?.value === true">
           <textarea class="form-control" rows="2" placeholder="Describe el motivo"
                     formControlName="p5_razon"></textarea>
           <div class="text-danger small" *ngIf="
@@ -257,17 +284,60 @@
         </div>
     </div>
   </div>
+  <hr class="my-4">
+  <div class="vstack gap-3">
+    <div class="row">
+      <div class="col-12">
+
+        <div class="d-flex gap-3" *ngIf="cargandos">
+           <label class="lbl">Firma del usuario</label>
+          <div class="sig-wrap">
+            <canvas #sigCanvas class="sig-canvas"
+                    (pointerdown)="onDown($event)"
+                    (pointermove)="onMove($event)"
+                    (pointerup)="onUp($event)"
+                    (pointerleave)="onUp($event)"></canvas>
+
+            <div class="toolbar">
+              <button type="button" (click)="clearSig()">Limpiar</button>
+            </div>
+          </div>
+
+          <small *ngIf="formularioagente.get('firma')?.value">✓ Firma capturada</small>
+          <div *ngIf="formularioagente.get('firma')?.invalid && formularioagente.get('firma')?.touched" class="err">
+            La firma es obligatoria.
+          </div>
+
+
+        </div>
+        <div class="d-flex gap-3" *ngIf="!cargandos">
+          <div class="row">
+            <div class="col-12">
+              <p>Firma: </p>
+            </div>
+            <div class="col-12">
+               <img *ngIf="firmaSafeUrl"
+     [src]="firmaSafeUrl"
+              alt="Firma"
+              style="max-width:100%; height:auto; border:1px solid #e5e7eb; border-radius:8px;">
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
 
             <!-- Botón -->
-            <div class="text-center mt-4">
-              <button type="submit" class="btn btn-primary px-4" *ngIf="visibleBtnGuardar">
+            <div class="text-center mt-4" *ngIf="visibleBtnGuardar">
+              <button type="submit" class="btn btn-primary px-4">
                 Grabar
               </button>
             </div>
 
             <div class="text-center mt-4">
               <button type="button" class="btn btn-danger px-4" (click)="volver()">
-                Cancelar
+                Regresar
               </button>
             </div>
           </form>
@@ -277,3 +347,6 @@
     </div>
   </div>
 </section>
+
+
+

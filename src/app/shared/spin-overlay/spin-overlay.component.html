@@ -1,0 +1,6 @@
+<div class="overlay" *ngIf="visible" (click)="closeOnBackdrop()">
+  <div class="card" (click)="stop($event)">
+    <img [src]="src" [style.width.px]="size" [style.height.px]="size" class="spin" alt="logo" />
+
+  </div>
+</div>

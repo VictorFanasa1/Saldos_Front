@@ -15,5 +15,8 @@ export interface CuentasSaldosPreguntasDto {
   p5_razon: string;
   folio_registro: string;
   folio_soporte: string;
+  lat: string;
+  longi: string;
+  firma:string;
 }
 

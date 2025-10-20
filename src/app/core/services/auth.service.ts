@@ -37,7 +37,58 @@ private url = 'https://aplicacion.fanasa.com/ServiceLogAD/Auth/Ingresar';
     };
     persist(userS);
     return of(userS);
+  }else if(user === 'admin.1'){
+    const userS: User = {
+      username: 'Administrativo 1',
+      numeroempleado: '7700',
+      token: '',
+      role: '',
+      idusuariobd: 0
+    };
+    persist(userS);
+    return of(userS);
+  }else if(user === 'admin.2'){
+    const userS: User = {
+      username: 'Administrativo 2',
+      numeroempleado: '7150',
+      token: '',
+      role: '',
+      idusuariobd: 0
+    };
+    persist(userS);
+    return of(userS);
+  }else if(user === 'admin.1'){
+    const userS: User = {
+      username: 'Administrativo 1',
+      numeroempleado: '7700',
+      token: '',
+      role: '',
+      idusuariobd: 0
+    };
+    persist(userS);
+    return of(userS);
+  }else if(user === 'admin.1.1'){
+    const userS: User = {
+      username: 'Administrativo 1.1',
+      numeroempleado: '7701',
+      token: '',
+      role: '',
+      idusuariobd: 0
+    };
+    persist(userS);
+    return of(userS);
+  }else if(user === 'repre.1'){
+    const userS: User = {
+      username: 'Representante 1',
+      numeroempleado: '7352',
+      token: '',
+      role: '',
+      idusuariobd: 0
+    };
+    persist(userS);
+    return of(userS);
   }
+
 
   return this.http.post<LoginResponse>(this.url, { user, password }).pipe(
     map(res => {

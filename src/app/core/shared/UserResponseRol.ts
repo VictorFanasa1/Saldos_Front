@@ -6,6 +6,7 @@ export interface UserRolResponse{
     dtCreate: string,
     dtModificacion: string,
      id_usuario_excel: string
+     id_grupo: string
 }
 
 export interface getRolUserRequest{

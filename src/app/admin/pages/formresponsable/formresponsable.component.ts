@@ -1,9 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import {  AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { DomSanitizer, SafeResourceUrl, SafeUrl } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { take } from 'rxjs/operators';
 import { AuthService } from 'src/app/core/services/auth.service';
 import { SaldosService } from 'src/app/core/services/saldos.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-formresponsable',
@@ -11,6 +13,7 @@ import { SaldosService } from 'src/app/core/services/saldos.service';
   styleUrls: ['./formresponsable.component.css']
 })
 export class FormresponsableComponent implements OnInit {
+
  id!: number;
  flag!: number;
   formularioaadminsinincidencia: FormGroup;
@@ -21,8 +24,24 @@ export class FormresponsableComponent implements OnInit {
   loading = false
   archivoSeleccionado?: File;
   mostrarEvidencia = false
+   loadings = true;
+   comentarios = ""
+  kind: 'image' | 'pdf' | 'other' | null = null;
+   private objectUrl?: string;
+  imgUrl?: SafeUrl;         // para <img [src]>
+  pdfUrl?: SafeResourceUrl; // para <iframe [src]> o <object data>
+  downloadName = 'evidencia';
+  evidenciaexiste = false
+  latitud = ""
+  longitud = ""
+
+  firmaObjectUrl?: string;
+  cargandos = true;
+  firmaSafeUrl?: SafeUrl;
+  primerbloque = true
+  segundobloque = true
    private readonly USER_KEY = 'app_user';
-  constructor(private route: ActivatedRoute, private saldosservice: SaldosService,   private fb: FormBuilder, private auth: AuthService, private router: Router) {
+  constructor(private route: ActivatedRoute, private saldosservice: SaldosService, private sanitizer: DomSanitizer,  private fb: FormBuilder, private auth: AuthService, private router: Router) {
 
      this.formularioaadminsinincidencia = this.fb.group({
            // Datos básicos
@@ -58,7 +77,8 @@ export class FormresponsableComponent implements OnInit {
         })
 
         this.formularioagenteEvidencias = this.fb.group({
-          comentarios: ['']
+          comentarios: [''],
+          estatusName: [0]
         })
 
   }
@@ -69,7 +89,66 @@ fmtMXN = (v: any) =>
      const w = this.route.snapshot.paramMap.get('flag')
     this.id = v ? Number(v) : NaN;
     this.flag = w ? Number(w) : NaN
+    const idgrupo = localStorage.getItem('id_grupo')
+
+    if(idgrupo == '1'){
+      this.primerbloque = true
+      this.segundobloque = false
+    }else if(idgrupo == '2'){
+      this.primerbloque = false
+      this.segundobloque = true
+    }else{
+      this.primerbloque = true
+      this.segundobloque = true
+    }
+    this.saldosservice.getEvidenciaBlob(this.id).subscribe({
+      next: (resp) => {
+        const blob = resp.body as Blob;
+        const ct = (resp.headers.get('Content-Type') || '').toLowerCase();
+        this.downloadName = this.filenameFromDisposition(resp.headers.get('Content-Disposition')) || this.downloadName;
+
+        this.objectUrl = URL.createObjectURL(blob);
+        this.evidenciaexiste = true
+        if (ct.startsWith('image/')) {
+          this.kind = 'image';
+          this.imgUrl = this.sanitizer.bypassSecurityTrustUrl(this.objectUrl);
+        } else if (ct === 'application/pdf') {
+          this.kind = 'pdf';
+          // Para iframe/object usa ResourceUrl
+          this.pdfUrl = this.sanitizer.bypassSecurityTrustResourceUrl(this.objectUrl);
+        } else {
+          this.kind = 'other';
+        }
+        this.loadings = false;
+      },
+      error: () => this.loading = false
+    })
+    this.saldosservice.getFirmaBlob(this.id).subscribe({
+      next: blob => {
+        console.log(blob)
+        this.firmaObjectUrl = URL.createObjectURL(blob);
+        this.firmaSafeUrl = this.sanitizer.bypassSecurityTrustUrl(this.firmaObjectUrl);// crea URL temporal
+        this.cargandos = false;
+        this.visibleBtnGuardar = false;
+      },
+      error: _ => {
+        this.visibleBtnGuardar = true;
+        this.cargandos = true
+
+      }
+    })
     await this.cargaSecuencial()
+  }
+ ngAfterViewInit(): void {
+
+
+  }
+setPosition(lat: number, lng: number) {
+
+  }
+
+  ngOnDestroy(): void {
+
   }
 
   formatMoneyRegex(txt: number | string | null | undefined): string {
@@ -110,7 +189,12 @@ fmtMXN = (v: any) =>
   const res = (negative ? '-' : '') + (entero || '0') + '.' + dec;
   return res;
 }
-
+private filenameFromDisposition(cd: string | null): string | null {
+    if (!cd) return null;
+    // Content-Disposition: inline; filename="algo.pdf"
+    const m = /filename\*?=(?:UTF-8''|")?([^\";]+)/i.exec(cd);
+    return m ? decodeURIComponent(m[1].replace(/"/g, '')) : null;
+  }
 /* Funcion de carga secuencial */
 async cargaSecuencial(){
   try {
@@ -143,6 +227,8 @@ async cargaSecuencial(){
 }
 private patchCuenta(dto: any) {
   console.log(dto)
+  this.latitud = dto[0].lat
+  this.longitud = dto[0].long
   this.formularioaadminsinincidencia.patchValue({
     confirmacionCliente: dto[0].otp ?? '',
     nombreCorto: dto[0].nombre_corto ?? '',
@@ -156,6 +242,7 @@ private patchCuenta(dto: any) {
     vencida15a21:      '$ '+this.formatMoneyRegex(dto[0].vencido_15_21_dias ?? 0),
     vencida22Plus:     '$ '+this.formatMoneyRegex(dto[0].vencido_22_28_dias ?? 0),
   }, { emitEvent: false });
+  this.comentarios = dto[0].comentarios
 }
 patchPreguntas(src: any) {
   console.log(src)
@@ -176,7 +263,7 @@ patchPreguntas(src: any) {
 }
 
 consultaRegistros(){
-  alert(this.flag)
+
  this.saldosservice.consultaporidecuentasinincidencia(this.id).subscribe({
        next: (dto) => {
         console.log(dto)
@@ -263,8 +350,21 @@ let usuario
   };
 
   this.saldosservice.enviarIncidenciaBase64(payload).subscribe({
-    next: (res) => {console.log(res)},
-    error: (e) => console.error(e)
+    next: (res) => {
+      Swal.fire({
+        title: "Listo!",
+        text: "Datos guardados",
+        icon: "success"
+      });
+      this.router.navigate(['/admin'])
+    },
+    error: (e) =>{
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: e
+      });
+    }
   });
 
 }

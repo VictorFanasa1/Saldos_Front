@@ -10,12 +10,10 @@
             <div class="text-center mb-4">
               <div class="logo-badge mx-auto mb-3">
                 <!-- Estetoscopio / cruz médica -->
-                <svg width="36" height="36" viewBox="0 0 24 24" aria-hidden="true">
-                  <path d="M6 4v5a4 4 0 1 0 8 0V4h2v5a6 6 0 0 1-5 5.917V18a3 3 0 0 0 6 0h2a5 5 0 1 1-10 0v-3.083A6 6 0 0 1 4 9V4h2z" fill="currentColor"/>
-                </svg>
+               <img src="../../../../assets/icons/icon-512x512.png" alt="" width="100%">
               </div>
-              <h1 class="h4 fw-semibold mb-1 text-primary-800">Saldos</h1>
-              <p class="text-secondary-600 small mb-0">Acceso seguro al panel</p>
+              <!--<h1 class="h4 fw-semibold mb-1 text-primary-800">Saldos</h1>
+              <p class="text-secondary-600 small mb-0">Acceso seguro al panel</p>-->
             </div>
 
             <form #loginForm="ngForm" (ngSubmit)="onSubmit()" novalidate>
@@ -82,11 +80,10 @@
 
               <!-- Version -->
               <div class="text-center mt-3">
-                <span class="badge rounded-pill bg-soft-primary text-primary-800">V 1.0.0</span>
+                <span class="badge rounded-pill bg-soft-primary text-primary-800" style="color: black !important;">V 1.0.1
+
+                </span>
               </div>
-
-
-                <
             </form>
 
           </div>
@@ -100,3 +97,29 @@
     </div>
   </div>
 </div>
+
+
+<div *ngIf="(canInstall$ | async)" class="install-banner">
+  <div class="install-text">
+    ¿Quieres instalar <b>SaldosApp</b> para un acceso más rápido?
+  </div>
+  <div class="install-actions">
+    <button class="btn-primary" (click)="instalar()">Instalar</button>
+  </div>
+</div>
+
+<!-- Pista para iOS (no hay beforeinstallprompt) -->
+ <div class="row">
+  <div class="col-12" style="text-align: center;">
+    <div *ngIf="showIosHint" class="install-banner ios">
+  <div class="install-text">
+    Para instalar en iPhone/iPad: toca <b>Compartir</b> (<span aria-label="share">⬆️</span>) y luego
+    <b>Añadir a pantalla de inicio</b>.
+  </div>
+  <div class="install-actions">
+    <button class="btn btn-primary btn-lg w-100 d-flex align-items-center justify-content-center gap-2" (click)="cerrarIosHint()">Cerrar</button>
+  </div>
+</div>
+  </div>
+ </div>
+
