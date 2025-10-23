@@ -4,7 +4,8 @@
 
 export const environment = {
   production: false,
-  serviceWorker: true
+  serviceWorker: true,
+  appVersion: '1.0.4'
 };
 
 /*

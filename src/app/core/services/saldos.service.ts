@@ -16,10 +16,10 @@ import { IncidenciasRequest } from '../shared/cuentasrowResponse.model';
   providedIn: 'root'
 })
 export class SaldosService{
-    //private apiUrl = 'https://aplicacion.fanasa.com/SaldosService/SaldosApi'
-    //private apiUrlAuth = 'https://aplicacion.fanasa.com/SaldosService/SaldosAuthenticator'
-    private apiUrl = 'https://localhost:44367/SaldosApi'
-    private apiUrlAuth = 'https://localhost:44367/SaldosAuthenticator'
+    private apiUrl = 'https://aplicacion.fanasa.com/SaldosService/SaldosApi'
+    private apiUrlAuth = 'https://aplicacion.fanasa.com/SaldosService/SaldosAuthenticator'
+    //private apiUrl = 'https://localhost:44367/SaldosApi'
+    //private apiUrlAuth = 'https://localhost:44367/SaldosAuthenticator'
     constructor(private http: HttpClient){}
 
     consultaRegistros():Observable<AdmCuentasSaldos[]> {
@@ -92,7 +92,13 @@ export class SaldosService{
     }
 
     getFirmaBlob(cuentaId: number) {
+      const headers = new HttpHeaders({
+        'Cache-Control': 'no-cache',
+        'Pragma': 'no-cache',
+        'ngsw-bypass': 'true'
+      });
       return this.http.get(`${this.apiUrl}/GetFirma/${cuentaId}`, {
+        headers,
         responseType: 'blob'
       });
     }
@@ -106,6 +112,7 @@ export class SaldosService{
 
     /* Mailing */
     sendMailtoClient(payload: SendMailBodyRequest){
-      return this.http.post(`${this.apiUrlAuth}/SendMailKit`, payload)
+      console.log(payload)
+      return this.http.post(`${this.apiUrl}/SendMailKit`, payload)
     }
 }

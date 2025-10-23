@@ -10,6 +10,7 @@ import { GeolocationService, GeoPoint } from 'src/app/core/shared/geolocation.se
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { SendMailBodyRequest } from 'src/app/core/shared/sendMailClient.Model';
 import { empty, from, Observable, Subject } from 'rxjs';
+import { UiService } from 'src/app/shared/service/ui.service';
 
 
 type Pt = { x: number; y: number; t: number };
@@ -30,7 +31,7 @@ step = 1;
   estadoPermiso: string | null = null;
   ubicacion: GeoPoint | null = null;
   error: string | null = null;
-  cargando = false;
+  tipo_incidencia = 0
    private readonly USER_KEY = 'app_user';
     @ViewChild('sigCanvas', { static: false }) set sigCanvasSetter(ref: ElementRef<HTMLCanvasElement> | undefined) {
       if (ref) {
@@ -57,6 +58,7 @@ step = 1;
   correo: string = ""
   folio = ""
   numerodefolio = ""
+  cargando = false
   folios: Array<number> = []
 fmtMXN = (v: any) =>
   new Intl.NumberFormat('es-MX', { style:'currency', currency:'MXN', minimumFractionDigits:2 }).format(Number(v ?? 0));
@@ -67,6 +69,7 @@ fmtMXN = (v: any) =>
     private auth: AuthService,
     private router: Router,
     private sanitizer: DomSanitizer,
+    private ui: UiService,
     private geo: GeolocationService) {
     this.formularioagente = this.fb.group({
        // Datos básicos
@@ -140,11 +143,19 @@ private attachReasonToggler(booleanCtrl: string, reasonCtrl: string) {
     this.solicitarUnaVez()
     const v = this.route.snapshot.paramMap.get('id');
     this.id = v ? Number(v) : NaN;
-
+this.ui.showAdmin(false)
+    this.ui.showAdminDownSet(false)
+    this.ui.showrRepresentante(true)
     this.consultaRegistros()
     this.saldosservice.getFirmaBlob(this.id).subscribe({
-      next: blob => {
+      next: resp => {
+        const blob = resp!;
         console.log(blob)
+        if (!blob || blob.size === 0) {
+      this.visibleBtnGuardar = true;
+      this.cargandos = true;
+      return;
+    }
         this.firmaObjectUrl = URL.createObjectURL(blob);
         this.firmaSafeUrl = this.sanitizer.bypassSecurityTrustUrl(this.firmaObjectUrl);// crea URL temporal
         this.cargandos = false;
@@ -153,7 +164,11 @@ private attachReasonToggler(booleanCtrl: string, reasonCtrl: string) {
       error: _ => {
         this.visibleBtnGuardar = true;
         this.cargandos = true
-
+        this.firmaSafeUrl = undefined;
+        if (this.firmaObjectUrl) {
+          URL.revokeObjectURL(this.firmaObjectUrl);
+          this.firmaObjectUrl = undefined;
+        }
       }
     })
     this.formularioagente.get('correocliente')!.valueChanges
@@ -353,7 +368,8 @@ ngOnDestroy(): void {
     folio_soporte: folio,
     lat: this.lat?.toString() ?? '',
     longi: this.longio?.toString() ?? '',
-    firma: evidencia
+    firma: evidencia,
+    tipo_incidencia: this.tipo_incidencia.toString()
   };
 
   await this.saldosservice.registrarPeguntas(dto).toPromise();// espera al POST
@@ -372,13 +388,16 @@ console.log(f.reclamacionesPendientes)
   try {
 
     if (!(f.acuerdoSaldo === true && f.comprobantePagos === true && f.pagosPendientes === false)) {
+      this.tipo_incidencia = 1
       const folio1 = await this.getNextFolio();
       await this.registerWithFolio(folio1);
       await Swal.fire({ icon: 'success', title: 'Guardado', text: `Se guardo la información` });
+
     }
 
 
     if (!(f.devolucionesPendientes === false && f.reclamacionesPendientes === false)) {
+      this.tipo_incidencia = 2
       const folio2 = await this.getNextFolio();
       await this.registerWithFolio(folio2);
       await Swal.fire({ icon: 'success', title: 'Guardado', text: `Se guardo la información` });
@@ -386,8 +405,7 @@ console.log(f.reclamacionesPendientes)
 
 
     if ((f.acuerdoSaldo  === true && f.comprobantePagos === true) && (f.pagosPendientes  === false && f.devolucionesPendientes  === false && f.reclamacionesPendientes === false)) {
-
-
+      this.tipo_incidencia = 0
       await this.registerWithFolio("");
       await Swal.fire({ icon: 'success', title: 'Guardado', text: `Su informacion fue cargada en el sistema` });
     }
@@ -625,6 +643,7 @@ get pct() {
         })
       },
       error: err =>{
+        console.log(err)
         Swal.fire({
           title:'Error',
           icon: 'error',

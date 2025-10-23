@@ -1,0 +1,7 @@
+<div class="update-banner" *ngIf="visible">
+    <span>Nueva versión disponible</span>
+    <div class="actions">
+      <button class="btn btn-sm btn-primary" (click)="refresh()">Actualizar</button>
+      <button class="btn btn-sm btn-light" (click)="visible=false">Luego</button>
+    </div>
+  </div>

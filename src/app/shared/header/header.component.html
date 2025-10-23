@@ -1,0 +1,40 @@
+<!-- src/app/shared/components/navbar/navbar.component.html -->
+<nav class="navbar navbar-expand-lg navbar-app sticky-top" *ngIf="showHeader$ | async">
+  <div class="container-fluid">
+    <!-- Branding (pon aquí tu logo PNG/SVG) -->
+    <a class="navbar-brand d-flex align-items-center gap-2" routerLink="/">
+      <img src="../../../assets/icons/ios/32.png" alt="logo" width="28" height="28">
+      <span>Saldos</span>
+    </a>
+
+    <button
+      class="navbar-toggler"
+      type="button"
+      (click)="toggleMenu()"
+      [attr.aria-controls]="'navContent'"
+      [attr.aria-expanded]="isMenuOpen ? 'true' : 'false'"
+      aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div id="navContent" class="collapse navbar-collapse" [class.show]="isMenuOpen">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+
+      </ul>
+
+      <!-- Acciones rápidas -->
+
+
+      <!-- Usuario -->
+      <div class="dropdown">
+        <button class="btn btn-light dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+          <i class="bi bi-person-circle me-1"></i> {{rol}}
+        </button>
+        <ul class="dropdown-menu dropdown-menu-end">
+
+          <li><button class="dropdown-item text-danger" (click)="logoutSys()">Cerrar sesión</button></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</nav>

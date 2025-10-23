@@ -7,6 +7,9 @@ import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { FormresponsableComponent } from './pages/formresponsable/formresponsable.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ConfiguracionesComponent } from './pages/configuraciones/configuraciones.component';
+import { CuentasincidenciasComponent } from './pages/cuentasincidencias/cuentasincidencias.component';
+import { CuentasconincidenciasComponent } from './pages/cuentasconincidencias/cuentasconincidencias.component';
+
 
 
 @NgModule({
@@ -14,7 +17,9 @@ import { ConfiguracionesComponent } from './pages/configuraciones/configuracione
     AdminComponent,
     DashboardComponent,
     FormresponsableComponent,
-    ConfiguracionesComponent
+    ConfiguracionesComponent,
+    CuentasincidenciasComponent,
+    CuentasconincidenciasComponent
   ],
   imports: [
     CommonModule,

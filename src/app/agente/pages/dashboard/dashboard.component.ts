@@ -5,6 +5,7 @@ import { AuthService } from 'src/app/core/services/auth.service';
 import { SaldosService } from 'src/app/core/services/saldos.service';
 import { AdmCuentasSaldos } from 'src/app/core/shared/cuentasagente.model';
 import { getregistrossaldogerente } from 'src/app/core/shared/cuentasaldosporgerente.model';
+import { UiService } from 'src/app/shared/service/ui.service';
 declare const $: any;
 
 
@@ -22,16 +23,21 @@ export class DashboardComponent implements OnInit {
   errorMsg = '';
   dt: any;
 
-  constructor(private router: Router, private saldosservice: SaldosService, private auth: AuthService) {
-
+  constructor(private router: Router, private saldosservice: SaldosService, private auth: AuthService, private ui: UiService) {
+    this.ui.showHeaderset(true)
   }
 
   ngAfterViewInit(): void{
+
      if (this.datoscuenta.length) { this.buildDT(); }
   }
 
   ngOnInit(): void {
+
     this.getRegistros()
+    this.ui.showAdmin(false)
+    this.ui.showAdminDownSet(false)
+    this.ui.showrRepresentante(true)
   }
  ngOnDestroy(): void {
     this.destroyDT();

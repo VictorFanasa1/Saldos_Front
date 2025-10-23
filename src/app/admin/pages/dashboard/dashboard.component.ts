@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild, AfterViewInit, ChangeDetectorRef } from '@angular/core';
 import * as XLSX from 'xlsx';
 import { from, of } from 'rxjs';
 import { catchError, concatMap, finalize, take, tap } from 'rxjs/operators';
@@ -8,6 +8,8 @@ import { AdmCuentasSaldos } from 'src/app/core/shared/cuentasagente.model';
 import { IncidenciasRequest } from 'src/app/core/shared/cuentasrowResponse.model';
 import { AuthService } from 'src/app/core/services/auth.service';
 import { Router } from '@angular/router';
+import { UiService } from 'src/app/shared/service/ui.service';
+import Swal from 'sweetalert2';
 declare const $: any;
 @Component({
   selector: 'app-dashboard',
@@ -39,7 +41,7 @@ periodoFin?: string;
 rol = "0"
    private readonly USER_KEY = 'app_user';
   private readonly USER_ID = 'app_user_id';
-  constructor(private excelSvc: SaldosService, private auth: AuthService, private router: Router,) { }
+  constructor(private excelSvc: SaldosService, private auth: AuthService, private router: Router, private ui: UiService, private cdr: ChangeDetectorRef) { }
 
 get finMin(): string {
   return this.periodoInicio ?? this.todayISO;
@@ -108,7 +110,8 @@ private addMonths(d: Date, months: number): Date {
 
   buildPayload(row: any, filaOrigen: number): CuentasSaldosCreateRequest {
     const now = new Date().toISOString();
-
+    //alert(this.periodoInicio)
+    //alert(this.periodoFin)
     // Mapeo según tus headers EXACTOS
     // CLIENTE, NOMBRE CORTO, CUENTA ORACLE, RETENCION CREDITO, TERMINO PAGO, LIMITE CREDITO,
     //  TOTAL CARTERA ,  POR VENCER ,  VENCIDO ,  VENCIDO 7 DIAS ,  VENCIDO 8 A 14 DIAS ,
@@ -171,14 +174,36 @@ private addMonths(d: Date, months: number): Date {
 
 
   ngOnInit(): void {
+
     this.rol = localStorage.getItem('id_rol') ?? '0'
 
     if(this.rol == '3'){
+      this.setMenuAdmin()
       this.showfirstcard = false
     }else{
+      this.setMenu();
       this.showfirstcard = true
     }
 
+  }
+  setMenu(){
+    this.ui.showNavbar(true)
+              this.ui.showAdmin(true)
+              this.ui.showHeaderset(true)
+              this.ui.showrRepresentante(false)
+               this.ui.showAdminDownSet(false)
+  }
+  setMenuAdmin(){
+    this.ui.showNavbar(true)
+              this.ui.showAdmin(false)
+              this.ui.showHeaderset(true)
+              this.ui.showrRepresentante(false)
+              this.ui.showAdminDownSet(true)
+  }
+  ngAfterViewInit(){
+    setTimeout(() => {
+      this.cdr.detectChanges();
+    }, 0);
   }
   onFileSelected(evt: Event) {
     const input = evt.target as HTMLInputElement;
@@ -209,6 +234,14 @@ private addMonths(d: Date, months: number): Date {
   }
 
    subir() {
+
+    if(this.periodoInicio == undefined || this.periodoFin == undefined){
+      Swal.fire({
+        icon: "info",
+        title: "No se puede cargar el archivo si no defines un periodo"
+      })
+      return;
+    }
     if (!this.previewRows.length || this.uploading) return;
 
     const chunkSize = 200;
@@ -228,7 +261,11 @@ private addMonths(d: Date, months: number): Date {
               this.progress = Math.round(((idx + 1) / chunks.length) * 100);
             }),
             catchError(err => {
-              console.error(`Error subiendo chunk ${idx}`, err);
+              console.log(err)
+              Swal.fire({
+                icon: "error",
+                title:"Ya existe un periodo"
+              })
               // continuar sin romper todo:
               return of(null);
             })

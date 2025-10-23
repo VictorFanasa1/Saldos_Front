@@ -12,13 +12,19 @@ import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
 import { SpinOverlayComponent } from './shared/spin-overlay/spin-overlay.component';
 import { SignaturePadComponent } from './shared/signature-pad/signature-pad.component';
+import { NavbarComponent } from './shared/navbar/navbar.component';
+import { AppUpdateAvailableComponent } from './shared/app-update-available/app-update-available.component';
+import { HeaderComponent } from './shared/header/header.component';
 registerLocaleData(localeEsMx);
 
 @NgModule({
   declarations: [
     AppComponent,
     SpinOverlayComponent,
-    SignaturePadComponent
+    SignaturePadComponent,
+    NavbarComponent,
+    AppUpdateAvailableComponent,
+    HeaderComponent
   ],
   imports: [
     BrowserModule,

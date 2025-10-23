@@ -70,4 +70,6 @@ export interface IncidenciasRequest {
   p4_razon: string | null;
   p5_razon: string | null;
   folio_soporte: string | null;
+  estatus: string | null;
+  tipo_incidencia: string | null;
 }

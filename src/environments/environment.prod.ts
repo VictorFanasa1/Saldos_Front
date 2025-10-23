@@ -1,4 +1,5 @@
 export const environment = {
   production: true,
-  serviceWorker: true
+  serviceWorker: true,
+  appVersion: '1.0.4'
 };

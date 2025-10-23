@@ -445,16 +445,10 @@
           <div class="card-body">
             <div class="row">
               <div class="col-12">
-                <div id="map" class="map-container"></div>
+                <p>Ubicación donde se capturo la informacion</p>
+                <div #osmMap id="osm-map" style="height:300px"></div>
               </div>
-              <div class="col-6">
-                <label class="form-label">Latitud</label>
-                <p>{{ latitud }}</p>
-              </div>
-              <div class="col-6">
-                <label class="form-label">Longitud</label>
-                <p>{{ longitud }}</p>
-              </div>
+
               <div class="col-12">
                 <div class="d-flex gap-3" *ngIf="!cargandos">
                   <div class="row">

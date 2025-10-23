@@ -1,6 +1,3 @@
-<section class="medical-hero">
-  <button class="btn btn-danger" style="align-items: flex-end;" (click)="logoutSys()">SALIR</button>
-</section>
 
 <section class="medical-hero min-vh-100 d-flex align-items-center" *ngIf="verdasboard">
   <div class="container py-5">
@@ -24,21 +21,10 @@
             </div>
             <h3 class="item-title">Carga de información</h3>
             <p class="item-sub">
-              Sube tu archivo Excel/CSV y cargaremos la información de las ceuntas.
+              Sube tu archivo Excel/CSV y cargaremos la información de las cuentas.
             </p>
 
-            <div class="d-flex flex-wrap gap-3">
-              <button class="btn btn-medical-primary" type="button" (click)="openPicker()">
-                <i class="bi bi-cloud-upload"></i> Cargar Excel
-              </button>
-              <button class="btn btn-medical-success"
-                      type="button"
-                      [disabled]="!previewRows.length || uploading"
-                      (click)="subir()">
-                <i class="bi bi-send-check"></i>
-                {{ uploading ? (' Subiendo... ' + progress + '%') : 'Enviar al servicio' }}
-              </button>
-              <div class="row g-3 mt-2">
+            <div class="row g-3 mt-2">
                 <div class="col-12 col-md-6">
                   <label class="form-label">Periodo inicio</label>
                   <input
@@ -70,6 +56,19 @@
                   </small>
                 </div>
               </div>
+
+            <div class="d-flex flex-wrap gap-3">
+              <button class="btn btn-medical-primary" type="button" (click)="openPicker()">
+                <i class="bi bi-cloud-upload"></i> Cargar Excel
+              </button>
+              <button class="btn btn-medical-success"
+                      type="button"
+                      [disabled]="!previewRows.length || uploading"
+                      (click)="subir()">
+                <i class="bi bi-send-check"></i>
+                {{ uploading ? (' Subiendo... ' + progress + '%') : 'Enviar al servicio' }}
+              </button>
+
             </div>
 
             <div class="mt-3 small text-muted" *ngIf="previewRows?.length">
@@ -93,120 +92,8 @@
       <!-- Tile: Configuración -->
 
 
-      <!-- Tile: Sin incidencias -->
-      <div class="bento-item item--sin card-glass stat--ok" (click)="mostrarsinincidencias()">
-        <div class="stat">
-          <div class="stat-icon">
-            <i class="bi bi-shield-check"></i>
-          </div>
-          <div class="stat-body">
-            <div class="stat-title">Cuentas sin incidencias</div>
 
-          </div>
-        </div>
-      </div>
-
-      <!-- Tile: Con incidencias -->
-      <div class="bento-item item--con card-glass stat--warn" (click)="mostrarincidencias()">
-        <div class="stat">
-          <div class="stat-icon">
-            <i class="bi bi-exclamation-triangle"></i>
-          </div>
-          <div class="stat-body">
-            <div class="stat-title" style="color: #ffc107;">Cuentas con incidencias</div>
-            <div class="stat-value">
-              <span class="text-danger">Revisar</span>
-            </div>
-          </div>
-        </div>
-      </div>
 
     </div> <!-- /bento-grid -->
-  </div>
-</section>
-
-<section class="medical-hero min-vh-100 d-flex align-items-center" *ngIf="verconincidencia">
-  <div class="container py-5">
-    <div class="row">
-      <div class="col-3">
-        <button class="btn btn-danger" (click)="mostrardash()"> Regresar</button>
-      </div>
-    </div>
-    <h2 style="color: #ffc107;">Cuentas con incidencias</h2>
-    <div class="table-responsive">
-       <div class="table-responsive">
-              <table #dTable class="table table-striped table-hover table-sm |align-middle mb-0">
-                <thead class="table-light">
-                  <tr>
-                    <th>#</th>
-                    <th>Folio</th>
-                    <th>Tipo de incidencia</th>
-                    <th>Cuenta</th>
-                    <th>Fecha</th>
-                    <th>Estatus</th>
-                    <th>Fecha de solución</th>
-                    <th>Usuario Responsable</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr *ngFor="let item of datoscuenta">
-                    <td (click)="goToDetalle(item.uiRow, 1)" style="cursor: pointer;">{{ item.uiRow }}</td>
-                    <td>{{ item.folio_soporte }}</td>
-                    <td> Tipo de incidencia</td>
-                    <td>{{ item.cuenta_oracle }}</td>
-                    <td>{{ item.created_at  }}</td>
-                    <td> Pendiente </td>
-                    <td> {{ item.fecha_solucion }}</td>
-                    <td> {{ item.usuario_actualiza}} </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-    </div>
-  </div>
-</section>
-
-
-<section class="medical-hero min-vh-100 d-flex align-items-center" *ngIf="versinincidencia">
-  <div class="container py-5">
-    <div class="row">
-      <div class="col-3">
-        <button class="btn btn-danger" (click)="mostrardash()"> Regresar</button>
-      </div>
-    </div>
-    <h2 style="color: #ffc107;">Cuentas sin incidencias</h2>
-    <div class="table-responsive">
-              <table datatable id="cuentasTable" class="table table-striped table-hover table-sm align-middle mb-0">
-                <thead class="table-light">
-                  <tr>
-                    <th>#</th>
-                    <th>Procesado</th>
-                    <th>Cuenta</th>
-                    <th>Farmacia</th>
-                     <th>Estatus</th>
-                    <th>Fecha</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr *ngFor="let item of datoscuentaS">
-                    <td (click)="goToDetalle(item.uiRow, 0)" style="cursor: pointer;">{{ item.uiRow }}</td>
-                    <td class="text-center" (click)="$event.stopPropagation()">
-                        <input
-                            class="form-check-input"
-                            type="checkbox"
-                            [checked]="item.procesado"
-                            (change)="onProcesadoChange(item, $any($event.target).checked)"
-                            aria-label="Procesado"
-                            readonly
-                        />
-                    </td>
-                    <td>{{ item.cuenta_oracle }}</td>
-                    <th>{{ item.nombre_corto}}</th>
-                    <td>Cerrado</td>
-                    <td>{{ item.created_at  }}</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
   </div>
 </section>

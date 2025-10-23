@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
 import { LoginResponse, User } from '../shared/LoginResponse';
 import { catchError, map, tap } from 'rxjs/operators';
+import { UiService } from 'src/app/shared/service/ui.service';
 
 
 export type Role = 'ADMIN' | 'AGENTE';
@@ -18,7 +19,7 @@ private url = 'https://aplicacion.fanasa.com/ServiceLogAD/Auth/Ingresar';
   private _user$ = new BehaviorSubject<User | null>(this.restoreUser());
   user$ = this._user$.asObservable();
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private ui: UiService) {}
 
   // Login "demo": creamos un token fake con el rol seleccionado
   login(user: string, password: string): Observable<User> {
@@ -116,10 +117,12 @@ private url = 'https://aplicacion.fanasa.com/ServiceLogAD/Auth/Ingresar';
     if (!u) return;
     const updated = { ...u, role };
     this._user$.next(updated);
+
     localStorage.setItem(this.USER_KEY, JSON.stringify(updated));
   }
   logout(): void {
     //localStorage.removeItem(this.TOKEN_KEY);
+
     localStorage.removeItem(this.USER_KEY);
     this._user$.next(null);
   }

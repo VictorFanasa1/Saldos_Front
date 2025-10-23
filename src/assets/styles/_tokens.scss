@@ -1,0 +1,44 @@
+:root{
+  /* Reemplaza estos HEX con los del logotipo */
+  --brand:#199D6E;        /* principal: verde farmacia */
+  --brand-600:#168A61;    /* hover/active */
+  --brand-100:#E6F5EF;    /* fondos suaves */
+  --ink:#1A1D29;          /* texto principal */
+  --ink-2:#5C6370;        /* texto secundario */
+  --border:#E6EAF0;
+  --bg:#F6F9FC;
+  --navy:#0F2743;
+  --navy-2:#183A5F;
+}
+
+body{ background: var(--bg); color: var(--ink); }
+a { color: var(--brand); }
+a:hover { color: var(--brand-600); }
+
+.navbar-app{
+  background:#fff;
+  border-bottom:1px solid var(--border);
+}
+
+.navbar-brand{
+  font-weight:700;
+  letter-spacing:.2px;
+}
+
+.btn-brand{
+  background:var(--brand);
+  border-color:var(--brand);
+  color:#fff;
+}
+.btn-brand:hover{ background:var(--brand-600); border-color:var(--brand-600); }
+
+.header-app{
+  background: linear-gradient(180deg, #fff 0%, #fff 60%, var(--bg) 100%);
+  border-bottom:1px solid var(--border);
+}
+
+.badge-pill{
+  display:inline-flex; align-items:center; gap:.35rem;
+  padding:.2rem .6rem; border-radius:999px; border:1px solid var(--border);
+  background:#fff; color:var(--ink-2);
+}

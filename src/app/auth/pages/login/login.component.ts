@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 import { PwaInstallService } from 'src/app/core/pwa-install.service';
 import { AuthService } from 'src/app/core/services/auth.service';
 import { SaldosService } from 'src/app/core/services/saldos.service';
+import { UiService } from 'src/app/shared/service/ui.service';
 import { SpinOverlayServiceService } from 'src/app/shared/spin-overlay/spin-overlay-service.service';
 import Swal from 'sweetalert2';
 
@@ -28,11 +29,13 @@ canInstall$: Observable<boolean>;
 
   showIosHint = false;
   showOverlay = false;
-  constructor(private swUpdate: SwUpdate, private auth: AuthService, private router: Router, private route: ActivatedRoute, private saldosservice: SaldosService, private pwa: PwaInstallService, private overlay: SpinOverlayServiceService) {
+  constructor(private ui: UiService, private swUpdate: SwUpdate, private auth: AuthService, private router: Router, private route: ActivatedRoute, private saldosservice: SaldosService, private pwa: PwaInstallService, private overlay: SpinOverlayServiceService) {
      this.canInstall$ = this.pwa.canInstall$;
 
     // Si es iOS y no está en standalone, mostramos tip manual
     this.showIosHint = this.pwa.isIosLikely() && !this.pwa.isStandalone();
+    this.ui.showNavbar(false);
+    this.ui.showHeaderset(false);
   }
 
   ngOnInit(): void {
@@ -68,7 +71,7 @@ canInstall$: Observable<boolean>;
   onSubmit() {
 
  this.overlay.show();
-    this.isloading = true
+    //this.isloading = true
     this.auth.login(this.username, this.password).subscribe({
       next: user=>{
 
@@ -92,6 +95,17 @@ canInstall$: Observable<boolean>;
             ? this.redirectTo
             : (user.role === 'ADMIN' ? '/admin' : '/agente');
            console.log(target)
+
+           if(user.role === 'ADMIN'){
+              this.ui.showNavbar(true)
+              this.ui.showAdmin(true)
+              this.ui.showHeaderset(true)
+              this.ui.showrRepresentante(false)
+           }else{
+              this.ui.showHeaderset(true)
+              this.ui.showNavbar(true)
+              this.ui.showrRepresentante(true)
+           }
            this.overlay.hide()
             this.router.navigateByUrl(target, { replaceUrl: true });
 
@@ -100,7 +114,12 @@ canInstall$: Observable<boolean>;
 
       },
       error: err => {
-
+         this.isloading = false
+          this.overlay.hide();
+         Swal.fire({
+          title: "ERROR NO SE PUDO INICIAR SESIÓN",
+          icon: "error"
+         })
       }
     });
 

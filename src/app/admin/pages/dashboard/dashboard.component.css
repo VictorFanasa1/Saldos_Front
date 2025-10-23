@@ -10,12 +10,12 @@
 }
 
 .bg-soft-blue {
-  background-color: #1E5485; /* azul clarito */
+  background-color: #ffffff; /* azul clarito */
 }
 
 /* Fondo general */
 .medical-hero {
-   background-color: #1E5485;
+   background-color: #ffffff;
 }
 
 /* Grid estilo Bento */
@@ -50,7 +50,7 @@
 @media (max-width: 991.98px) {
   .bento-grid { grid-template-columns: repeat(6, 1fr); }
   .item--upload  { grid-column: 1 / -1; grid-row: span 4; }
-  
+
   .item--sin     { grid-column: span 3; grid-row: span 2; }
   .item--con     { grid-column: span 3; grid-row: span 2; }
 }

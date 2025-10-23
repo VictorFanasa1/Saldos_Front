@@ -1,0 +1,36 @@
+<section class="medical-hero min-vh-100 d-flex align-items-center">
+  <div class="container py-5">
+
+    <h2 style="color: #ffc107;">Cuentas con incidencias</h2>
+    <div class="table-responsive">
+       <div class="table-responsive">
+              <table #dTable class="table table-striped table-hover table-sm |align-middle mb-0">
+                <thead class="table-light">
+                  <tr>
+                    <th>#</th>
+                    <th>Folio</th>
+                    <th>Tipo de incidencia</th>
+                    <th>Cuenta</th>
+                    <th>Fecha</th>
+                    <th>Estatus</th>
+                    <th>Fecha de solución</th>
+                    <th>Usuario Responsable</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let item of datoscuenta">
+                    <td (click)="goToDetalle(item.pp_uiRow, 1)" style="cursor: pointer;">{{ item.uiRow }}</td>
+                    <td>{{ item.folio_soporte }}</td>
+                    <td> {{item.tipo_incidencia}}</td>
+                    <td>{{ item.cuenta_oracle }}</td>
+                    <td>{{ item.created_at  }}</td>
+                    <td> {{item.estatus}} </td>
+                    <td> {{ item.fecha_solucion }}</td>
+                    <td> {{ item.usuario_actualiza}} </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+    </div>
+  </div>
+</section>
