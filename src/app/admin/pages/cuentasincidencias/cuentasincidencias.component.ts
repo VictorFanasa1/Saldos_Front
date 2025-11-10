@@ -54,8 +54,8 @@ export class CuentasincidenciasComponent implements OnInit {
   }
 
   setData() {
-    if (this.rol === '3') {
-      this.excelSvc.consultaporidecuentasinincidenciaAll().subscribe({
+    if (this.rol === '1') {
+      this.excelSvc.consultaporidecuentasinincidenciaAllD().subscribe({
         next: (res) => {
           this.datoscuentaS = res;
           this.buildDT();

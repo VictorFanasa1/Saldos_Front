@@ -6,16 +6,14 @@ import { Component, OnInit, EventEmitter, HostBinding, Input, OnChanges, Output 
   styleUrls: ['./spin-overlay.component.css']
 })
 export class SpinOverlayComponent implements OnChanges {
-  /** Muestra/oculta el overlay */
+ 
   @Input() visible = false;
-  /** Ruta del logo (PNG/SVG) */
-  @Input() src = 'assets/icons/icon-512x512.png';
-  /** Tamaño del logo */
-  @Input() size = 160; // px
-  /** Emite cuando el usuario cierra */
+
+  @Input() src = 'assets/icons/saldosicon512x512.png';
+  
+  @Input() size = 160; 
   @Output() closed = new EventEmitter<void>();
 
-  /** Evita scroll del body cuando está visible */
   @HostBinding('class.no-scroll') noScroll = false;
 @Input() dismissible = true;
   ngOnChanges() {

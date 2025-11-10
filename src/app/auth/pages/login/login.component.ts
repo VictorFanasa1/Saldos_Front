@@ -83,10 +83,19 @@ canInstall$: Observable<boolean>;
             localStorage.setItem('useridbd', rol.id_usuario_excel)
             localStorage.setItem('id_grupo', rol.id_grupo)
             localStorage.setItem('id_rol', rol.id_rol.toString())
+            if(rol.id_rol == 3 && rol.id_grupo == '1'){
+              localStorage.setItem('nombre_rol', 'Credito')
+            }else if(rol.id_rol == 3 && rol.id_grupo == '2'){
+              localStorage.setItem('nombre_rol', 'Cobranza')
+            }else{
+              localStorage.setItem('nombre_rol', 'Administrador')
+            }
             if(rol.id_rol == 1 ||  rol.id_rol == 3){
               user.role = 'ADMIN'
+             
             }else if(rol.id_rol == 2){
               user.role = 'AGENTE'
+              localStorage.setItem('nombre_rol', 'Representante')
             }
             console.log(user.role)
             console.log(this.redirectTo)

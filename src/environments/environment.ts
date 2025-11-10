@@ -5,7 +5,9 @@
 export const environment = {
   production: false,
   serviceWorker: true,
-  appVersion: '1.0.4'
+  appVersion: '1.0.5',
+  apiUrl: 'https://localhost:44367/SaldosApi',
+  apiUrlAuth: 'https://localhost:44367/SaldosAuthenticator'
 };
 
 /*

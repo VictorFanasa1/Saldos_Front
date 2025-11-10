@@ -10,16 +10,15 @@ import { getRolUserRequest, UserRolResponse } from '../shared/UserResponseRol';
 import { CuentasSaldosPreguntasDto } from '../shared/cuentasPreguentasRequest';
 import { PreguntasResponse } from '../shared/preguntas.model';
 import { IncidenciasRequest } from '../shared/cuentasrowResponse.model';
-
+import { environment } from 'src/environments/environment.prod';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SaldosService{
-    private apiUrl = 'https://aplicacion.fanasa.com/SaldosService/SaldosApi'
-    private apiUrlAuth = 'https://aplicacion.fanasa.com/SaldosService/SaldosAuthenticator'
-    //private apiUrl = 'https://localhost:44367/SaldosApi'
-    //private apiUrlAuth = 'https://localhost:44367/SaldosAuthenticator'
+     private readonly apiUrl = environment.apiUrl;
+     private readonly apiUrlAuth = environment.apiUrlAuth;
+
     constructor(private http: HttpClient){}
 
     consultaRegistros():Observable<AdmCuentasSaldos[]> {
@@ -47,14 +46,28 @@ export class SaldosService{
     consultaporidecuentaconincidenciaAll(){
       return this.http.get<IncidenciasRequest[]>(`${this.apiUrl}/GetCuentaConPreguntasBySumFlagAll/${1}`);
     }
+    consultaCredito(){
+      return this.http.get<IncidenciasRequest[]>(`${this.apiUrl}/GetCuentasCredito`);
+    }
+
+    consultaCobranza(){
+      return this.http.get<IncidenciasRequest[]>(`${this.apiUrl}/GetCuentasCobranza`);
+    }
+    
     enviarIncidenciaBase64(json: any){
       console.log(json)
       return this.http.post<any>(`${this.apiUrl}/UpdateCuenta`, json)
     }
+    
     consultaporidecuentasinincidencia(idCuenta: Number){
       return this.http.get<IncidenciasRequest>(`${this.apiUrl}/GetCuentaConPreguntasBySumFlag/${idCuenta}/${0}`);
     }
+    
     consultaporidecuentasinincidenciaAll(){
+      return this.http.get<IncidenciasRequest[]>(`${this.apiUrl}/GetCuentaConPreguntasBySumFlagAll/${0}`);
+    }
+
+     consultaporidecuentasinincidenciaAllD(){
       return this.http.get<IncidenciasRequest[]>(`${this.apiUrl}/GetCuentaConPreguntasBySumFlagAll/${0}`);
     }
     consultaporidecuentaconincidenciabygerente(gerente: string){

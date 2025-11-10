@@ -15,6 +15,7 @@ export class NavbarComponent implements OnInit  {
   nombreuser = ""
   rol = ""
   alias = ""
+  tipousuario = ""
   showRepresentante$!: Observable<boolean>;
   showAdmin$!: Observable<boolean>;
   showAdminDown$!: Observable<boolean>;
@@ -29,8 +30,10 @@ this.auth.user$.pipe(take(1)).subscribe(u => {
             this.rol = u?.role.toString() ?? ''
             this.nombreuser = u?.username.toString() ?? ''
             this.alias = u?.username.toString().charAt(0) ?? ''
-
+            
           });
+
+  this.tipousuario = localStorage.getItem('nombre_rol') ?? 'NA'
 
 }
 

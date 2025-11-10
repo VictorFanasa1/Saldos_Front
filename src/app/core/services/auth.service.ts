@@ -24,6 +24,7 @@ private url = 'https://aplicacion.fanasa.com/ServiceLogAD/Auth/Ingresar';
   // Login "demo": creamos un token fake con el rol seleccionado
   login(user: string, password: string): Observable<User> {
     const persist = (u: User) => {
+      console.log(u)
     this._user$.next(u);
     localStorage.setItem(this.USER_KEY, JSON.stringify(u));
   };

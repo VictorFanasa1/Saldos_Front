@@ -15,6 +15,7 @@ export class CuentasconincidenciasComponent implements OnInit {
   @ViewChild('dTable', { static: false }) dTable!: ElementRef<HTMLTableElement>;
   datoscuenta: IncidenciasRequest[] = [];
   rol = '0';
+  grupo = '0';
   dt: any;
   loading = false;
   constructor(
@@ -26,9 +27,10 @@ export class CuentasconincidenciasComponent implements OnInit {
 
   ngOnInit(): void {
     this.rol = localStorage.getItem('id_rol') ?? '0';
+     this.grupo = localStorage.getItem('id_grupo') ?? '0';
     this.setData()
-   this.rol = localStorage.getItem('id_rol') ?? '0'
-
+   this.rol = localStorage.getItem('id_rol') ?? '0';
+  
     if(this.rol == '3'){
       this.setMenuAdmin()
 
@@ -54,7 +56,8 @@ export class CuentasconincidenciasComponent implements OnInit {
   }
 
   setData() {
-    if (this.rol === '3') {
+   
+    if (this.rol === '1') {
       this.excelSvc.consultaporidecuentaconincidenciaAll().subscribe({
         next: (res) => {
           this.datoscuenta = res;
@@ -67,7 +70,33 @@ export class CuentasconincidenciasComponent implements OnInit {
         },
         complete: () => (this.loading = false),
       });
-    } else {
+    } else if(this.rol === '3' && this.grupo == '1'){
+      this.excelSvc.consultaCredito().subscribe({
+        next: (res) => {
+          this.datoscuenta = res;
+          console.log(res);
+          this.buildDT();
+        },
+        error: (err) => {
+          //this.errorMsg = 'Error cargando datos';
+          console.error(err);
+        },
+        complete: () => (this.loading = false),
+      });
+    } else if(this.rol === '3' && this.grupo == '2'){
+      this.excelSvc.consultaCobranza().subscribe({
+        next: (res) => {
+          this.datoscuenta = res;
+          console.log(res);
+          this.buildDT();
+        },
+        error: (err) => {
+          //this.errorMsg = 'Error cargando datos';
+          console.error(err);
+        },
+        complete: () => (this.loading = false),
+      });
+    }else {
       let usuario;
       this.auth.user$.pipe(take(1)).subscribe((u) => {
         console.log('username:', u?.username);
