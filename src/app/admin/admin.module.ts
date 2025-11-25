@@ -9,6 +9,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ConfiguracionesComponent } from './pages/configuraciones/configuraciones.component';
 import { CuentasincidenciasComponent } from './pages/cuentasincidencias/cuentasincidencias.component';
 import { CuentasconincidenciasComponent } from './pages/cuentasconincidencias/cuentasconincidencias.component';
+import { ClientesComponent } from './pages/clientes/clientes.component';
 
 
 
@@ -19,7 +20,8 @@ import { CuentasconincidenciasComponent } from './pages/cuentasconincidencias/cu
     FormresponsableComponent,
     ConfiguracionesComponent,
     CuentasincidenciasComponent,
-    CuentasconincidenciasComponent
+    CuentasconincidenciasComponent,
+    ClientesComponent
   ],
   imports: [
     CommonModule,

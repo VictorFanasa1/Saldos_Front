@@ -8,6 +8,7 @@
   <nav class="sb__nav" *ngIf="showAdmin$  | async">
     <a routerLink="/agente"  *ngIf="showRepresentante$ | async"><i class="bi bi-grid-1x2"></i> Cuentas del Representante</a>
     <a routerLink="/admin"  *ngIf="showAdmin$ | async"><i class="bi bi-grid-1x2"></i> Cargar Cartera</a>
+    <a routerLink="admin/clientes"  *ngIf="showAdmin$ | async"><i class="bi bi-people"></i> Clientes</a>
     <a routerLink="admin/incidencias"  *ngIf="showAdmin$ | async"><i class="bi bi-people"></i> Cuentas sin Incidencias</a>
     <a routerLink="admin/conincidencias"  *ngIf="showAdmin$ | async"><i class="bi bi-bag"></i> Cuentas con Incidencias</a>
     <a routerLink="/reportes"  *ngIf="showAdmin$ | async"><i class="bi bi-graph-up"></i> Reportes</a>

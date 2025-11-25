@@ -5,13 +5,15 @@ import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { ConfiguracionesComponent } from './pages/configuraciones/configuraciones.component';
 import { CuentasincidenciasComponent } from './pages/cuentasincidencias/cuentasincidencias.component';
 import { CuentasconincidenciasComponent } from './pages/cuentasconincidencias/cuentasconincidencias.component';
+import { ClientesComponent } from './pages/clientes/clientes.component';
 
 const routes: Routes = [
   { path: '', component: DashboardComponent },
   {path: 'fomrAdmin/:id/:flag', component: FormresponsableComponent},
   {path: 'configuraciones', component: ConfiguracionesComponent},
   {path: 'incidencias', component: CuentasincidenciasComponent},
-  {path: 'conincidencias', component: CuentasconincidenciasComponent}
+  {path: 'conincidencias', component: CuentasconincidenciasComponent},
+  {path: 'clientes', component: ClientesComponent}
 ];
 
 @NgModule({

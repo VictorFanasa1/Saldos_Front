@@ -1,5 +1,5 @@
 import { SendMailBodyRequest } from './../shared/sendMailClient.Model';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpEvent } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { AdmCuentasSaldos } from '../shared/cuentasagente.model';
@@ -11,6 +11,8 @@ import { CuentasSaldosPreguntasDto } from '../shared/cuentasPreguentasRequest';
 import { PreguntasResponse } from '../shared/preguntas.model';
 import { IncidenciasRequest } from '../shared/cuentasrowResponse.model';
 import { environment } from 'src/environments/environment.prod';
+import { ClientsRequest } from '../shared/ClientsRequest.model';
+import { CuentasResponse } from '../shared/CuentasResponse.model';
 
 @Injectable({
   providedIn: 'root'
@@ -23,6 +25,9 @@ export class SaldosService{
 
     consultaRegistros():Observable<AdmCuentasSaldos[]> {
       return this.http.get<AdmCuentasSaldos[]>(`${this.apiUrl}/GetRegistros`);
+    }
+     consultaRegistrosCuentas():Observable<CuentasResponse[]> {
+      return this.http.get<CuentasResponse[]>(`${this.apiUrl}/GetCuentasResponse`);
     }
 
     consultaregistroid(idCuenta: Number): Observable<AdmCuentasSaldos>{
@@ -88,6 +93,24 @@ export class SaldosService{
       return this.http.post<AdmCuentasSaldos>(`${this.apiUrl}/Insert`, payload, {headers});
     }
 
+
+  createClients(payload: ClientsRequest[]): Observable<any> {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json'
+    });
+    return this.http.post<any>(`${this.apiUrl}/ClientRegister`, payload, {headers});
+  }
+
+  uploadClientsFile(file: File): Observable<HttpEvent<any>> {
+    const formData = new FormData();
+    formData.append('file', file);
+    
+    return this.http.post<any>(`${this.apiUrl}/ClientRegisterFile`, formData, {
+      reportProgress: true,
+      observe: 'events'
+    });
+  }
+
     registrarPeguntas(payload: CuentasSaldosPreguntasDto): Observable<any>{
       const headers = new HttpHeaders({
         'Content-Type': 'application/json'
@@ -95,6 +118,10 @@ export class SaldosService{
       return this.http.post<CuentasSaldosPreguntasDto>(`${this.apiUrl}/InsertPreguntar`, payload, {headers})
     }
 
+    updateFechaProceso(req: {id: number}): Observable<{id: number;}>{
+      return this.http.post<{id: number; bProcesado: boolean}>(`${this.apiUrl}/UpdateCuentas`, req)
+    }
+    
     updateProcesado(req: CuentasSaldosProcesadoUpdateRequest): Observable<{ id: number; bProcesado: boolean }> {
       return this.http.post<{ id: number; bProcesado: boolean }>(`${this.apiUrl}/actualizar-procesado`, req);
     }

@@ -72,4 +72,5 @@ export interface IncidenciasRequest {
   folio_soporte: string | null;
   estatus: string | null;
   tipo_incidencia: string | null;
+  id_estatus_cuenta: number | null;
 }

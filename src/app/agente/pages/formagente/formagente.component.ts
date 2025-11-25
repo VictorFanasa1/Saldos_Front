@@ -32,6 +32,7 @@ step = 1;
   ubicacion: GeoPoint | null = null;
   error: string | null = null;
   tipo_incidencia = 0
+  cuenta_oracle = 0
    private readonly USER_KEY = 'app_user';
     @ViewChild('sigCanvas', { static: false }) set sigCanvasSetter(ref: ElementRef<HTMLCanvasElement> | undefined) {
       if (ref) {
@@ -249,6 +250,7 @@ formatMoneyRegex(txt: number | string | null | undefined): string {
        next: (dto) => {
         console.log(dto)
       console.log(dto.sNombreCorto)
+      this.cuenta_oracle = Number(dto.sCuentaOracle)
       this.sucursal = dto.sSucursal ?? ''
         // dto es el objeto que pegaste en el mensaje
       this.formularioagente.patchValue({
@@ -371,8 +373,9 @@ ngOnDestroy(): void {
     firma: evidencia,
     tipo_incidencia: this.tipo_incidencia.toString()
   };
-
+  
   await this.saldosservice.registrarPeguntas(dto).toPromise();// espera al POST
+  await this.saldosservice.updateFechaProceso({id:this.cuenta_oracle}).toPromise();
 }
 volver(){
   this.router.navigate(['/agente'])

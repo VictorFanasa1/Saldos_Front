@@ -14,6 +14,7 @@ import {
   SafeUrl,
 } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
+
 import { take } from 'rxjs/operators';
 import { AuthService } from 'src/app/core/services/auth.service';
 import { SaldosService } from 'src/app/core/services/saldos.service';
@@ -47,7 +48,7 @@ export class FormresponsableComponent implements OnInit {
   evidenciaexiste = false;
   latitud = '';
   longitud = '';
-
+  iddelestatus = 0
   firmaObjectUrl?: string;
   cargandos = true;
   firmaSafeUrl?: SafeUrl;
@@ -284,6 +285,8 @@ export class FormresponsableComponent implements OnInit {
     console.log(dto);
     this.latitud = dto[0].lat;
     this.longitud = dto[0].long;
+    this.iddelestatus = dto[0].id_estatus_cuenta
+    
     this.formularioaadminsinincidencia.patchValue(
       {
         confirmacionCliente: dto[0].otp ?? '',

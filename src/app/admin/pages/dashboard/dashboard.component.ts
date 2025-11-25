@@ -35,7 +35,7 @@ export class DashboardComponent implements OnInit {
  showfirstcard= true;
    datoscuenta: IncidenciasRequest [] = []
    todayISO = this.toISODate(new Date());
-maxInicioISO = this.toISODate(this.addMonths(new Date(), 3)); // opcional: limitar inicio a hoy+3m si lo deseas
+maxInicioISO = this.toISODate(this.addMonths(new Date(), 3)); 
 periodoInicio?: string;
 periodoFin?: string;
 rol = "0"

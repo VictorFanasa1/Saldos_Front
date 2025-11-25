@@ -551,7 +551,7 @@
                   <h1>Comentarios</h1>
                   <p>{{ comentarios }}</p>
                 </div>
-                <div class="text-center mt-4" *ngIf="!evidenciaexiste">
+                <div class="text-center mt-4" *ngIf=" iddelestatus == 2 || iddelestatus == 0">
                   <button type="submit" class="btn btn-primary">GUARDAR</button>
                 </div>
                 <div class="text-center mt-4">
