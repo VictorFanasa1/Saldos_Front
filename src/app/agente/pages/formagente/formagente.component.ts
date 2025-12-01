@@ -394,7 +394,7 @@ console.log(f.reclamacionesPendientes)
       this.tipo_incidencia = 1
       const folio1 = await this.getNextFolio();
       await this.registerWithFolio(folio1);
-      await Swal.fire({ icon: 'success', title: 'Guardado', text: `Se guardo la información` });
+      await Swal.fire({ icon: 'success', title: 'Guardado', text: `Se guardo la información para credito con folio ` + folio1 });
 
     }
 
@@ -403,7 +403,7 @@ console.log(f.reclamacionesPendientes)
       this.tipo_incidencia = 2
       const folio2 = await this.getNextFolio();
       await this.registerWithFolio(folio2);
-      await Swal.fire({ icon: 'success', title: 'Guardado', text: `Se guardo la información` });
+      await Swal.fire({ icon: 'success', title: 'Guardado', text: `Se guardo la información para ventas con folio ` + folio2 });
     }
 
 
@@ -415,8 +415,8 @@ console.log(f.reclamacionesPendientes)
 
     this.router.navigate(['/agente']);
   } catch (e: any) {
-    console.error(e);
-    await Swal.fire({ icon: 'error', title: 'Error', text: e?.message ?? 'No se pudo guardar' });
+    console.log(e);
+    await Swal.fire({ icon: 'error', title: 'Error', text: e.error.error });
   }
 
 

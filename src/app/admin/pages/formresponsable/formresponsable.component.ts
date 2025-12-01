@@ -286,7 +286,9 @@ export class FormresponsableComponent implements OnInit {
     this.latitud = dto[0].lat;
     this.longitud = dto[0].long;
     this.iddelestatus = dto[0].id_estatus_cuenta
-    
+    this.formularioagenteEvidencias.patchValue({
+      estatusName: dto[0].id_estatus_cuenta ?? 0
+    })
     this.formularioaadminsinincidencia.patchValue(
       {
         confirmacionCliente: dto[0].otp ?? '',

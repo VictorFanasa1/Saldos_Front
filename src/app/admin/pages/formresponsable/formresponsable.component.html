@@ -1,15 +1,12 @@
 <section class="min-vh-100">
   <div class="container">
     <div class="row justify-content-center">
-      <div class="col-6 col-lg-6">
+      <div class="col-12 col-lg-6">
         <div class="card shadow-sm">
           <div class="card-body">
             <h5 class="mb-4">Confirmación de cliente</h5>
-            <form
-              [formGroup]="formularioaadminsinincidencia"
-              (ngSubmit)="grabarRespuestas()"
-              class="border p-4 shadow-sm bg-light"
-            >
+            <form [formGroup]="formularioaadminsinincidencia" (ngSubmit)="grabarRespuestas()"
+              class="border p-4 shadow-sm bg-light">
               <!-- Datos básicos -->
 
               <div class="row">
@@ -17,68 +14,40 @@
                   <div class="row g-3">
                     <div class="col-12">
                       <div class="row align-items-center">
-                        <label class="col-md-6 col-form-label"
-                          >Confirmación de cliente:</label
-                        >
+                        <label class="col-md-6 col-form-label">Confirmación de cliente:</label>
                         <div class="col-md-6">
-                          <input
-                            type="text"
-                            class="form-control"
-                            placeholder="Folio / ID de confirmación"
-                            formControlName="confirmacionCliente"
-                            readonly
-                          />
+                          <input type="text" class="form-control" placeholder="Folio / ID de confirmación"
+                            formControlName="confirmacionCliente" readonly />
                         </div>
                       </div>
                     </div>
 
                     <div class="col-12">
                       <div class="row align-items-center">
-                        <label class="col-md-5 col-form-label"
-                          >Nombre corto:</label
-                        >
+                        <label class="col-md-5 col-form-label">Nombre corto:</label>
                         <div class="col-md-7">
-                          <input
-                            type="text"
-                            class="form-control"
-                            placeholder="Nombre corto"
-                            formControlName="nombreCorto"
-                            readonly
-                          />
+                          <input type="text" class="form-control" placeholder="Nombre corto"
+                            formControlName="nombreCorto" readonly />
                         </div>
                       </div>
                     </div>
 
                     <div class="col-12">
                       <div class="row align-items-center">
-                        <label class="col-md-5 col-form-label"
-                          >Cuenta Oracle:</label
-                        >
+                        <label class="col-md-5 col-form-label">Cuenta Oracle:</label>
                         <div class="col-md-7">
-                          <input
-                            type="text"
-                            class="form-control"
-                            placeholder="Cuenta Oracle"
-                            formControlName="cuentaOracle"
-                            readonly
-                          />
+                          <input type="text" class="form-control" placeholder="Cuenta Oracle"
+                            formControlName="cuentaOracle" readonly />
                         </div>
                       </div>
                     </div>
 
                     <div class="col-12">
                       <div class="row align-items-center">
-                        <label class="col-md-5 col-form-label"
-                          >Razón social:</label
-                        >
+                        <label class="col-md-5 col-form-label">Razón social:</label>
                         <div class="col-md-7">
-                          <input
-                            type="text"
-                            class="form-control"
-                            placeholder="Razón social del cliente"
-                            formControlName="razonSocial"
-                            readonly
-                          />
+                          <input type="text" class="form-control" placeholder="Razón social del cliente"
+                            formControlName="razonSocial" readonly />
                         </div>
                       </div>
                     </div>
@@ -93,119 +62,70 @@
               <div class="row g-3">
                 <div class="col-12">
                   <div class="row align-items-center">
-                    <label class="col-md-5 col-form-label"
-                      >Cartera total:</label
-                    >
+                    <label class="col-md-5 col-form-label">Cartera total:</label>
                     <div class="col-md-7">
-                      <input
-                        type="text"
-                        class="form-control align_money"
-                        placeholder="0.00"
-                        formControlName="carteraTotal"
-                        readonly
-                      />
+                      <input type="text" class="form-control align_money" placeholder="0.00"
+                        formControlName="carteraTotal" readonly />
                     </div>
                   </div>
                 </div>
 
                 <div class="col-12">
                   <div class="row align-items-center">
-                    <label class="col-md-5 col-form-label"
-                      >Cartera por vencer:</label
-                    >
+                    <label class="col-md-5 col-form-label">Cartera por vencer:</label>
                     <div class="col-md-7">
-                      <input
-                        type="text"
-                        class="form-control align_money"
-                        placeholder="0.00"
-                        formControlName="carteraPorVencer"
-                        readonly
-                      />
+                      <input type="text" class="form-control align_money" placeholder="0.00"
+                        formControlName="carteraPorVencer" readonly />
                     </div>
                   </div>
                 </div>
 
                 <div class="col-12">
                   <div class="row align-items-center">
-                    <label class="col-md-5 col-form-label"
-                      >Cartera vencida:</label
-                    >
+                    <label class="col-md-5 col-form-label">Cartera vencida:</label>
                     <div class="col-md-7">
-                      <input
-                        type="text"
-                        class="form-control align_money"
-                        placeholder="0.00"
-                        formControlName="carteraVencida"
-                        readonly
-                      />
+                      <input type="text" class="form-control align_money" placeholder="0.00"
+                        formControlName="carteraVencida" readonly />
                     </div>
                   </div>
                 </div>
 
                 <div class="col-12">
                   <div class="row align-items-center">
-                    <label class="col-md-5 col-form-label"
-                      >Vencida a 7 días:</label
-                    >
+                    <label class="col-md-5 col-form-label">Vencida a 7 días:</label>
                     <div class="col-md-7">
-                      <input
-                        type="text"
-                        class="form-control align_money"
-                        placeholder="0.00"
-                        formControlName="vencida7"
-                        readonly
-                      />
+                      <input type="text" class="form-control align_money" placeholder="0.00" formControlName="vencida7"
+                        readonly />
                     </div>
                   </div>
                 </div>
 
                 <div class="col-12">
                   <div class="row align-items-center">
-                    <label class="col-md-5 col-form-label"
-                      >Vencido de 8 a 14 días:</label
-                    >
+                    <label class="col-md-5 col-form-label">Vencido de 8 a 14 días:</label>
                     <div class="col-md-7">
-                      <input
-                        type="text"
-                        class="form-control align_money"
-                        placeholder="0.00"
-                        formControlName="vencida8a14"
-                        readonly
-                      />
+                      <input type="text" class="form-control align_money" placeholder="0.00"
+                        formControlName="vencida8a14" readonly />
                     </div>
                   </div>
                 </div>
 
                 <div class="col-12">
                   <div class="row align-items-center">
-                    <label class="col-md-5 col-form-label"
-                      >Vencido de 15 a 21 días:</label
-                    >
+                    <label class="col-md-5 col-form-label">Vencido de 15 a 21 días:</label>
                     <div class="col-md-7">
-                      <input
-                        type="text"
-                        class="form-control align_money"
-                        placeholder="0.00"
-                        formControlName="vencida15a21"
-                        readonly
-                      />
+                      <input type="text" class="form-control align_money" placeholder="0.00"
+                        formControlName="vencida15a21" readonly />
                     </div>
                   </div>
                 </div>
 
                 <div class="col-12">
                   <div class="row align-items-center">
-                    <label class="col-md-5 col-form-label"
-                      >Vencido mayor a 22 días:</label
-                    >
+                    <label class="col-md-5 col-form-label">Vencido mayor a 22 días:</label>
                     <div class="col-md-7">
-                      <input
-                        type="text"
-                        class="form-control align_money"
-                        placeholder="0.00"
-                        formControlName="vencida22Plus"
-                        readonly
-                      />
+                      <input type="text" class="form-control align_money" placeholder="0.00"
+                        formControlName="vencida22Plus" readonly />
                     </div>
                   </div>
                 </div>
@@ -217,219 +137,104 @@
               <div class="vstack gap-3">
                 <div class="row">
                   <div class="col-12" *ngIf="primerbloque">
-                    <label class="form-label"
-                      >¿Estás de acuerdo con el saldo de su cuenta?</label
-                    >
+                    <label class="form-label">¿Estás de acuerdo con el saldo de su cuenta?</label>
                     <div class="d-flex gap-3">
                       <div class="form-check">
-                        <input
-                          class="form-check-input"
-                          type="radio"
-                          name="acuerdoSaldo"
-                          formControlName="acuerdoSaldo"
-                          [value]="true"
-                          id="acuerdoSi"
-                        />
-                        <label class="form-check-label" for="acuerdoSi"
-                          >Sí</label
-                        >
+                        <input class="form-check-input" type="radio" name="acuerdoSaldo" formControlName="acuerdoSaldo"
+                          [value]="true" id="acuerdoSi" />
+                        <label class="form-check-label" for="acuerdoSi">Sí</label>
                       </div>
                       <div class="form-check">
-                        <input
-                          class="form-check-input"
-                          type="radio"
-                          name="acuerdoSaldo"
-                          formControlName="acuerdoSaldo"
-                          [value]="false"
-                          id="acuerdoNo"
-                        />
-                        <label class="form-check-label" for="acuerdoNo"
-                          >No</label
-                        >
+                        <input class="form-check-input" type="radio" name="acuerdoSaldo" formControlName="acuerdoSaldo"
+                          [value]="false" id="acuerdoNo" />
+                        <label class="form-check-label" for="acuerdoNo">No</label>
                       </div>
                     </div>
                     <div class="mt-2" *ngIf="mostrartextareas">
-                      <textarea
-                        class="form-control"
-                        rows="2"
-                        placeholder="Describe el motivo"
-                        formControlName="p1_razon"
-                        readonly
-                      ></textarea>
+                      <textarea class="form-control" rows="2" placeholder="Describe el motivo"
+                        formControlName="p1_razon" readonly></textarea>
                     </div>
                   </div>
 
                   <div class="col-12" *ngIf="primerbloque">
-                    <label class="form-label"
-                      >¿Recibe un comprobante al realizar sus pagos?</label
-                    >
+                    <label class="form-label">¿Recibe un comprobante al realizar sus pagos?</label>
                     <div class="d-flex gap-3">
                       <div class="form-check">
-                        <input
-                          class="form-check-input"
-                          type="radio"
-                          name="comprobantePagos"
-                          formControlName="comprobantePagos"
-                          [value]="true"
-                          id="comprobanteSi"
-                        />
-                        <label class="form-check-label" for="comprobanteSi"
-                          >Sí</label
-                        >
+                        <input class="form-check-input" type="radio" name="comprobantePagos"
+                          formControlName="comprobantePagos" [value]="true" id="comprobanteSi" />
+                        <label class="form-check-label" for="comprobanteSi">Sí</label>
                       </div>
                       <div class="form-check">
-                        <input
-                          class="form-check-input"
-                          type="radio"
-                          name="comprobantePagos"
-                          formControlName="comprobantePagos"
-                          [value]="false"
-                          id="comprobanteNo"
-                        />
-                        <label class="form-check-label" for="comprobanteNo"
-                          >No</label
-                        >
+                        <input class="form-check-input" type="radio" name="comprobantePagos"
+                          formControlName="comprobantePagos" [value]="false" id="comprobanteNo" />
+                        <label class="form-check-label" for="comprobanteNo">No</label>
                       </div>
                     </div>
                     <div class="mt-2" *ngIf="mostrartextareas">
-                      <textarea
-                        class="form-control"
-                        rows="2"
-                        placeholder="Describe el motivo"
-                        formControlName="p2_razon"
-                        readonly
-                      ></textarea>
+                      <textarea class="form-control" rows="2" placeholder="Describe el motivo"
+                        formControlName="p2_razon" readonly></textarea>
                     </div>
                   </div>
 
                   <div class="col-12" *ngIf="primerbloque">
-                    <label class="form-label"
-                      >¿Identifica pagos pendientes de aplicar?</label
-                    >
+                    <label class="form-label">¿Identifica pagos pendientes de aplicar?</label>
                     <div class="d-flex gap-3">
                       <div class="form-check">
-                        <input
-                          class="form-check-input"
-                          type="radio"
-                          name="pagosPendientes"
-                          formControlName="pagosPendientes"
-                          [value]="true"
-                          id="pagosPendSi"
-                        />
-                        <label class="form-check-label" for="pagosPendSi"
-                          >Sí</label
-                        >
+                        <input class="form-check-input" type="radio" name="pagosPendientes"
+                          formControlName="pagosPendientes" [value]="true" id="pagosPendSi" />
+                        <label class="form-check-label" for="pagosPendSi">Sí</label>
                       </div>
                       <div class="form-check">
-                        <input
-                          class="form-check-input"
-                          type="radio"
-                          name="pagosPendientes"
-                          formControlName="pagosPendientes"
-                          [value]="false"
-                          id="pagosPendNo"
-                        />
-                        <label class="form-check-label" for="pagosPendNo"
-                          >No</label
-                        >
+                        <input class="form-check-input" type="radio" name="pagosPendientes"
+                          formControlName="pagosPendientes" [value]="false" id="pagosPendNo" />
+                        <label class="form-check-label" for="pagosPendNo">No</label>
                       </div>
                     </div>
                     <div class="mt-2" *ngIf="mostrartextareas">
-                      <textarea
-                        class="form-control"
-                        rows="2"
-                        placeholder="Describe el motivo"
-                        formControlName="p3_razon"
-                        readonly
-                      ></textarea>
+                      <textarea class="form-control" rows="2" placeholder="Describe el motivo"
+                        formControlName="p3_razon" readonly></textarea>
                     </div>
                   </div>
 
                   <div class="col-12" *ngIf="segundobloque">
-                    <label class="form-label"
-                      >¿Identificas devoluciones pendientes de notas de
-                      crédito?</label
-                    >
+                    <label class="form-label">¿Identificas devoluciones pendientes de notas de
+                      crédito?</label>
                     <div class="d-flex gap-3">
                       <div class="form-check">
-                        <input
-                          class="form-check-input"
-                          type="radio"
-                          name="devolucionesPendientes"
-                          formControlName="devolucionesPendientes"
-                          [value]="true"
-                          id="devolPendSi"
-                        />
-                        <label class="form-check-label" for="devolPendSi"
-                          >Sí</label
-                        >
+                        <input class="form-check-input" type="radio" name="devolucionesPendientes"
+                          formControlName="devolucionesPendientes" [value]="true" id="devolPendSi" />
+                        <label class="form-check-label" for="devolPendSi">Sí</label>
                       </div>
                       <div class="form-check">
-                        <input
-                          class="form-check-input"
-                          type="radio"
-                          name="devolucionesPendientes"
-                          formControlName="devolucionesPendientes"
-                          [value]="false"
-                          id="devolPendNo"
-                        />
-                        <label class="form-check-label" for="devolPendNo"
-                          >No</label
-                        >
+                        <input class="form-check-input" type="radio" name="devolucionesPendientes"
+                          formControlName="devolucionesPendientes" [value]="false" id="devolPendNo" />
+                        <label class="form-check-label" for="devolPendNo">No</label>
                       </div>
                     </div>
                     <div class="mt-2" *ngIf="mostrartextareas">
-                      <textarea
-                        class="form-control"
-                        rows="2"
-                        placeholder="Describe el motivo"
-                        formControlName="p4_razon"
-                        readonly
-                      ></textarea>
+                      <textarea class="form-control" rows="2" placeholder="Describe el motivo"
+                        formControlName="p4_razon" readonly></textarea>
                     </div>
                   </div>
 
                   <div class="col-12" *ngIf="segundobloque">
-                    <label class="form-label"
-                      >¿Identificas reclamaciones pendientes de notas de
-                      crédito?</label
-                    >
+                    <label class="form-label">¿Identificas reclamaciones pendientes de notas de
+                      crédito?</label>
                     <div class="d-flex gap-3">
                       <div class="form-check">
-                        <input
-                          class="form-check-input"
-                          type="radio"
-                          name="reclamacionesPendientes"
-                          formControlName="reclamacionesPendientes"
-                          [value]="true"
-                          id="reclaPendSi"
-                        />
-                        <label class="form-check-label" for="reclaPendSi"
-                          >Sí</label
-                        >
+                        <input class="form-check-input" type="radio" name="reclamacionesPendientes"
+                          formControlName="reclamacionesPendientes" [value]="true" id="reclaPendSi" />
+                        <label class="form-check-label" for="reclaPendSi">Sí</label>
                       </div>
                       <div class="form-check">
-                        <input
-                          class="form-check-input"
-                          type="radio"
-                          name="reclamacionesPendientes"
-                          formControlName="reclamacionesPendientes"
-                          [value]="false"
-                          id="reclaPendNo"
-                        />
-                        <label class="form-check-label" for="reclaPendNo"
-                          >No</label
-                        >
+                        <input class="form-check-input" type="radio" name="reclamacionesPendientes"
+                          formControlName="reclamacionesPendientes" [value]="false" id="reclaPendNo" />
+                        <label class="form-check-label" for="reclaPendNo">No</label>
                       </div>
                     </div>
                     <div class="mt-2" *ngIf="mostrartextareas">
-                      <textarea
-                        class="form-control"
-                        rows="2"
-                        placeholder="Describe el motivo"
-                        formControlName="p5_razon"
-                        readonly
-                      ></textarea>
+                      <textarea class="form-control" rows="2" placeholder="Describe el motivo"
+                        formControlName="p5_razon" readonly></textarea>
                     </div>
                   </div>
                 </div>
@@ -440,7 +245,7 @@
           </div>
         </div>
       </div>
-      <div class="col-6 col-lg-6" *ngIf="mostrarEvidencia">
+      <div class="col-12 col-lg-6" *ngIf="mostrarEvidencia">
         <div class="card shadow-sm">
           <div class="card-body">
             <div class="row">
@@ -456,35 +261,22 @@
                       <p>Firma:</p>
                     </div>
                     <div class="col-12">
-                      <img
-                        *ngIf="firmaSafeUrl"
-                        [src]="firmaSafeUrl"
-                        alt="Firma"
-                        style="
+                      <img *ngIf="firmaSafeUrl" [src]="firmaSafeUrl" alt="Firma" style="
                           max-width: 100%;
                           height: auto;
                           border: 1px solid #e5e7eb;
                           border-radius: 8px;
-                        "
-                      />
+                        " />
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-            <form
-              [formGroup]="formularioagenteEvidencias"
-              (ngSubmit)="grabarRespuestas()"
-            >
+            <form [formGroup]="formularioagenteEvidencias" (ngSubmit)="grabarRespuestas()">
               <div class="row g-3">
                 <div class="col-12">
                   <label for=""> Estatus </label>
-                  <select
-                    name="estatus"
-                    id="estatusName"
-                    formControlName="estatusName"
-                    class="form-control"
-                  >
+                  <select name="estatus" id="estatusName" formControlName="estatusName" class="form-control">
                     <option value="0" selected>Seleccione una opción</option>
                     <option value="1">Cerrado con Incidencia</option>
                     <option value="2">Abierto - En Seguimiento</option>
@@ -492,59 +284,37 @@
                 </div>
                 <div class="col-12" *ngIf="!evidenciaexiste">
                   <label class="form-label">Observaciones</label>
-                  <textarea
-                    class="form-control"
-                    rows="3"
-                    formControlName="comentarios"
-                    placeholder="Escribe tus observaciones"
-                  ></textarea>
+                  <textarea class="form-control" rows="3" formControlName="comentarios"
+                    placeholder="Escribe tus observaciones"></textarea>
                 </div>
                 <div class="col-12" *ngIf="!evidenciaexiste">
-                  <label class="form-label"
-                    >Evidencia (imágenes, PDF o Word)</label
-                  >
-                  <input
-                    type="file"
-                    class="form-control"
-                    (change)="onFileSelected($event)"
-                    accept="image/*,.pdf,.doc,.docx"
-                  />
+                  <label class="form-label">Evidencia (imágenes, PDF o Word)</label>
+                  <input type="file" class="form-control" (change)="onFileSelected($event)"
+                    accept="image/*,.pdf,.doc,.docx" />
                 </div>
                 <div class="col-12" *ngIf="evidenciaexiste">
                   <h1>Evidencia:</h1>
                   <div *ngIf="loadings">Cargando evidencia…</div>
 
                   <!-- Imagen -->
-                  <img
-                    *ngIf="!loadings && kind === 'image'"
-                    [src]="imgUrl"
-                    alt="Evidencia"
-                    style="
+                  <img *ngIf="!loadings && kind === 'image'" [src]="imgUrl" alt="Evidencia" style="
                       max-width: 100%;
                       height: auto;
                       border: 1px solid #e5e7eb;
                       border-radius: 8px;
-                    "
-                  />
+                    " />
 
                   <!-- PDF (usa iframe u object; ambos valen) -->
-                  <iframe
-                    *ngIf="!loadings && kind === 'pdf'"
-                    [src]="pdfUrl"
-                    title="Evidencia PDF"
-                    style="
+                  <iframe *ngIf="!loadings && kind === 'pdf'" [src]="pdfUrl" title="Evidencia PDF" style="
                       width: 100%;
                       height: 70vh;
                       border: 1px solid #e5e7eb;
                       border-radius: 8px;
-                    "
-                  ></iframe>
+                    "></iframe>
 
                   <!-- Desconocido: muestra botón de descarga -->
                   <div *ngIf="!loadings && kind === 'other'">
-                    <a [href]="imgUrl || pdfUrl" download="{{ downloadName }}"
-                      >Descargar evidencia</a
-                    >
+                    <a [href]="imgUrl || pdfUrl" download="{{ downloadName }}">Descargar evidencia</a>
                   </div>
                 </div>
                 <div class="col-12">
@@ -555,11 +325,7 @@
                   <button type="submit" class="btn btn-primary">GUARDAR</button>
                 </div>
                 <div class="text-center mt-4">
-                  <button
-                    type="button"
-                    class="btn btn-danger px-4"
-                    (click)="volver()"
-                  >
+                  <button type="button" class="btn btn-danger px-4" (click)="volver()">
                     Regresar
                   </button>
                 </div>

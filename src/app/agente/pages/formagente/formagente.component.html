@@ -6,347 +6,341 @@
           <div class="card-body">
 
             <h5 class="mb-4">Confirmación de cliente</h5>
-    <form [formGroup] = "formularioagente" (ngSubmit)="grabarRespuestas()" class="border p-4 shadow-sm bg-light">
-           <!-- Datos básicos -->
-  <div class="row g-3">
-    <div class="col-12">
-      <div class="row align-items-center">
-        <label class="col-md-5 col-form-label">Confirmación de cliente:</label>
-        <div class="col-md-7">
-          <input type="text" class="form-control" placeholder="Folio / ID de confirmación"
-                 formControlName="confirmacionCliente">
-        </div>
-      </div>
-    </div>
+            <form [formGroup]="formularioagente" (ngSubmit)="grabarRespuestas()" class="border p-4 shadow-sm bg-light">
+              <!-- Datos básicos -->
+              <div class="row g-3">
+                <div class="col-12">
+                  <div class="row align-items-center">
+                    <label class="col-md-5 col-form-label">Confirmación de cliente:</label>
+                    <div class="col-md-7">
+                      <input type="text" class="form-control" placeholder="Folio / ID de confirmación"
+                        formControlName="confirmacionCliente">
+                    </div>
+                  </div>
+                </div>
 
-    <div class="col-12">
-  <div class="row align-items-center">
-    <label class="col-md-5 col-form-label mb-0">Correo del cliente:</label>
+                <div class="col-12">
+                  <div class="row align-items-center">
+                    <label class="col-md-5 col-form-label mb-0">Correo del cliente:</label>
 
-    <div class="col-md-7">
-      <div class="row g-2 align-items-center">
-        <div class="col-8">
-          <input
-            type="email"
-            class="form-control"
-            placeholder="Correo electrónico"
-            formControlName="correocliente"
-            onchange="getCorreo()">
-        </div>
-        <div class="text-danger" *ngIf="formularioagente.get('correocliente')?.touched && formularioagente.get('correocliente')?.invalid">
-            <small *ngIf="formularioagente.get('correocliente')?.errors?.['required']">El correo es obligatorio.</small>
-            <small *ngIf="formularioagente.get('correocliente')?.errors?.['email']">Formato de correo inválido.</small>
-        </div>
-        <div class="col-4 text-end">
-          <button type="button" class="btn btn-primary w-100 w-md-auto" (click)="enviarotp()" *ngIf="cargandos">Solicitar OTP</button>
-        </div>
-      </div>
-    </div>
+                    <div class="col-md-7">
+                      <div class="row g-2 align-items-center">
+                        <div class="col-8">
+                          <input type="email" class="form-control" placeholder="Correo electrónico"
+                            formControlName="correocliente" onchange="getCorreo()">
+                        </div>
+                        <div class="text-danger"
+                          *ngIf="formularioagente.get('correocliente')?.touched && formularioagente.get('correocliente')?.invalid">
+                          <small *ngIf="formularioagente.get('correocliente')?.errors?.['required']">El correo es
+                            obligatorio.</small>
+                          <small *ngIf="formularioagente.get('correocliente')?.errors?.['email']">Formato de correo
+                            inválido.</small>
+                        </div>
+                        <div class="col-4 text-end">
+                          <button type="button" class="btn btn-primary w-100 w-md-auto" (click)="enviarotp()"
+                            *ngIf="cargandos">Solicitar OTP</button>
+                        </div>
+                      </div>
+                    </div>
 
-  </div>
-</div>
+                  </div>
+                </div>
 
-    <div class="col-12">
-      <div class="row align-items-center">
-        <label class="col-md-5 col-form-label">Nombre corto:</label>
-        <div class="col-md-7">
-          <input type="text" class="form-control" placeholder="Nombre corto"
-                 formControlName="nombreCorto" readonly>
-        </div>
-      </div>
-    </div>
+                <div class="col-12">
+                  <div class="row align-items-center">
+                    <label class="col-md-5 col-form-label">Nombre corto:</label>
+                    <div class="col-md-7">
+                      <input type="text" class="form-control" placeholder="Nombre corto" formControlName="nombreCorto"
+                        readonly>
+                    </div>
+                  </div>
+                </div>
 
-    <div class="col-12">
-      <div class="row align-items-center">
-        <label class="col-md-5 col-form-label">Cuenta Oracle:</label>
-        <div class="col-md-7">
-          <input type="text" class="form-control" placeholder="Cuenta Oracle"
-                 formControlName="cuentaOracle" readonly>
-        </div>
-      </div>
-    </div>
+                <div class="col-12">
+                  <div class="row align-items-center">
+                    <label class="col-md-5 col-form-label">Cuenta Oracle:</label>
+                    <div class="col-md-7">
+                      <input type="text" class="form-control" placeholder="Cuenta Oracle" formControlName="cuentaOracle"
+                        readonly>
+                    </div>
+                  </div>
+                </div>
 
-    <div class="col-12">
-      <div class="row align-items-center">
-        <label class="col-md-5 col-form-label">Razón social:</label>
-        <div class="col-md-7">
-          <input type="text" class="form-control" placeholder="Razón social del cliente"
-                 formControlName="razonSocial" readonly>
-        </div>
-      </div>
-    </div>
-  </div>
+                <div class="col-12">
+                  <div class="row align-items-center">
+                    <label class="col-md-5 col-form-label">Razón social:</label>
+                    <div class="col-md-7">
+                      <input type="text" class="form-control" placeholder="Razón social del cliente"
+                        formControlName="razonSocial" readonly>
+                    </div>
+                  </div>
+                </div>
+              </div>
 
-  <hr class="my-4">
+              <hr class="my-4">
 
-  <!-- Cartera -->
-  <h6 class="mb-3">Cartera</h6>
-  <div class="row g-3">
-    <div class="col-12">
-      <div class="row align-items-center">
-        <label class="col-md-5 col-form-label">Cartera total:</label>
-        <div class="col-md-7">
-          <input type="text" class="form-control align_money" placeholder="0.00"
-                 formControlName="carteraTotal" readonly>
-        </div>
-      </div>
-    </div>
+              <!-- Cartera -->
+              <h6 class="mb-3">Cartera</h6>
+              <div class="row g-3">
+                <div class="col-12">
+                  <div class="row align-items-center">
+                    <label class="col-md-5 col-form-label">Cartera total:</label>
+                    <div class="col-md-7">
+                      <input type="text" class="form-control align_money" placeholder="0.00"
+                        formControlName="carteraTotal" readonly>
+                    </div>
+                  </div>
+                </div>
 
-    <div class="col-12">
-      <div class="row align-items-center">
-        <label class="col-md-5 col-form-label">Cartera por vencer:</label>
-        <div class="col-md-7">
-          <input type="text" class="form-control align_money" placeholder="0.00"
-                 formControlName="carteraPorVencer" readonly>
-        </div>
-      </div>
-    </div>
+                <div class="col-12">
+                  <div class="row align-items-center">
+                    <label class="col-md-5 col-form-label">Cartera por vencer:</label>
+                    <div class="col-md-7">
+                      <input type="text" class="form-control align_money" placeholder="0.00"
+                        formControlName="carteraPorVencer" readonly>
+                    </div>
+                  </div>
+                </div>
 
-    <div class="col-12">
-      <div class="row align-items-center">
-        <label class="col-md-5 col-form-label">Cartera vencida:</label>
-        <div class="col-md-7">
-          <input type="text" class="form-control align_money" placeholder="0.00"
-                 formControlName="carteraVencida" readonly>
-        </div>
-      </div>
-    </div>
+                <div class="col-12">
+                  <div class="row align-items-center">
+                    <label class="col-md-5 col-form-label">Cartera vencida:</label>
+                    <div class="col-md-7">
+                      <input type="text" class="form-control align_money" placeholder="0.00"
+                        formControlName="carteraVencida" readonly>
+                    </div>
+                  </div>
+                </div>
 
-    <div class="col-12">
-      <div class="row align-items-center">
-        <label class="col-md-5 col-form-label">Vencida a 7 días:</label>
-        <div class="col-md-7">
-          <input type="text" class="form-control align_money" placeholder="0.00"
-                 formControlName="vencida7" readonly>
-        </div>
-      </div>
-    </div>
+                <div class="col-12">
+                  <div class="row align-items-center">
+                    <label class="col-md-5 col-form-label">Vencida a 7 días:</label>
+                    <div class="col-md-7">
+                      <input type="text" class="form-control align_money" placeholder="0.00" formControlName="vencida7"
+                        readonly>
+                    </div>
+                  </div>
+                </div>
 
-    <div class="col-12">
-      <div class="row align-items-center">
-        <label class="col-md-5 col-form-label">Vencido de 8 a 14 días:</label>
-        <div class="col-md-7">
-          <input type="text" class="form-control align_money" placeholder="0.00"
-                 formControlName="vencida8a14" readonly>
-        </div>
-      </div>
-    </div>
+                <div class="col-12">
+                  <div class="row align-items-center">
+                    <label class="col-md-5 col-form-label">Vencido de 8 a 14 días:</label>
+                    <div class="col-md-7">
+                      <input type="text" class="form-control align_money" placeholder="0.00"
+                        formControlName="vencida8a14" readonly>
+                    </div>
+                  </div>
+                </div>
 
-    <div class="col-12">
-      <div class="row align-items-center">
-        <label class="col-md-5 col-form-label">Vencido de 15 a 21 días:</label>
-        <div class="col-md-7">
-          <input type="text" class="form-control align_money" placeholder="0.00"
-                 formControlName="vencida15a21" readonly>
-        </div>
-      </div>
-    </div>
+                <div class="col-12">
+                  <div class="row align-items-center">
+                    <label class="col-md-5 col-form-label">Vencido de 15 a 21 días:</label>
+                    <div class="col-md-7">
+                      <input type="text" class="form-control align_money" placeholder="0.00"
+                        formControlName="vencida15a21" readonly>
+                    </div>
+                  </div>
+                </div>
 
-    <div class="col-12">
-      <div class="row align-items-center">
-        <label class="col-md-5 col-form-label">Vencido mayor a 22 días:</label>
-        <div class="col-md-7">
-          <input type="text" class="form-control align_money" placeholder="0.00"
-                 formControlName="vencida22Plus" readonly>
-        </div>
-      </div>
-    </div>
-  </div>
+                <div class="col-12">
+                  <div class="row align-items-center">
+                    <label class="col-md-5 col-form-label">Vencido mayor a 22 días:</label>
+                    <div class="col-md-7">
+                      <input type="text" class="form-control align_money" placeholder="0.00"
+                        formControlName="vencida22Plus" readonly>
+                    </div>
+                  </div>
+                </div>
+              </div>
 
-  <hr class="my-4">
+              <hr class="my-4">
 
-  <!-- Preguntas Sí/No -->
-  <div class="vstack gap-3">
-    <div class="row">
-      <div class="col-12">
-        <label class="form-label">¿Estás de acuerdo con el saldo de su cuenta?</label>
-        <div class="d-flex gap-3">
-          <div class="form-check">
-            <input class="form-check-input" type="radio" name="acuerdoSaldo"
-                   formControlName="acuerdoSaldo" [value]="true" id="acuerdoSi" [disabled]="disbaledradios">
-            <label class="form-check-label" for="acuerdoSi">Sí</label>
-          </div>
-          <div class="form-check">
-            <input class="form-check-input" type="radio" name="acuerdoSaldo"
-                   formControlName="acuerdoSaldo" [value]="false" id="acuerdoNo" [disabled]="disbaledradios">
-            <label class="form-check-label" for="acuerdoNo">No</label>
-          </div>
-        </div>
-        <div class="mt-2" *ngIf="formularioagente.get('acuerdoSaldo')?.value === false">
-          <textarea class="form-control" rows="2" placeholder="Describe el motivo"
-                    formControlName="p1_razon"></textarea>
-          <div class="text-danger small" *ngIf="
+              <!-- Preguntas Sí/No -->
+              <div class="vstack gap-3">
+                <div class="row">
+                  <div class="col-12">
+                    <label class="form-label">¿Estás de acuerdo con el saldo de su cuenta?</label>
+                    <div class="d-flex gap-3">
+                      <div class="form-check">
+                        <input class="form-check-input" type="radio" name="acuerdoSaldo" formControlName="acuerdoSaldo"
+                          [value]="true" id="acuerdoSi" [disabled]="disbaledradios">
+                        <label class="form-check-label" for="acuerdoSi">Sí</label>
+                      </div>
+                      <div class="form-check">
+                        <input class="form-check-input" type="radio" name="acuerdoSaldo" formControlName="acuerdoSaldo"
+                          [value]="false" id="acuerdoNo" [disabled]="disbaledradios">
+                        <label class="form-check-label" for="acuerdoNo">No</label>
+                      </div>
+                    </div>
+                    <div class="mt-2" *ngIf="formularioagente.get('acuerdoSaldo')?.value === false">
+                      <textarea class="form-control" rows="2" placeholder="Describe el motivo"
+                        formControlName="p1_razon"></textarea>
+                      <div class="text-danger small" *ngIf="
             formularioagente.get('p1_razon')?.invalid &&
             formularioagente.get('p1_razon')?.touched">
-            Este campo es obligatorio cuando respondes "No".
-          </div>
-        </div>
-      </div>
-    </div>
+                        Este campo es obligatorio cuando respondes "No".
+                      </div>
+                    </div>
+                  </div>
+                </div>
 
-    <div>
-      <label class="form-label">¿Recibe un comprobante al realizar sus pagos?</label>
-      <div class="d-flex gap-3">
-        <div class="form-check">
-          <input class="form-check-input" type="radio" name="comprobantePagos"
-                 formControlName="comprobantePagos" [value]="true" id="comprobanteSi">
-          <label class="form-check-label" for="comprobanteSi">Sí</label>
-        </div>
-        <div class="form-check">
-          <input class="form-check-input" type="radio" name="comprobantePagos"
-                 formControlName="comprobantePagos" [value]="false" id="comprobanteNo">
-          <label class="form-check-label" for="comprobanteNo">No</label>
-        </div>
-      </div>
-       <div class="mt-2" *ngIf="formularioagente.get('comprobantePagos')?.value === false">
-          <textarea class="form-control" rows="2" placeholder="Describe el motivo"
-                    formControlName="p2_razon"></textarea>
-          <div class="text-danger small" *ngIf="
+                <div>
+                  <label class="form-label">¿Recibe un comprobante al realizar sus pagos?</label>
+                  <div class="d-flex gap-3">
+                    <div class="form-check">
+                      <input class="form-check-input" type="radio" name="comprobantePagos"
+                        formControlName="comprobantePagos" [value]="true" id="comprobanteSi">
+                      <label class="form-check-label" for="comprobanteSi">Sí</label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input" type="radio" name="comprobantePagos"
+                        formControlName="comprobantePagos" [value]="false" id="comprobanteNo">
+                      <label class="form-check-label" for="comprobanteNo">No</label>
+                    </div>
+                  </div>
+                  <div class="mt-2" *ngIf="formularioagente.get('comprobantePagos')?.value === false">
+                    <textarea class="form-control" rows="2" placeholder="Describe el motivo"
+                      formControlName="p2_razon"></textarea>
+                    <div class="text-danger small" *ngIf="
             formularioagente.get('p2_razon')?.invalid &&
             formularioagente.get('p2_razon')?.touched">
-            Este campo es obligatorio cuando respondes "No".
-          </div>
-        </div>
-    </div>
+                      Este campo es obligatorio cuando respondes "No".
+                    </div>
+                  </div>
+                </div>
 
-    <div>
-      <label class="form-label">¿Identifica pagos pendientes de aplicar?</label>
-      <div class="d-flex gap-3">
-        <div class="form-check">
-          <input class="form-check-input" type="radio" name="pagosPendientes"
-                 formControlName="pagosPendientes" [value]="true" id="pagosPendSi">
-          <label class="form-check-label" for="pagosPendSi">Sí</label>
-        </div>
-        <div class="form-check">
-          <input class="form-check-input" type="radio" name="pagosPendientes"
-                 formControlName="pagosPendientes" [value]="false" id="pagosPendNo">
-          <label class="form-check-label" for="pagosPendNo">No</label>
-        </div>
-      </div>
-      <div class="mt-2" *ngIf="formularioagente.get('pagosPendientes')?.value === true">
-          <textarea class="form-control" rows="2" placeholder="Describe el motivo"
-                    formControlName="p3_razon"></textarea>
-          <div class="text-danger small" *ngIf="
+                <div>
+                  <label class="form-label">¿Identifica pagos pendientes de aplicar?</label>
+                  <div class="d-flex gap-3">
+                    <div class="form-check">
+                      <input class="form-check-input" type="radio" name="pagosPendientes"
+                        formControlName="pagosPendientes" [value]="true" id="pagosPendSi">
+                      <label class="form-check-label" for="pagosPendSi">Sí</label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input" type="radio" name="pagosPendientes"
+                        formControlName="pagosPendientes" [value]="false" id="pagosPendNo">
+                      <label class="form-check-label" for="pagosPendNo">No</label>
+                    </div>
+                  </div>
+                  <div class="mt-2" *ngIf="formularioagente.get('pagosPendientes')?.value === true">
+                    <textarea class="form-control" rows="2" placeholder="Describe el motivo"
+                      formControlName="p3_razon"></textarea>
+                    <div class="text-danger small" *ngIf="
             formularioagente.get('p3_razon')?.invalid &&
             formularioagente.get('p3_razon')?.touched">
-            Este campo es obligatorio cuando respondes "No".
-          </div>
-        </div>
-    </div>
+                      Este campo es obligatorio cuando respondes "No".
+                    </div>
+                  </div>
+                </div>
 
-    <div>
-      <label class="form-label">¿Identificas devoluciones pendientes de notas de crédito?</label>
-      <div class="d-flex gap-3">
-        <div class="form-check">
-          <input class="form-check-input" type="radio" name="devolucionesPendientes"
-                 formControlName="devolucionesPendientes" [value]="true" id="devolPendSi">
-          <label class="form-check-label" for="devolPendSi">Sí</label>
-        </div>
-        <div class="form-check">
-          <input class="form-check-input" type="radio" name="devolucionesPendientes"
-                 formControlName="devolucionesPendientes" [value]="false" id="devolPendNo">
-          <label class="form-check-label" for="devolPendNo">No</label>
-        </div>
-      </div>
-      <div class="mt-2" *ngIf="formularioagente.get('devolucionesPendientes')?.value === true">
-          <textarea class="form-control" rows="2" placeholder="Describe el motivo"
-                    formControlName="p4_razon"></textarea>
-          <div class="text-danger small" *ngIf="
+                <div>
+                  <label class="form-label">¿Identificas devoluciones pendientes de notas de crédito?</label>
+                  <div class="d-flex gap-3">
+                    <div class="form-check">
+                      <input class="form-check-input" type="radio" name="devolucionesPendientes"
+                        formControlName="devolucionesPendientes" [value]="true" id="devolPendSi">
+                      <label class="form-check-label" for="devolPendSi">Sí</label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input" type="radio" name="devolucionesPendientes"
+                        formControlName="devolucionesPendientes" [value]="false" id="devolPendNo">
+                      <label class="form-check-label" for="devolPendNo">No</label>
+                    </div>
+                  </div>
+                  <div class="mt-2" *ngIf="formularioagente.get('devolucionesPendientes')?.value === true">
+                    <textarea class="form-control" rows="2" placeholder="Describe el motivo"
+                      formControlName="p4_razon"></textarea>
+                    <div class="text-danger small" *ngIf="
             formularioagente.get('p4_razon')?.invalid &&
             formularioagente.get('p4_razon')?.touched">
-            Este campo es obligatorio cuando respondes "No".
-          </div>
-        </div>
-    </div>
+                      Este campo es obligatorio cuando respondes "No".
+                    </div>
+                  </div>
+                </div>
 
-    <div>
-      <label class="form-label">¿Identificas reclamaciones pendientes de notas de crédito?</label>
-      <div class="d-flex gap-3">
-        <div class="form-check">
-          <input class="form-check-input" type="radio" name="reclamacionesPendientes"
-                 formControlName="reclamacionesPendientes" [value]="true" id="reclaPendSi">
-          <label class="form-check-label" for="reclaPendSi">Sí</label>
-        </div>
-        <div class="form-check">
-          <input class="form-check-input" type="radio" name="reclamacionesPendientes"
-                 formControlName="reclamacionesPendientes" [value]="false" id="reclaPendNo">
-          <label class="form-check-label" for="reclaPendNo">No</label>
-        </div>
-      </div>
-       <div class="mt-2" *ngIf="formularioagente.get('reclamacionesPendientes')?.value === true">
-          <textarea class="form-control" rows="2" placeholder="Describe el motivo"
-                    formControlName="p5_razon"></textarea>
-          <div class="text-danger small" *ngIf="
+                <div>
+                  <label class="form-label">¿Identificas reclamaciones pendientes de notas de crédito?</label>
+                  <div class="d-flex gap-3">
+                    <div class="form-check">
+                      <input class="form-check-input" type="radio" name="reclamacionesPendientes"
+                        formControlName="reclamacionesPendientes" [value]="true" id="reclaPendSi">
+                      <label class="form-check-label" for="reclaPendSi">Sí</label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input" type="radio" name="reclamacionesPendientes"
+                        formControlName="reclamacionesPendientes" [value]="false" id="reclaPendNo">
+                      <label class="form-check-label" for="reclaPendNo">No</label>
+                    </div>
+                  </div>
+                  <div class="mt-2" *ngIf="formularioagente.get('reclamacionesPendientes')?.value === true">
+                    <textarea class="form-control" rows="2" placeholder="Describe el motivo"
+                      formControlName="p5_razon"></textarea>
+                    <div class="text-danger small" *ngIf="
             formularioagente.get('p5_razon')?.invalid &&
             formularioagente.get('p5_razon')?.touched">
-            Este campo es obligatorio cuando respondes "No".
-          </div>
-        </div>
-    </div>
-  </div>
-  <hr class="my-4">
-  <div class="vstack gap-3">
-    <div class="row">
-      <div class="col-12">
+                      Este campo es obligatorio cuando respondes "No".
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <hr class="my-4">
+              <div class="vstack gap-3">
+                <div class="row">
+                  <div class="col-12">
 
-        <div class="d-flex gap-3" *ngIf="cargandos">
-           <label class="lbl">Firma del usuario</label>
-          <div class="sig-wrap">
-            <canvas #sigCanvas class="sig-canvas"
-                    (pointerdown)="onDown($event)"
-                    (pointermove)="onMove($event)"
-                    (pointerup)="onUp($event)"
-                    (pointerleave)="onUp($event)"></canvas>
+                    <div class="d-flex gap-3" *ngIf="cargandos">
+                      <label class="lbl">Firma del usuario</label>
+                      <div class="sig-wrap">
+                        <canvas #sigCanvas class="sig-canvas" (pointerdown)="onDown($event)"
+                          (pointermove)="onMove($event)" (pointerup)="onUp($event)"
+                          (pointerleave)="onUp($event)"></canvas>
 
-            <div class="toolbar">
-              <button type="button" (click)="clearSig()">Limpiar</button>
-            </div>
-          </div>
+                        <div class="toolbar">
+                          <button type="button" (click)="clearSig()">Limpiar</button>
+                        </div>
+                      </div>
 
-          <small *ngIf="formularioagente.get('firma')?.value">✓ Firma capturada</small>
-          <div *ngIf="formularioagente.get('firma')?.invalid && formularioagente.get('firma')?.touched" class="err">
-            La firma es obligatoria.
-          </div>
+                      <small *ngIf="formularioagente.get('firma')?.value">✓ Firma capturada</small>
+                      <div *ngIf="formularioagente.get('firma')?.invalid && formularioagente.get('firma')?.touched"
+                        class="err">
+                        La firma es obligatoria.
+                      </div>
 
 
-        </div>
-        <div class="d-flex gap-3" *ngIf="!cargandos">
-          <div class="row">
-            <div class="col-12">
-              <p>Firma: </p>
-            </div>
-            <div class="col-12">
-               <img *ngIf="firmaSafeUrl"
-     [src]="firmaSafeUrl"
-              alt="Firma"
-              style="max-width:100%; height:auto; border:1px solid #e5e7eb; border-radius:8px;">
-            </div>
-          </div>
+                    </div>
+                    <div class="d-flex gap-3" *ngIf="!cargandos">
+                      <div class="row">
+                        <div class="col-12">
+                          <p>Firma: </p>
+                        </div>
+                        <div class="col-12">
+                          <img *ngIf="firmaSafeUrl" [src]="firmaSafeUrl" alt="Firma"
+                            style="max-width:100%; height:auto; border:1px solid #e5e7eb; border-radius:8px;">
+                        </div>
+                      </div>
 
-        </div>
-      </div>
-    </div>
-  </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
 
-            <!-- Botón -->
-            <div class="text-center mt-4" *ngIf="visibleBtnGuardar">
-              <button type="submit" class="btn btn-primary px-4">
-                Grabar
-              </button>
-            </div>
+              <!-- Botón -->
+              <div class="text-center mt-4" *ngIf="visibleBtnGuardar">
+                <button type="submit" class="btn btn-primary px-4">
+                  Grabar
+                </button>
+              </div>
 
-            <div class="text-center mt-4">
-              <button type="button" class="btn btn-danger px-4" (click)="volver()">
-                Regresar
-              </button>
-            </div>
-          </form>
+              <div class="text-center mt-4">
+                <button type="button" class="btn btn-danger px-4" (click)="volver()">
+                  Regresar
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       </div>
     </div>
   </div>
 </section>
-
-
-

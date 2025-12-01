@@ -80,13 +80,14 @@ canInstall$: Observable<boolean>;
             const isLoginRoute = this.redirectTo?.startsWith('/auth/login');
             console.log("LOS ROLES")
             console.log(rol.id_rol)
+            console.log(rol.id_grupo)
             localStorage.setItem('useridbd', rol.id_usuario_excel)
             localStorage.setItem('id_grupo', rol.id_grupo)
             localStorage.setItem('id_rol', rol.id_rol.toString())
             if(rol.id_rol == 3 && rol.id_grupo == '1'){
               localStorage.setItem('nombre_rol', 'Credito')
             }else if(rol.id_rol == 3 && rol.id_grupo == '2'){
-              localStorage.setItem('nombre_rol', 'Cobranza')
+              localStorage.setItem('nombre_rol', 'Cartera')
             }else{
               localStorage.setItem('nombre_rol', 'Administrador')
             }
