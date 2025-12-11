@@ -8,5 +8,5 @@ export interface User {
   numeroempleado: string;
   token: string;
   idusuariobd: Number;
-  role: 'ADMIN' | 'AGENTE' | '';
+  role: 'ADMIN' | 'AGENTE' | 'GERENTE' | '';
 }

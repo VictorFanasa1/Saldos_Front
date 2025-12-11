@@ -22,6 +22,7 @@ import { UiService } from 'src/app/shared/service/ui.service';
 import Swal from 'sweetalert2';
 declare const L: any;
 
+
 @Component({
   selector: 'app-formresponsable',
   templateUrl: './formresponsable.component.html',
@@ -469,7 +470,11 @@ export class FormresponsableComponent implements OnInit {
           '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>' +
           ' contributors',
       }).addTo(this.map);
-
+      L.Icon.Default.mergeOptions({
+            iconRetinaUrl: 'assets/icons/markericon.png', // Tu ruta a la imagen de alta resolución (puedes usar la misma)
+            iconUrl: 'assets/icons/markericon.png',       // Tu ruta a la imagen normal
+            shadowUrl: 'assets/icons/markershadow.png',   // Tu ruta a la imagen de sombra
+          });
       const target = L.latLng(lat, lon);
       this.map.setView(target, 18);
       this.marker = L.marker(target).addTo(this.map);

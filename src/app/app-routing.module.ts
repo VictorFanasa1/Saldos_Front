@@ -15,7 +15,7 @@ const routes: Routes = [
     path: 'admin',
     
     canActivate: [AuthGuard, RoleGuard],
-    data: { roles: ['ADMIN'] },
+    data: { roles: ['ADMIN', 'AGENTE'] },
     loadChildren: () => import('./admin/admin.module').then(m => m.AdminModule)
   },
 
@@ -23,7 +23,7 @@ const routes: Routes = [
     path: 'agente',
     
     canActivate: [AuthGuard, RoleGuard],
-    data: { roles: ['AGENTE'] },
+    data: { roles: ['GERENTE'] },
     loadChildren: () => import('./agente/agente.module').then(m => m.AgenteModule)
   },
 

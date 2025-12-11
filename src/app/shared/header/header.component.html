@@ -1,90 +1,43 @@
-<!-- src/app/shared/components/navbar/navbar.component.html -->
-<nav class="navbar navbar-expand-lg navbar-app sticky-top" *ngIf="showHeader$ | async">
-  <div class="container-fluid">
-    <!-- Branding (pon aquí tu logo PNG/SVG) -->
-    <a class="navbar-brand d-flex align-items-center gap-2" routerLink="/">
-      <img src="../../../assets/icons/ios/32.png" alt="logo" width="28" height="28">
-      <span>Saldos</span>
-    </a>
+<nav class="navbar navbar-expand-lg navbar-app shadow-sm sticky-top" *ngIf="showHeader$ | async">
+  <div class="container-fluid align-items-center">
+    <div class="d-flex align-items-center gap-2">
+      <button
+        class="btn btn-icon d-lg-none"
+        type="button"
+        aria-label="Abrir menú"
+        (click)="toggleSidebar()">
+        <i class="bi bi-list"></i>
+      </button>
+      <a class="navbar-brand d-flex align-items-center gap-2 text-white" routerLink="/">
+        <img src="./assets/icons/ios/32.png" alt="logo" width="28" height="28">
+        <span class="fw-semibold">Saldos</span>
+      </a>
+    </div>
 
-    <button
-      class="navbar-toggler"
-      type="button"
-      (click)="toggleMenu()"
-      [attr.aria-controls]="'navContent'"
-      [attr.aria-expanded]="isMenuOpen ? 'true' : 'false'"
-      aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
+    <div class="d-flex align-items-center gap-3 ms-auto">
+      <div class="d-none d-lg-flex align-items-center gap-2 text-white">
+        <div class="avatar-sm">{{alias}}</div>
+        <div class="text-start lh-sm">
+          <div class="fw-semibold">{{nombreuser}}</div>
+          <small class="text-white-50">{{tipousuario}}</small>
+        </div>
+      </div>
 
-    <div id="navContent" class="collapse navbar-collapse" [class.show]="isMenuOpen">
-      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        
-      </ul>
-<!--<ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        <nav class="sb__nav" *ngIf="showAdmin$  | async">
-          <a routerLink="/agente" *ngIf="showRepresentante$ | async"><i class="bi bi-grid-1x2"></i> Cuentas del
-            Representante</a>
-          <a routerLink="/admin" *ngIf="showAdmin$ | async"><i class="bi bi-grid-1x2"></i> Cargar Cartera</a>
-          <a routerLink="admin/clientes" *ngIf="showAdmin$ | async"><i class="bi bi-people"></i> Clientes</a>
-          <a routerLink="admin/incidencias" *ngIf="showAdmin$ | async"><i class="bi bi-people"></i> Cuentas sin
-            Incidencias</a>
-          <a routerLink="admin/conincidencias" *ngIf="showAdmin$ | async"><i class="bi bi-bag"></i> Cuentas con
-            Incidencias</a>
-          <a routerLink="/reportes" *ngIf="showAdmin$ | async"><i class="bi bi-graph-up"></i> Reportes</a>
-          <a routerLink="/config" *ngIf="showAdmin$ | async"><i class="bi bi-gear"></i> Ajustes</a>
-        </nav>
-
-        <nav class="sb__nav" *ngIf="showRepresentante$  | async">
-          <a routerLink="/agente" *ngIf="showRepresentante$ | async"><i class="bi bi-grid-1x2"></i> Cuentas del
-            Representante</a>
-        </nav>
-
-        <nav class="sb__nav" *ngIf="showAdminDown$ | async">
-
-          <a routerLink="admin/incidencias" *ngIf="showAdminDown$ | async"><i class="bi bi-people"></i> Cuentas sin
-            Incidencias</a>
-          <a routerLink="admin/conincidencias" *ngIf="showAdminDown$ | async"><i class="bi bi-bag"></i> Cuentas con
-            Incidencias</a>
-
-        </nav>
-      </ul>-->
-      <!-- Acciones rápidas -->
-
-
-      <!-- Usuario -->
       <div class="dropdown">
-       
         <button class="btn btn-light dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
           <i class="bi bi-person-circle me-1"></i> {{rol}}
         </button>
         <ul class="dropdown-menu dropdown-menu-end">
-         <nav class="sb__nav" *ngIf="showAdmin$  | async">
-          <a routerLink="/agente" *ngIf="showRepresentante$ | async"><i class="bi bi-grid-1x2"></i> Cuentas del
-            Representante</a>
-          <a routerLink="/admin" *ngIf="showAdmin$ | async"><i class="bi bi-grid-1x2"></i> Cargar Cartera</a>
-          <a routerLink="admin/clientes" *ngIf="showAdmin$ | async"><i class="bi bi-people"></i> Clientes</a>
-          <a routerLink="admin/incidencias" *ngIf="showAdmin$ | async"><i class="bi bi-people"></i> Cuentas sin
-            Incidencias</a>
-          <a routerLink="admin/conincidencias" *ngIf="showAdmin$ | async"><i class="bi bi-bag"></i> Cuentas con
-            Incidencias</a>
-          <a routerLink="/reportes" *ngIf="showAdmin$ | async"><i class="bi bi-graph-up"></i> Reportes</a>
-          <a routerLink="/config" *ngIf="showAdmin$ | async"><i class="bi bi-gear"></i> Ajustes</a>
-        </nav>
-
-        <nav class="sb__nav" *ngIf="showRepresentante$  | async">
-          <a routerLink="/agente" *ngIf="showRepresentante$ | async"><i class="bi bi-grid-1x2"></i> Cuentas del
-            Representante</a>
-        </nav>
-
-        <nav class="sb__nav" *ngIf="showAdminDown$ | async">
-
-          <a routerLink="admin/incidencias" *ngIf="showAdminDown$ | async"><i class="bi bi-people"></i> Cuentas sin
-            Incidencias</a>
-          <a routerLink="admin/conincidencias" *ngIf="showAdminDown$ | async"><i class="bi bi-bag"></i> Cuentas con
-            Incidencias</a>
-
-        </nav>
+          <li class="dropdown-header text-uppercase small text-muted">Navegación</li>
+          <li *ngIf="showAdmin$ | async"><a class="dropdown-item" routerLink="/admin" (click)="closeMenu()">Cargar cartera</a></li>
+          <li *ngIf="showAdmin$ | async"><a class="dropdown-item" routerLink="admin/agente" (click)="closeMenu()">Cuentas del representante</a></li>
+          <li *ngIf="showAdmin$ | async"><a class="dropdown-item" routerLink="admin/clientes" (click)="closeMenu()">Clientes</a></li>
+          <li *ngIf="showAdmin$ | async"><a class="dropdown-item" routerLink="admin/incidencias" (click)="closeMenu()">Cuentas sin incidencias</a></li>
+          <li *ngIf="showAdmin$ | async"><a class="dropdown-item" routerLink="admin/conincidencias" (click)="closeMenu()">Cuentas con incidencias</a></li>
+          <li *ngIf="showAdminDown$ | async"><a class="dropdown-item" routerLink="admin/incidencias" (click)="closeMenu()">Cuentas sin incidencias</a></li>
+          <li *ngIf="showAdminDown$ | async"><a class="dropdown-item" routerLink="admin/conincidencias" (click)="closeMenu()">Cuentas con incidencias</a></li>
+          <li *ngIf="showRepresentante$ | async"><a class="dropdown-item" routerLink="/agente" (click)="closeMenu()">Cuentas del representante</a></li>
+          <li><hr class="dropdown-divider"></li>
           <li><button class="dropdown-item text-danger" (click)="logoutSys()">Cerrar sesión</button></li>
         </ul>
       </div>

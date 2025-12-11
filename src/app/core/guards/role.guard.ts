@@ -29,10 +29,27 @@ export class RoleGuard implements CanActivate, CanLoad {
     }
 
 
-    return this.saldosservice.getRolUser({ uiIdUsuario: user.numeroempleado }).pipe(
+    return this.saldosservice.getRolUser({ nombreUsuario: user.username }).pipe(
       map(rolResp => {
 
-        const role: 'ADMIN' | 'AGENTE' = (rolResp.id_rol === 1 || rolResp.id_rol === 3) ? 'ADMIN' : 'AGENTE';
+        let role: 'ADMIN' | 'GERENTE' | 'AGENTE';
+
+        switch (rolResp.id_rol) {
+            case 1:
+              role = 'ADMIN';
+              break;
+            case 2:
+              role = 'GERENTE';
+              break;
+            case 3:
+            case 4:
+              role = 'AGENTE';
+              break;
+            default:
+             
+              role = 'AGENTE'; 
+              break;
+          }
         this.auth.updateRole(role); // ← persistimos el rol
 
         return expected.includes(role)

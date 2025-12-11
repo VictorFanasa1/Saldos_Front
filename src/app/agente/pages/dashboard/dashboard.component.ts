@@ -14,7 +14,7 @@ declare const $: any;
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css']
 })
-export class DashboardComponent implements OnInit {
+export class DashboardComponentAgent implements OnInit {
 
   @ViewChild('dTable', {static: false}) dTable!: ElementRef<HTMLTableElement>;
 
@@ -35,18 +35,16 @@ export class DashboardComponent implements OnInit {
   ngOnInit(): void {
 
     this.getRegistros()
-    this.ui.showAdmin(false)
-    this.ui.showAdminDownSet(false)
+    //this.ui.showAdmin(false)
+    //this.ui.showAdminDownSet(false)
     this.ui.showrRepresentante(true)
   }
  ngOnDestroy(): void {
     this.destroyDT();
   }
   getRegistros(){
-    let usuario
-    this.auth.user$.pipe(take(1)).subscribe(u => {
-          usuario = u?.numeroempleado.toString() ?? ''
-        });
+    let usuario = localStorage.getItem('useridbd')
+    
         const usuraioDto : getregistrossaldogerente = {
           gerenteZona : usuario ?? ''
         }

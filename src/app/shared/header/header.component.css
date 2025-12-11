@@ -1,79 +1,33 @@
-.header-app .btn-outline-secondary {
-  border-color: #1976d2;
-}
-
-
-.sb {
-  position: sticky;
-  top: 0;
-  height: 100vh;
-  width: 260px;
-  flex: 0 0 260px;
-  background: linear-gradient(180deg, #1976d2, #4574a3);
+.navbar-app{
+  background: linear-gradient(90deg, #1976d2, #0f4fa8);
   color: #fff;
-  display: flex;
-  flex-direction: column;
+  padding: .75rem 1rem;
 }
-
-.sb__profile {
-  padding: 28px 20px;
-  text-align: center;
-  border-bottom: 1px solid rgba(255, 255, 255, .08);
+.navbar-app .navbar-brand{
+  color:#fff;
+  letter-spacing: .3px;
 }
-
-.avatar {
-  width: 72px;
-  height: 72px;
-  margin: 0 auto 10px;
-  border-radius: 999px;
-  background: #fff2;
-  display: grid;
-  place-items: center;
-  font-weight: 700;
+.navbar-app .navbar-brand:hover{ color:#eaf2ff; }
+.btn-icon{
+  width:40px; height:40px;
+  display:grid; place-items:center;
+  border-radius:10px;
+  border:1px solid rgba(255,255,255,.35);
+  color:#fff;
+  background:rgba(255,255,255,.08);
 }
-
-.name {
-  font-weight: 700;
+.btn-icon:hover{ background:rgba(255,255,255,.14); color:#fff; }
+.btn-icon:focus{ box-shadow:0 0 0 .2rem rgba(25,118,210,.35); }
+.avatar-sm{
+  width:36px; height:36px;
+  border-radius:999px;
+  background:rgba(255,255,255,.18);
+  display:grid; place-items:center;
+  font-weight:700;
 }
-
-.role {
-  opacity: .8;
-  font-size: .85rem;
-}
-
-.sb__nav {
-  padding: 12px;
-  display: grid;
-  gap: 6px;
-}
-
-.sb__nav a {
-  color: #1976d2;
-  text-decoration: none;
-  padding: 10px 12px;
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.sb__nav a:hover,
-.sb__nav a.active {
-  background: #fff1;
-  color: #fff;
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .15);
-}
-
-@media (max-width: 991px) {
-  .sb {
-    position: fixed;
-    left: 0;
-    transform: translateX(-100%);
-    transition: .25s ease;
-    z-index: 1040;
-  }
-
-  .sb.is-open {
-    transform: translateX(0);
-  }
+.dropdown-menu{ min-width:16rem; }
+.dropdown-menu .dropdown-header{ font-weight:600; }
+.navbar-app .dropdown-toggle{ border-radius:12px; }
+@media (max-width: 991px){
+  .navbar-app{ padding:.65rem 1rem; }
 }

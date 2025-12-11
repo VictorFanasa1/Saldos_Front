@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { AgenteRoutingModule } from './agente-routing.module';
 import { AgenteComponent } from './agente.component';
-import { DashboardComponent } from './pages/dashboard/dashboard.component';
+import { DashboardComponentAgent } from './pages/dashboard/dashboard.component';
 import { FormagenteComponent } from './pages/formagente/formagente.component';
 
 
@@ -14,7 +14,7 @@ import { FormagenteComponent } from './pages/formagente/formagente.component';
 @NgModule({
   declarations: [
     AgenteComponent,
-    DashboardComponent,
+    DashboardComponentAgent,
     FormagenteComponent
   ],
   imports: [

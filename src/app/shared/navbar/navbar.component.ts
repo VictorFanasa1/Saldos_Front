@@ -10,8 +10,6 @@ import { Observable } from 'rxjs';
   styleUrls: ['./navbar.component.css']
 })
 export class NavbarComponent implements OnInit  {
-  isMenuOpen = false;
-  showNavbar = false
   nombreuser = ""
   rol = ""
   alias = ""
@@ -19,6 +17,7 @@ export class NavbarComponent implements OnInit  {
   showRepresentante$!: Observable<boolean>;
   showAdmin$!: Observable<boolean>;
   showAdminDown$!: Observable<boolean>;
+  sidebarOpen$ = this.ui.sidebarOpen$;
   constructor(public auth: AuthService, private ui: UiService) {
     this.showRepresentante$ = this.ui.showRepresentante;
     this.showAdmin$ = this.ui.showAdministrativo;
@@ -41,8 +40,8 @@ setPermissions(){
 
 }
 
-  toggleMenu(){ this.isMenuOpen = !this.isMenuOpen; }
-  closeMenu(){ this.isMenuOpen = false; }
+  toggleMenu(){ this.ui.toggleSidebar(); }
+  closeMenu(){ this.ui.closeSidebar(); }
 
 
 }

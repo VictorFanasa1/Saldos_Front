@@ -1,3 +1,14 @@
 .align_money{
   text-align: end;
 }
+.leaflet-default-icon-path .leaflet-marker-icon, 
+.leaflet-default-icon-path .leaflet-marker-shadow {
+ 
+}
+
+.leaflet-default-icon-path .leaflet-marker-icon {
+   /* Ajusta esto si usas marker-icon-2x */
+}
+
+.leaflet-default-icon-path .leaflet-marker-shadow {
+}

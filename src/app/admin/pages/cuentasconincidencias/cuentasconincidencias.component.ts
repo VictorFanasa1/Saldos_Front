@@ -58,7 +58,10 @@ export class CuentasconincidenciasComponent implements OnInit {
   setData() {
    
     if (this.rol === '1') {
-      this.excelSvc.consultaporidecuentaconincidenciaAll().subscribe({
+      let ubicacion :string | null = null;
+      ubicacion = localStorage.getItem('ubicacion')
+      const ubicacionSegura = ubicacion ?? ''; 
+      this.excelSvc.consultaporidecuentaconincidenciaAll(ubicacionSegura).subscribe({
         next: (res) => {
           this.datoscuenta = res;
           console.log(res);

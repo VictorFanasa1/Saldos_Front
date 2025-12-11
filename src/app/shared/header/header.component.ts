@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { take } from 'rxjs/operators';
@@ -11,8 +11,6 @@ import { UiService } from '../service/ui.service';
   styleUrls: ['./header.component.css']
 })
 export class HeaderComponent implements OnInit  {
-isMenuOpen = false;
-showNavbar = false
   nombreuser = ""
   rol = ""
   alias = ""
@@ -38,14 +36,15 @@ ngOnInit(){
             
           });
 
-  this.tipousuario = localStorage.getItem('nombre_rol') ?? 'NA'
+ this.tipousuario = localStorage.getItem('nombre_rol') ?? 'NA'
 
 }
- toggleMenu(){ this.isMenuOpen = !this.isMenuOpen; }
-  closeMenu(){ this.isMenuOpen = false; }
+  closeMenu(){ this.ui.closeSidebar(); }
+  toggleSidebar(){ this.ui.toggleSidebar(); }
 
   logoutSys(){
     this.auth.logout()
+    
     this.router.navigate(['login']);
   }
 }

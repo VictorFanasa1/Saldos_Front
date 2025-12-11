@@ -6,7 +6,7 @@
   (closed)="onClosed()">
 </app-spin-overlay>
 <div class="d-flex">
-  <app-navbar class="d-none d-lg-block" *ngIf="showNavbar$ | async"></app-navbar>
+  <app-navbar *ngIf="showNavbar$ | async"></app-navbar>
   <main class="flex-grow-1">
     <app-header></app-header>
     <app-app-update-available></app-app-update-available>

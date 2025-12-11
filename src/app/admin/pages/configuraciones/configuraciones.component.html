@@ -1,1 +1,300 @@
-<p>configuraciones works!</p>
+<div class="container my-4">
+
+  <!-- Buscador -->
+  <div class="row mb-3">
+    <div class="col-12 col-md-6">
+      <input
+        type="text"
+        class="form-control"
+        placeholder="Buscar usuario por nombre..."
+        [(ngModel)]="searchTerm">
+    </div>
+    <div class="col-12 col-md-6">
+        <button type="button" class="btn btn-success" data-bs-toggle="modal"
+              data-bs-target="#newUsuarioModal">Crear Usuario</button>
+    </div>
+  </div>
+
+  <!-- Tarjetas de usuarios -->
+  <div class="row g-3">
+    <div
+      class="col-12 col-md-6 col-lg-4"
+      *ngFor="let usuario of filteredUsuarios">
+
+      <div class="card h-100 shadow-sm">
+        <div class="card-body d-flex flex-column">
+          <h5 class="card-title mb-2">
+            {{ usuario.nombreUsario || 'Sin nombre' }}
+          </h5>
+
+          <p class="card-text mb-1">
+            <strong>Rol:</strong>
+            <span *ngIf="usuario.id_rol; else sinRol">
+              {{  getNombreDelRol(usuario.id_rol) }}
+            </span>
+            <ng-template #sinRol>Sin rol asignado</ng-template>
+          </p>
+
+          <p class="card-text mb-1">
+            <strong>Ubicación:</strong>
+            <span *ngIf="usuario.ubicacion; else sinUbicacion">
+              {{ getNombreUbicacion(usuario.ubicacion) }}
+            </span>
+            <ng-template #sinUbicacion>Sin ubicación</ng-template>
+          </p>
+
+          <p class="card-text text-muted mt-auto">
+            <small>Creado: {{ usuario.dtCreate | date:'short' }}</small><br>
+            <small>Modificado: {{ usuario.dtModificacion | date:'short' }}</small>
+          </p>
+
+          <div class="mt-3">
+            <button
+              type="button"
+              class="btn btn-primary w-100"
+              data-bs-toggle="modal"
+              data-bs-target="#editUsuarioModal"
+              (click)="onEdit(usuario)">
+              Editar
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div *ngIf="filteredUsuarios.length === 0" class="col-12">
+      <div class="alert alert-info">
+        No se encontraron usuarios con ese nombre.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Editar Usuario -->
+<div
+  class="modal fade"
+  id="editUsuarioModal"
+  tabindex="-1"
+  aria-labelledby="editUsuarioModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h5 class="modal-title" id="editUsuarioModalLabel">
+          Editar usuario
+          <span *ngIf="selectedUsuario">{{ selectedUsuario.nombreUsario }}</span>
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+
+      <div class="modal-body" *ngIf="selectedUsuario">
+
+        <div class="row g-3">
+          <div class="col-md-6">
+            <label class="form-label">Nombre de usuario</label>
+            <input
+              type="text"
+              class="form-control"
+              [(ngModel)]="selectedUsuario.nombreUsario">
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label">ID Usuario (uiIdUsuario)</label>
+            <input
+              type="number"
+              class="form-control"
+              [(ngModel)]="selectedUsuario.uiIdUsuario">
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label">Rol (id_rol)</label>
+   
+              <select
+                    class="form-select"
+                    
+                    [(ngModel)]="selectedUsuario.id_rol">
+                    <option [ngValue]="null">-- Selecciona un Rol --</option>
+                    <option
+                    *ngFor="let ub of roles"
+                    [ngValue]="ub.idRol">
+                    {{ ub.nombre }}
+                    </option>
+                </select>
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label">ID Usuario Excel</label>
+            <input
+              type="text"
+              class="form-control"
+              [(ngModel)]="selectedUsuario.id_usuario_excel">
+          </div>
+
+            <div class="col-md-6">
+                <label class="form-label">Ubicación (IdUbicacion)</label>
+                <select
+                    class="form-select"
+                    [(ngModel)]="selectedUsuario.ubicacion">
+                    <option [ngValue]="null">-- Selecciona una ubicación --</option>
+                    <option
+                    *ngFor="let ub of ubicaciones"
+                    [ngValue]="ub.idUbicacion">
+                    {{ ub.nombreUbicacion }}
+                    </option>
+                </select>
+            </div>
+
+          <!-- Si quieres mostrar fechas solo lectura -->
+          <div class="col-md-6">
+            <label class="form-label">Creado</label>
+            <input
+              type="text"
+              class="form-control"
+              [value]="selectedUsuario.dtCreate | date:'short'"
+              disabled>
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label">Última modificación</label>
+            <input
+              type="text"
+              class="form-control"
+              [value]="selectedUsuario.dtModificacion | date:'short'"
+              disabled>
+          </div>
+        </div>
+
+        <div *ngIf="errorMessage" class="alert alert-danger mt-3">
+          {{ errorMessage }}
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-secondary"
+          data-bs-dismiss="modal">
+          Cerrar
+        </button>
+        <button
+          type="button"
+          class="btn btn-primary"
+          [disabled]="isSaving || !selectedUsuario"
+          (click)="onSave()">
+          <span *ngIf="isSaving" class="spinner-border spinner-border-sm me-2"></span>
+          Guardar cambios
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- Crear un Nuevo Usuario -->
+
+<div
+class="modal fade"
+  id="newUsuarioModal"
+  tabindex="-1"
+  aria-labelledby="newUsuarioModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+         <div class="modal-header">
+            <h5 class="modal-title" id="newUsuarioModalLabel">
+            Nuevo Usuario
+            </h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        </div>
+        <div class="modal-body" *ngIf="newUserPayload">
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label">Nombre de usuario</label>
+                    <input
+                    type="text"
+                    class="form-control"
+                    [(ngModel)]="newUserPayload.nombreUsario">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Id de Usuario</label>
+                    <input
+                    type="text"
+                    class="form-control"
+                    [(ngModel)]="newUserPayload.uiIdUsuario">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Id Usuario Excel</label>
+                    <input
+                    type="text"
+                    class="form-control"
+                    [(ngModel)]="newUserPayload.id_usuario_excel">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Rol</label>
+                    <select
+                            class="form-select"
+                            
+                            [(ngModel)]="newUserPayload.id_rol">
+                            <option [ngValue]="null">-- Selecciona un Rol --</option>
+                            <option
+                            *ngFor="let ub of roles"
+                            [ngValue]="ub.idRol">
+                            {{ ub.nombre }}
+                            </option>
+                        </select>
+                </div>
+                 <div class="col-md-6">
+                    <label class="form-label">Ubicación (IdUbicacion)</label>
+                    <select
+                        class="form-select"
+                        [(ngModel)]="newUserPayload.ubicacion">
+                        <option [ngValue]="null">-- Selecciona una ubicación --</option>
+                        <option
+                        *ngFor="let ub of ubicaciones"
+                        [ngValue]="ub.idUbicacion">
+                        {{ ub.nombreUbicacion }}
+                        </option>
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label for="form-label">Nombre de usuario AD</label>
+                    <input
+                    type="text"
+                    class="form-control"
+                    [(ngModel)]="newUserPayload.nombre_usuario_ad">
+                </div>
+
+                 <div class="col-md-6">
+                    <label for="form-label">Password</label>
+                    <input
+                    type="text"
+                    class="form-control"
+                    [(ngModel)]="newUserPayload.password">
+                </div>
+            </div>
+            <div *ngIf="errorMessage" class="alert alert-danger mt-3">
+                {{ errorMessage }}
+            </div>
+        </div>
+        <div class="modal-footer">
+             <button
+          type="button"
+          class="btn btn-secondary"
+          data-bs-dismiss="modal">
+          Cerrar
+        </button>
+        <button
+          type="button"
+          class="btn btn-primary"
+          [disabled]="isSaving || !newUserPayload"
+          (click)="onSaveNewUser()">
+          <span *ngIf="isSaving" class="spinner-border spinner-border-sm me-2"></span>
+          Guardar Usuario
+        </button>
+        </div>
+    </div>
+  </div>
+
+</div>

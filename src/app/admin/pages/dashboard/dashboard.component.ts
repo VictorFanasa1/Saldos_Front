@@ -286,7 +286,7 @@ private addMonths(d: Date, months: number): Date {
       this.verconincidencia = true
       this.verdasboard = false;
       if(this.rol === "3"){
-        this.excelSvc.consultaporidecuentaconincidenciaAll().subscribe({
+        this.excelSvc.consultaporidecuentaconincidenciaAll('').subscribe({
           next: (res)=>{
           this.datoscuenta = res
           console.log(res)
@@ -321,6 +321,9 @@ private addMonths(d: Date, months: number): Date {
       }
   }
   mostrarsinincidencias(){
+    let ubicacion :string | null = null;
+      ubicacion = localStorage.getItem('ubicacion')
+      const ubicacionSegura = ubicacion ?? ''; 
     if(this.versinincidencia){
       this.versinincidencia = false
       this.verdasboard = true;
@@ -328,7 +331,7 @@ private addMonths(d: Date, months: number): Date {
       this.versinincidencia = true
       this.verdasboard = false;
       if(this.rol === "3"){
-        this.excelSvc.consultaporidecuentasinincidenciaAll().subscribe({
+        this.excelSvc.consultaporidecuentasinincidenciaAll(ubicacionSegura).subscribe({
           next: (res)=>{
           this.datoscuentaS = res
           this.buildDT();

@@ -6,12 +6,17 @@ import { catchError, map, tap } from 'rxjs/operators';
 import { UiService } from 'src/app/shared/service/ui.service';
 
 
-export type Role = 'ADMIN' | 'AGENTE';
+export type Role = 'ADMIN' | 'AGENTE' | 'GERENTE';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private readonly TOKEN_KEY = 'app_token';
   private readonly USER_KEY = 'app_user';
+  private readonly USER_UBI = 'ubicacion';
+  private readonly USER_GROUP = 'id_grupo';
+  private readonly USER_ROL = 'id_rol';
+  private readonly USER_N_ROL= 'nombre_rol';
+  private readonly USER_EXCL = 'useridbd';
   private readonly USER_ID = 'app_user_id';
 
 private url = 'https://aplicacion.fanasa.com/ServiceLogAD/Auth/Ingresar';
@@ -32,7 +37,7 @@ private url = 'https://aplicacion.fanasa.com/ServiceLogAD/Auth/Ingresar';
   if (user === 'diana.montano') {
     const userS: User = {
       username: 'LUIS MARQUEZ',
-      numeroempleado: '7251',
+      numeroempleado: '0',
       token: '',
       role: '',
       idusuariobd: 0
@@ -104,12 +109,21 @@ private url = 'https://aplicacion.fanasa.com/ServiceLogAD/Auth/Ingresar';
       return userS;
     }),
     tap(persist),
-    catchError(err => {
+    /*catchError(err => {
       // opcional: limpia estado si falla
       this._user$.next(null as any);
       localStorage.removeItem(this.USER_KEY);
       return throwError(() => err);
-    })
+      console.log(err)
+        const userS: User = {
+        username: '',
+        numeroempleado: '',
+        token: '',
+        role: '',
+        idusuariobd: 0
+      };
+      return userS;
+    })*/
   );
 
   }
@@ -125,6 +139,13 @@ private url = 'https://aplicacion.fanasa.com/ServiceLogAD/Auth/Ingresar';
     //localStorage.removeItem(this.TOKEN_KEY);
 
     localStorage.removeItem(this.USER_KEY);
+    localStorage.removeItem(this.TOKEN_KEY);
+    localStorage.removeItem(this.USER_EXCL);
+    localStorage.removeItem(this.USER_GROUP);
+    localStorage.removeItem(this.USER_ID);
+    localStorage.removeItem(this.USER_N_ROL);
+    localStorage.removeItem(this.USER_ROL);
+    localStorage.removeItem(this.USER_UBI);
     this._user$.next(null);
   }
 

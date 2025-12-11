@@ -13,6 +13,10 @@ import { IncidenciasRequest } from '../shared/cuentasrowResponse.model';
 import { environment } from 'src/environments/environment.prod';
 import { ClientsRequest } from '../shared/ClientsRequest.model';
 import { CuentasResponse } from '../shared/CuentasResponse.model';
+import { CrearUsuarioDto, Usuario } from '../shared/Usuarios.model';
+import { CrearUbicacionDto, Ubicacion } from '../shared/ubicaciones.model';
+import { RolesModel } from '../shared/roles.mnodel';
+import { Role } from './auth.service';
 
 @Injectable({
   providedIn: 'root'
@@ -48,8 +52,8 @@ export class SaldosService{
       return this.http.get<IncidenciasRequest>(`${this.apiUrl}/GetCuentaConPreguntasBySumFlag/${idCuenta}/${1}`);
     }
 
-    consultaporidecuentaconincidenciaAll(){
-      return this.http.get<IncidenciasRequest[]>(`${this.apiUrl}/GetCuentaConPreguntasBySumFlagAll/${1}`);
+    consultaporidecuentaconincidenciaAll(ubicacion: string){
+      return this.http.get<IncidenciasRequest[]>(`${this.apiUrl}/GetCuentaConPreguntasBySumFlagAll/${1}/${ubicacion}`);
     }
     consultaCredito(){
       return this.http.get<IncidenciasRequest[]>(`${this.apiUrl}/GetCuentasCredito`);
@@ -68,12 +72,12 @@ export class SaldosService{
       return this.http.get<IncidenciasRequest>(`${this.apiUrl}/GetCuentaConPreguntasBySumFlag/${idCuenta}/${0}`);
     }
     
-    consultaporidecuentasinincidenciaAll(){
-      return this.http.get<IncidenciasRequest[]>(`${this.apiUrl}/GetCuentaConPreguntasBySumFlagAll/${0}`);
+    consultaporidecuentasinincidenciaAll(ubicacion: string){
+      return this.http.get<IncidenciasRequest[]>(`${this.apiUrl}/GetCuentaConPreguntasBySumFlagAll/${0}/${ubicacion}`);
     }
 
-     consultaporidecuentasinincidenciaAllD(){
-      return this.http.get<IncidenciasRequest[]>(`${this.apiUrl}/GetCuentaConPreguntasBySumFlagAll/${0}`);
+     consultaporidecuentasinincidenciaAllD(ubicacion: string){
+      return this.http.get<IncidenciasRequest[]>(`${this.apiUrl}/GetCuentaConPreguntasBySumFlagAll/${0}/${ubicacion}`);
     }
     consultaporidecuentaconincidenciabygerente(gerente: string){
       return this.http.get<IncidenciasRequest[]>(`${this.apiUrl}/GetByGerenteZonaSumFlag/${gerente}/${1}`);
@@ -126,9 +130,9 @@ export class SaldosService{
       return this.http.post<{ id: number; bProcesado: boolean }>(`${this.apiUrl}/actualizar-procesado`, req);
     }
 
-    getRolUser(uiIdUsuario: getRolUserRequest): Observable<UserRolResponse>{
+    getRolUser(unombreUsuario: getRolUserRequest): Observable<UserRolResponse>{
 
-      return this.http.post<UserRolResponse>(`${this.apiUrlAuth}/LoginUser`, uiIdUsuario)
+      return this.http.post<UserRolResponse>(`${this.apiUrlAuth}/LoginUser`, unombreUsuario)
     }
 
     getFirmaBlob(cuentaId: number) {
@@ -155,4 +159,67 @@ export class SaldosService{
       console.log(payload)
       return this.http.post(`${this.apiUrl}/SendMailKit`, payload)
     }
+
+
+    /* Administracion de Usuarios y roles */
+
+    // GET: lista de usuarios
+      getUsuarios(): Observable<Usuario[]> {
+        return this.http.get<Usuario[]>(`${this.apiUrl}/GetUsuarios`);
+      }
+
+      // GET: un usuario por id
+      getUsuario(id: number): Observable<Usuario> {
+        return this.http.get<Usuario>(`${this.apiUrl}/${id}`);
+      }
+
+      // POST: crear usuario
+      createUsuario(usuario: CrearUsuarioDto): Observable<Usuario> {
+        console.log(usuario)
+        return this.http.post<Usuario>(`${this.apiUrl}/CreateUsuario`, usuario);
+      }
+
+      // PUT: actualizar usuario
+      updateUsuario(id: number, usuario: CrearUsuarioDto): Observable<void> {
+        console.log(usuario)
+        return this.http.put<void>(`${this.apiUrl}/UpdateUsuario/${id}`, usuario);
+      }
+
+      // DELETE: eliminar usuario
+      deleteUsuario(id: number): Observable<void> {
+        return this.http.delete<void>(`${this.apiUrl}/${id}`);
+      }
+
+
+      /* Catalogos */
+
+      // GET: lista de ubicaciones (solo activas según el controller)
+      getUbicaciones(): Observable<Ubicacion[]> {
+        return this.http.get<Ubicacion[]>(`${this.apiUrl}/GetUbicaciones`);
+      }
+
+      // GET: una ubicación por Id
+      getUbicacion(id: number): Observable<Ubicacion> {
+        return this.http.get<Ubicacion>(`${this.apiUrl}/${id}`);
+      }
+
+      // POST: crear una nueva ubicación
+      createUbicacion(dto: CrearUbicacionDto): Observable<Ubicacion> {
+        return this.http.post<Ubicacion>(this.apiUrl, dto);
+      }
+
+      // PUT: actualizar una ubicación (nombre y activo)
+      updateUbicacion(id: number, ubicacion: Ubicacion): Observable<void> {
+        return this.http.put<void>(`${this.apiUrl}/${id}`, ubicacion);
+      }
+
+      // OPCIONAL: desactivar (Actvio = 0) usando el endpoint /desactivar
+      desactivarUbicacion(id: number): Observable<void> {
+        return this.http.put<void>(`${this.apiUrl}/${id}/desactivar`, {});
+      }
+
+      getRoles(): Observable<RolesModel[]>{
+        return this.http.get<RolesModel[]>(`${this.apiUrl}/GetRoles`)
+      }
+
 }

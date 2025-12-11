@@ -54,8 +54,12 @@ export class CuentasincidenciasComponent implements OnInit {
   }
 
   setData() {
+
+     let ubicacion :string | null = null;
+      ubicacion = localStorage.getItem('ubicacion')
+      const ubicacionSegura = ubicacion ?? ''; 
     if (this.rol === '1') {
-      this.excelSvc.consultaporidecuentasinincidenciaAllD().subscribe({
+      this.excelSvc.consultaporidecuentasinincidenciaAllD(ubicacionSegura).subscribe({
         next: (res) => {
           this.datoscuentaS = res;
           this.buildDT();
