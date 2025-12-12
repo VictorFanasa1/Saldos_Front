@@ -10,7 +10,7 @@ import { getRolUserRequest, UserRolResponse } from '../shared/UserResponseRol';
 import { CuentasSaldosPreguntasDto } from '../shared/cuentasPreguentasRequest';
 import { PreguntasResponse } from '../shared/preguntas.model';
 import { IncidenciasRequest } from '../shared/cuentasrowResponse.model';
-import { environment } from 'src/environments/environment.prod';
+import { environment } from 'src/environments/environment';
 import { ClientsRequest } from '../shared/ClientsRequest.model';
 import { CuentasResponse } from '../shared/CuentasResponse.model';
 import { CrearUsuarioDto, Usuario } from '../shared/Usuarios.model';
@@ -179,10 +179,10 @@ export class SaldosService{
         return this.http.post<Usuario>(`${this.apiUrl}/CreateUsuario`, usuario);
       }
 
-      // PUT: actualizar usuario
+      // POST: actualizar usuario
       updateUsuario(id: number, usuario: CrearUsuarioDto): Observable<void> {
         console.log(usuario)
-        return this.http.put<void>(`${this.apiUrl}/UpdateUsuario/${id}`, usuario);
+        return this.http.post<void>(`${this.apiUrl}/UpdateUsuario/${id}`, usuario);
       }
 
       // DELETE: eliminar usuario
@@ -208,14 +208,14 @@ export class SaldosService{
         return this.http.post<Ubicacion>(this.apiUrl, dto);
       }
 
-      // PUT: actualizar una ubicación (nombre y activo)
+      // POST: actualizar una ubicación (nombre y activo)
       updateUbicacion(id: number, ubicacion: Ubicacion): Observable<void> {
-        return this.http.put<void>(`${this.apiUrl}/${id}`, ubicacion);
+        return this.http.post<void>(`${this.apiUrl}/${id}`, ubicacion);
       }
 
       // OPCIONAL: desactivar (Actvio = 0) usando el endpoint /desactivar
       desactivarUbicacion(id: number): Observable<void> {
-        return this.http.put<void>(`${this.apiUrl}/${id}/desactivar`, {});
+        return this.http.post<void>(`${this.apiUrl}/${id}/desactivar`, {});
       }
 
       getRoles(): Observable<RolesModel[]>{
