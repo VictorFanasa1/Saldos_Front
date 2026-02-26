@@ -5,6 +5,7 @@ import { AuthService } from 'src/app/core/services/auth.service';
 import { SaldosService } from 'src/app/core/services/saldos.service';
 import { IncidenciasRequest } from 'src/app/core/shared/cuentasrowResponse.model';
 import { UiService } from 'src/app/shared/service/ui.service';
+import Swal from 'sweetalert2';
 declare const $: any;
 @Component({
   selector: 'app-cuentasincidencias',
@@ -17,6 +18,7 @@ export class CuentasincidenciasComponent implements OnInit {
   rol = '0';
   loading = false;
   dt: any;
+  grupo = '0';
   constructor(
     private excelSvc: SaldosService,
     private auth: AuthService,
@@ -26,15 +28,16 @@ export class CuentasincidenciasComponent implements OnInit {
 
   ngOnInit(): void {
      this.rol = localStorage.getItem('id_rol') ?? '0'
-    this.setData();
+    this.grupo = localStorage.getItem('id_grupo') ?? '0';
+     this.setData();
+    
 
-
-    if(this.rol == '3'){
+    if(this.rol == '3' || this.rol == '4'){
       this.setMenuAdmin()
-
+     
     }else{
       this.setMenu();
-
+  
     }
   }
 
@@ -58,34 +61,80 @@ export class CuentasincidenciasComponent implements OnInit {
      let ubicacion :string | null = null;
       ubicacion = localStorage.getItem('ubicacion')
       const ubicacionSegura = ubicacion ?? ''; 
+      
+    if(this.rol === '0'){
+      alert("El rol del usuario no ha sido definido, por favor definelo en el portal de ajustes o pide al administrador que lo modifique.")
+    }
     if (this.rol === '1') {
+      let ubicacion :string | null = null;
+      ubicacion = localStorage.getItem('ubicacion')
+      const ubicacionSegura = ubicacion ?? ''; 
       this.excelSvc.consultaporidecuentasinincidenciaAllD(ubicacionSegura).subscribe({
         next: (res) => {
           this.datoscuentaS = res;
+          console.log(res);
           this.buildDT();
         },
         error: (err) => {
           //this.errorMsg = 'Error cargando datos';
           console.error(err);
+          Swal.fire('Atención', "No se encontraron datos", "info")
         },
         complete: () => (this.loading = false),
       });
-    } else {
+    } else if(this.rol === '4' && this.grupo == '1'){
+       let ubicacion :string | null = null;
+      ubicacion = localStorage.getItem('ubicacion')
+      const ubicacionSegura = ubicacion ?? ''; 
+      this.excelSvc.consultaCredito(ubicacionSegura, 0).subscribe({
+        next: (res) => {
+          this.datoscuentaS = res;
+          console.log(res);
+          this.buildDT();
+        },
+        error: (err) => {
+          //this.errorMsg = 'Error cargando datos';
+          console.error(err);
+          Swal.fire('Atención', "No se encontraron datos", "info")
+        },
+        complete: () => (this.loading = false),
+      });
+    } else if(this.rol === '3' && this.grupo == '2'){
+      let ubicacion :string | null = null;
+      ubicacion = localStorage.getItem('ubicacion')
+      const ubicacionSegura = ubicacion ?? ''; 
+      this.excelSvc.consultaCobranza(ubicacionSegura, 0).subscribe({
+        next: (res) => {
+          this.datoscuentaS = res;
+          console.log(res);
+          this.buildDT();
+        },
+        error: (err) => {
+          //this.errorMsg = 'Error cargando datos';
+          console.error(err);
+          Swal.fire('Atención', "No se encontraron datos", "info")
+        },
+        complete: () => (this.loading = false),
+      });
+    }else {
       let usuario;
       this.auth.user$.pipe(take(1)).subscribe((u) => {
         console.log('username:', u?.username);
         usuario = this.apellidosLuegoNombres(u?.username ?? '');
       });
+      
       this.excelSvc
-        .consultaporidecuentasinincidenciabygerente(usuario ?? '')
+        .consultaporidecuentaconincidenciabygerente(usuario ?? '')
         .subscribe({
           next: (res) => {
             this.datoscuentaS = res;
+            console.log(res);
             this.buildDT();
           },
           error: (err) => {
             //this.errorMsg = 'Error cargando datos';
             console.error(err);
+            Swal.fire('Atención', "No se encontraron datos", "info")
           },
           complete: () => (this.loading = false),
         });

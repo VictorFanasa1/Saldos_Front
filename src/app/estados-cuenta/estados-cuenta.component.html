@@ -24,39 +24,6 @@
               Sube tu archivo Excel/CSV y cargaremos la información de las cuentas.
             </p>
 
-            <div class="row g-3 mt-2 upload-grid">
-                <div class="col-12 col-md-6">
-                  <label class="form-label">Periodo inicio</label>
-                  <input
-                    type="date"
-                    class="form-control"
-                    [(ngModel)]="periodoInicio"
-                    (ngModelChange)="onInicioChange($event)"
-                    [min]="todayISO"
-                    [max]="maxInicioISO"
-                    name="periodoInicio"
-                    required
-                  />
-                  <small class="text-muted">Desde hoy ({{ todayISO }})</small>
-                </div>
-
-                <div class="col-12 col-md-6">
-                  <label class="form-label">Periodo fin</label>
-                  <input
-                    type="date"
-                    class="form-control"
-                    [(ngModel)]="periodoFin"
-                    [min]="finMin"
-                    [max]="finMax"
-                    name="periodoFin"
-                    required
-                  />
-                  <small class="text-muted">
-                    Entre {{ finMin }} y {{ finMax }}
-                  </small>
-                </div>
-              </div>
-
             <div class="d-flex flex-wrap gap-3 actions-row">
               <button class="btn btn-medical-primary btn-secondary-modern" type="button" (click)="openPicker()">
                 <i class="bi bi-cloud-upload"></i> Cargar Excel

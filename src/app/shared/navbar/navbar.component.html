@@ -7,11 +7,13 @@
   <!-- MENU DE ADMINISTRADOR-->
   <nav class="sb__nav" *ngIf="showAdmin$  | async">
     <a routerLink="/admin"  *ngIf="showAdmin$ | async" (click)="closeMenu()"><i class="bi bi-grid-1x2"></i> Cargar Cartera</a>
+    <a routerLink="admin/cargac"  *ngIf="showAdmin$ | async" (click)="closeMenu()"><i class="bi bi-file-earmark-text-fill"></i> Carga de Edo. Cuenta</a>
     <a routerLink="admin/clientes"  *ngIf="showAdmin$ | async" (click)="closeMenu()"><i class="bi bi-people"></i> Clientes</a>
     <a routerLink="admin/incidencias"  *ngIf="showAdmin$ | async" (click)="closeMenu()"><i class="bi bi-people"></i> Cuentas sin Incidencias</a>
     <a routerLink="admin/conincidencias"  *ngIf="showAdmin$ | async" (click)="closeMenu()"><i class="bi bi-bag"></i> Cuentas con Incidencias</a>
     <!-- <a routerLink="/reportes"  *ngIf="showAdmin$ | async"><i class="bi bi-graph-up"></i> Reportes</a> -->
     <a routerLink="admin/config"  *ngIf="showAdmin$ | async" (click)="closeMenu()"><i class="bi bi-gear"></i> Ajustes</a>
+    
   </nav>
 <!--MENU DEL GERENTE-->
    <nav class="sb__nav" *ngIf="showRepresentante$  | async">
@@ -20,7 +22,7 @@
 <!--MENU DEL AGENTE (COMERCIAL Y CARTERA )-->
   <nav class="sb__nav" *ngIf="showAdminDown$ | async">
 
-    <a routerLink="admin/incidencias"  *ngIf="showAdminDown$ | async" (click)="closeMenu()"><i class="bi bi-people"></i> Cuentas sin Incidencias</a>
+    <!--<a routerLink="admin/incidencias"  *ngIf="showAdminDown$ | async" (click)="closeMenu()"><i class="bi bi-people"></i> Cuentas sin Incidencias</a>-->
     <a routerLink="admin/conincidencias"  *ngIf="showAdminDown$ | async" (click)="closeMenu()"><i class="bi bi-bag"></i> Cuentas con Incidencias</a>
 
   </nav>

@@ -1,7 +1,8 @@
-<section class="medical-hero d-flex align-items-center">
-    <div class="container" style="background-color: rgb(145, 144, 144); color: whitesmoke; padding:  10px; border-radius: 10px;">
+<section class="medical-hero d-flex align-items-center clients-upload-section">
+    <div class="container page-shell upload-card" style="background-color: rgb(145, 144, 144); color: whitesmoke; padding:  10px; border-radius: 10px;">
         <input
             #fileInput
+            class="input-modern"
             type="file"
             accept=".xlsx,.xls,.csv"
             (change)="onFileSelected($event)"
@@ -13,7 +14,7 @@
                 <h1>Carga de información de clientes</h1>
             </div>
             <div class="col-12">
-                <div class="d-flex flex-wrap gap-3">
+                <div class="d-flex flex-wrap gap-3 upload-actions">
               <button class="btn btn-medical-primary" type="button" (click)="openPicker()">
                 <i class="bi bi-cloud-upload"></i> Cargar Excel
               </button>
@@ -46,14 +47,14 @@
         </div>
     </div>
 </section>
-<section class="d-flex align-items-center" style="margin-top: 50px;">
-    <div class="container">
-        <div class="row">
+<section class="d-flex align-items-center clients-table-section pagination-modern" style="margin-top: 50px;">
+    <div class="container page-shell table-card">
+        <div class="row table-toolbar">
             <div class="col-12">
                 <h3>Información de cuentas</h3>
             </div>
-            <table #dTable class="table-responsive">
-                <thead style="background-color: rgb(55, 13, 161); color: white; text-align: center;">
+            <table #dTable class="table-responsive table-modern select-modern">
+                <thead class="table-modern-head" style="background-color: rgb(55, 13, 161); color: white; text-align: center;">
                     <tr style="height: auto;">
                         <th>GERENTE</th>
                         <th>PERIODO</th>
@@ -71,9 +72,9 @@
                         <td>{{item.periodo}}</td>
                         <td>{{item.clientes_asignados}}</td>
                         <td>{{item.mes}}</td>
-                        <td>{{item.cuota_mensual}} %</td>
+                        <td>{{item.cuota_mensual | number:'1.0-0'}}</td>
                         <td>{{item.clientes_auditados}}</td>
-                        <td>{{item.porcentaje}} %</td>
+                        <td>{{ ((item?.porcentaje || 0) * 100 ) | number:'1.2-2' }} %</td>
                         <td>{{item.clientes_restantes}}</td>
                     </tr>
                 </tbody>

@@ -54,6 +54,8 @@ step = 1;
   longio = 0;
   firmaObjectUrl?: string;
   cargandos = true;
+  otpConfirmado = false;
+  private tieneDatosPrevios = false;
   firmaSafeUrl?: SafeUrl;
   sucursal = ""
   correo: string = ""
@@ -61,6 +63,9 @@ step = 1;
   numerodefolio = ""
   cargando = false
   folios: Array<number> = []
+  idUbicacion?: string = ""
+  codigotp?:string = "" 
+  correodelcliente?:string = ""
 fmtMXN = (v: any) =>
   new Intl.NumberFormat('es-MX', { style:'currency', currency:'MXN', minimumFractionDigits:2 }).format(Number(v ?? 0));
   private destroy$ = new Subject<void>();
@@ -74,7 +79,8 @@ fmtMXN = (v: any) =>
     private geo: GeolocationService) {
     this.formularioagente = this.fb.group({
        // Datos básicos
-    correocliente: ['', Validators.required],
+    correocliente: [''],
+    otp: [''],
     confirmacionCliente: ['', Validators.required],
     nombreCorto: ['', Validators.required],
     cuentaOracle: ['', Validators.required],
@@ -142,9 +148,10 @@ private attachReasonToggler(booleanCtrl: string, reasonCtrl: string) {
 }
   ngOnInit(): void {
     this.solicitarUnaVez()
+    this.idUbicacion =  localStorage.getItem('ubicacion') || "";
     const v = this.route.snapshot.paramMap.get('id');
     this.id = v ? Number(v) : NaN;
-this.ui.showAdmin(false)
+    this.ui.showAdmin(false)
     this.ui.showAdminDownSet(false)
     this.ui.showrRepresentante(true)
     this.consultaRegistros()
@@ -161,6 +168,8 @@ this.ui.showAdmin(false)
         this.firmaSafeUrl = this.sanitizer.bypassSecurityTrustUrl(this.firmaObjectUrl);// crea URL temporal
         this.cargandos = false;
         this.visibleBtnGuardar = false;
+        this.tieneDatosPrevios = true;
+        this.otpConfirmado = true;
       },
       error: _ => {
         this.visibleBtnGuardar = true;
@@ -180,6 +189,7 @@ this.ui.showAdmin(false)
       takeUntil(this.destroy$)
     ).subscribe(v=> this.correo = v)
 
+    console.log("La ubicacacion del usuario " + this.idUbicacion)
   }
   ngAfterViewInit() {
     // Inicializa canvas DPI y fondo
@@ -246,6 +256,7 @@ formatMoneyRegex(txt: number | string | null | undefined): string {
   return negative ? -n : n;
 }
   consultaRegistros(){
+     
     this.saldosservice.consultaregistroid(this.id).subscribe({
        next: (dto) => {
         console.log(dto)
@@ -275,33 +286,46 @@ formatMoneyRegex(txt: number | string | null | undefined): string {
     })
     this.saldosservice.consultaregistroPreguntas(this.id).subscribe({
       next: res =>{
+        const tieneRespuestas = !!res && res.length > 0;
 
-        if(res.length == 0 || typeof res !== 'undefined'){ this.visibleBtnGuardar = true} else {this.visibleBtnGuardar = false}
+        if (tieneRespuestas) {
+          this.tieneDatosPrevios = true;
+          this.otpConfirmado = true;
+          this.visibleBtnGuardar = false;
 
+          console.log(res)
 
-        console.log(res)
-
-        this.formularioagente.patchValue({
-          p1_razon: res[0].p1_razon,
-          p2_razon: res[0].p2_razon,
-          p3_razon: res[0].p3_razon,
-          p4_razon: res[0].p4_razon,
-          p5_razon: res[0].p5_razon
-        })
-        this.patchvalueanddisablearea('p1_razon', false)
-        this.patchvalueanddisablearea('p2_razon', false)
-        this.patchvalueanddisablearea('p3_razon', false)
-        this.patchvalueanddisablearea('p4_razon', false)
-        this.patchvalueanddisablearea('p5_razon', false)
-        this.patchRadioAndMaybeDisable('acuerdoSaldo',            res[0].p1);
-        this.patchRadioAndMaybeDisable('comprobantePagos',        res[0].p2);
-        this.patchRadioAndMaybeDisable('pagosPendientes',         res[0].p3);
-        this.patchRadioAndMaybeDisable('devolucionesPendientes',  res[0].p4);
-        this.patchRadioAndMaybeDisable('reclamacionesPendientes', res[0].p5);
+          this.formularioagente.patchValue({
+            p1_razon: res[0].p1_razon,
+            p2_razon: res[0].p2_razon,
+            p3_razon: res[0].p3_razon,
+            p4_razon: res[0].p4_razon,
+            p5_razon: res[0].p5_razon
+          })
+          this.patchvalueanddisablearea('p1_razon', false)
+          this.patchvalueanddisablearea('p2_razon', false)
+          this.patchvalueanddisablearea('p3_razon', false)
+          this.patchvalueanddisablearea('p4_razon', false)
+          this.patchvalueanddisablearea('p5_razon', false)
+          this.patchRadioAndMaybeDisable('acuerdoSaldo',            res[0].p1);
+          this.patchRadioAndMaybeDisable('comprobantePagos',        res[0].p2);
+          this.patchRadioAndMaybeDisable('pagosPendientes',         res[0].p3);
+          this.patchRadioAndMaybeDisable('devolucionesPendientes',  res[0].p4);
+          this.patchRadioAndMaybeDisable('reclamacionesPendientes', res[0].p5);
+        } else {
+          console.log("No existe datos")
+          if (!this.tieneDatosPrevios) {
+            this.otpConfirmado = false;
+          }
+          this.visibleBtnGuardar = true;
+        }
       },
       error: er =>{
 
         console.log("No hay datos")
+        if (!this.tieneDatosPrevios) {
+          this.otpConfirmado = false;
+        }
         console.error(er)
       }
     })
@@ -329,12 +353,12 @@ ngOnDestroy(): void {
   }
 
   async registerWithFolio(folio: string): Promise<void> {
-  if (this.formularioagente.invalid) {
+  /*if (this.formularioagente.invalid) {
     this.formularioagente.markAllAsTouched();
     await Swal.fire({ icon: 'error', title: 'Oops...', text: 'El formulario tiene campos vacíos.' });
     throw new Error('Formulario inválido');
 
-  }
+  }*/
 
   const f = this.formularioagente.value;
 
@@ -366,12 +390,14 @@ ngOnDestroy(): void {
     p4_razon: f.p4_razon ?? '',
     p5_razon: f.p5_razon ?? '',
 
-    folio_registro: f.confirmacionCliente ?? '',
+    folio_registro: this.codigotp ?? '',
     folio_soporte: folio,
     lat: this.lat?.toString() ?? '',
     longi: this.longio?.toString() ?? '',
     firma: evidencia,
-    tipo_incidencia: this.tipo_incidencia.toString()
+    tipo_incidencia: this.tipo_incidencia.toString(),
+    ubicacion: this.idUbicacion ?? '',
+    CorreoCliente: this.correodelcliente ?? ''
   };
   
   await this.saldosservice.registrarPeguntas(dto).toPromise();// espera al POST
@@ -382,12 +408,14 @@ volver(){
 }
 
   async grabarRespuestas(){
-     const f = this.formularioagente.value;
-console.log(f.acuerdoSaldo)
-console.log(f.comprobantePagos)
-console.log(f.pagosPendientes)
-console.log(f.devolucionesPendientes)
-console.log(f.reclamacionesPendientes)
+      const f = this.formularioagente.value;
+      console.log(f.acuerdoSaldo)
+      console.log(f.comprobantePagos)
+      console.log(f.pagosPendientes)
+      console.log(f.devolucionesPendientes)
+      console.log(f.reclamacionesPendientes)
+  if (this.submitting) return;
+  this.submitting = true;
   try {
 
     if (!(f.acuerdoSaldo === true && f.comprobantePagos === true && f.pagosPendientes === false)) {
@@ -417,6 +445,8 @@ console.log(f.reclamacionesPendientes)
   } catch (e: any) {
     console.log(e);
     await Swal.fire({ icon: 'error', title: 'Error', text: e.error.error });
+  } finally {
+    this.submitting = false;
   }
 
 
@@ -626,6 +656,26 @@ get pct() {
   }
   getCorreo(){
 
+  }
+  confirmarOtp() {
+    const correoCtrl = this.formularioagente.get('correocliente');
+    const otpCtrl = this.formularioagente.get('otp');
+    correoCtrl?.markAsTouched();
+    otpCtrl?.markAsTouched();
+    if (correoCtrl?.invalid || otpCtrl?.invalid) {
+      Swal.fire({
+        title: 'Falta informacion',
+        icon: 'info',
+        text: 'Ingresa un correo y el codigo OTP para continuar.'
+      });
+      return;
+    }
+    this.formularioagente.value.correocliente = this.formularioagente.get('correocliente');
+    this.formularioagente.value.otp = this.formularioagente.get('otp');
+    this.codigotp = this.formularioagente.get('otp')?.value ?? "";
+    this.correodelcliente = this.formularioagente.get('correocliente')?.value ?? ""
+
+    this.otpConfirmado = true;
   }
   enviarotp(){
     const f = this.formularioagente.value;

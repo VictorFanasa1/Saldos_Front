@@ -15,6 +15,7 @@ import { SignaturePadComponent } from './shared/signature-pad/signature-pad.comp
 import { NavbarComponent } from './shared/navbar/navbar.component';
 import { AppUpdateAvailableComponent } from './shared/app-update-available/app-update-available.component';
 import { HeaderComponent } from './shared/header/header.component';
+import { EstadosCuentaComponent } from './estados-cuenta/estados-cuenta.component';
 registerLocaleData(localeEsMx);
 
 @NgModule({
@@ -24,7 +25,8 @@ registerLocaleData(localeEsMx);
     SignaturePadComponent,
     NavbarComponent,
     AppUpdateAvailableComponent,
-    HeaderComponent
+    HeaderComponent,
+    EstadosCuentaComponent
   ],
   imports: [
     BrowserModule,

@@ -5,6 +5,7 @@ import { AuthService } from 'src/app/core/services/auth.service';
 import { SaldosService } from 'src/app/core/services/saldos.service';
 import { IncidenciasRequest } from 'src/app/core/shared/cuentasrowResponse.model';
 import { UiService } from 'src/app/shared/service/ui.service';
+import Swal from 'sweetalert2';
 declare const $: any;
 @Component({
   selector: 'app-cuentasconincidencias',
@@ -18,6 +19,7 @@ export class CuentasconincidenciasComponent implements OnInit {
   grupo = '0';
   dt: any;
   loading = false;
+  ubicacion = '' 
   constructor(
     private excelSvc: SaldosService,
     private auth: AuthService,
@@ -30,13 +32,14 @@ export class CuentasconincidenciasComponent implements OnInit {
      this.grupo = localStorage.getItem('id_grupo') ?? '0';
     this.setData()
    this.rol = localStorage.getItem('id_rol') ?? '0';
-  
-    if(this.rol == '3'){
+   this.ubicacion = localStorage.getItem('ubicacion') ?? ''
+ 
+    if(this.rol == '3' || this.rol == '4'){
       this.setMenuAdmin()
-
+      
     }else{
       this.setMenu();
-
+     
     }
   }
 
@@ -57,6 +60,9 @@ export class CuentasconincidenciasComponent implements OnInit {
 
   setData() {
    
+   if(this.rol === '0'){
+    alert("El rol del usuario no ha sido definido, por favor definelo en el portal de ajustes o pide al administrador que lo modifique.")
+   }
     if (this.rol === '1') {
       let ubicacion :string | null = null;
       ubicacion = localStorage.getItem('ubicacion')
@@ -70,11 +76,15 @@ export class CuentasconincidenciasComponent implements OnInit {
         error: (err) => {
           //this.errorMsg = 'Error cargando datos';
           console.error(err);
+          Swal.fire('Atención', "No se encontraron datos", "info")
         },
         complete: () => (this.loading = false),
       });
-    } else if(this.rol === '3' && this.grupo == '1'){
-      this.excelSvc.consultaCredito().subscribe({
+    } else if(this.rol === '4' && this.grupo == '1'){
+       let ubicacion :string | null = null;
+      ubicacion = localStorage.getItem('ubicacion')
+      const ubicacionSegura = ubicacion ?? ''; 
+      this.excelSvc.consultaCredito(ubicacionSegura, 1).subscribe({
         next: (res) => {
           this.datoscuenta = res;
           console.log(res);
@@ -83,11 +93,15 @@ export class CuentasconincidenciasComponent implements OnInit {
         error: (err) => {
           //this.errorMsg = 'Error cargando datos';
           console.error(err);
+          Swal.fire('Atención', "No se encontraron datos", "info")
         },
         complete: () => (this.loading = false),
       });
-    } else if(this.rol === '3' && this.grupo == '2'){
-      this.excelSvc.consultaCobranza().subscribe({
+    } else if(this.rol === '3' && this.grupo === '2'){
+      let ubicacion :string | null = null;
+      ubicacion = localStorage.getItem('ubicacion')
+      const ubicacionSegura = ubicacion ?? ''; 
+      this.excelSvc.consultaCobranza(ubicacionSegura, 1).subscribe({
         next: (res) => {
           this.datoscuenta = res;
           console.log(res);
@@ -96,6 +110,7 @@ export class CuentasconincidenciasComponent implements OnInit {
         error: (err) => {
           //this.errorMsg = 'Error cargando datos';
           console.error(err);
+          Swal.fire('Atención', "No se encontraron datos", "info")
         },
         complete: () => (this.loading = false),
       });
@@ -105,6 +120,7 @@ export class CuentasconincidenciasComponent implements OnInit {
         console.log('username:', u?.username);
         usuario = this.apellidosLuegoNombres(u?.username ?? '');
       });
+      
       this.excelSvc
         .consultaporidecuentaconincidenciabygerente(usuario ?? '')
         .subscribe({
@@ -116,6 +132,7 @@ export class CuentasconincidenciasComponent implements OnInit {
           error: (err) => {
             //this.errorMsg = 'Error cargando datos';
             console.error(err);
+            Swal.fire('Atención', "No se encontraron datos", "info")
           },
           complete: () => (this.loading = false),
         });

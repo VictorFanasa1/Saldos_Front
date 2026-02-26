@@ -1,5 +1,5 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { take } from 'rxjs/operators';
 import { AuthService } from 'src/app/core/services/auth.service';
 import { SaldosService } from 'src/app/core/services/saldos.service';
@@ -23,7 +23,7 @@ export class DashboardComponentAgent implements OnInit {
   errorMsg = '';
   dt: any;
 
-  constructor(private router: Router, private saldosservice: SaldosService, private auth: AuthService, private ui: UiService) {
+  constructor(private router: Router, private route: ActivatedRoute ,private saldosservice: SaldosService, private auth: AuthService, private ui: UiService) {
     this.ui.showHeaderset(true)
   }
 
@@ -33,11 +33,25 @@ export class DashboardComponentAgent implements OnInit {
   }
 
   ngOnInit(): void {
-
+    this.reloadModule()
     this.getRegistros()
     //this.ui.showAdmin(false)
     //this.ui.showAdminDownSet(false)
     this.ui.showrRepresentante(true)
+    
+  }
+  reloadModule(){
+    this.route.queryParams.subscribe(params => {
+    if (!params['reloaded']) {
+      this.router.navigate([], {
+        relativeTo: this.route,
+        queryParams: { reloaded: 'true' },
+        queryParamsHandling: 'merge'
+      }).then(() => {
+        location.reload(); // Recarga una vez y la URL tendrá el parámetro
+      });
+    }
+  });
   }
  ngOnDestroy(): void {
     this.destroyDT();
@@ -70,6 +84,12 @@ export class DashboardComponentAgent implements OnInit {
 
   goToDetalle(id: number) {
     this.router.navigate(['agente/fomrAgente', id]); // /cuentas/:id
+  }
+
+  goToEstadoCuenta(cuentaOracle: string | null | undefined) {
+    const cuenta = (cuentaOracle ?? '').trim();
+    if (!cuenta) return;
+    this.router.navigate(['agente/edocuenta', cuenta]);
   }
 
   buildDT(): void {

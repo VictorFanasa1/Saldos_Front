@@ -10,6 +10,7 @@ export interface Usuario {
   nombre_usuario_ad?: string;
   id_grupo?: string;
   password?: string;
+  correo?: string;
 }
 
 export type CrearUsuarioDto = Omit<Usuario,  'dtCreate' | 'dtModificacion'>;

@@ -12,3 +12,51 @@
 
 .leaflet-default-icon-path .leaflet-marker-shadow {
 }
+
+.otp-overlay{
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  z-index: 2000;
+}
+
+.otp-modal{
+  max-width: 540px;
+  width: 100%;
+}
+
+.otp-inputs{
+  display: flex;
+  justify-content: center;
+  gap: 0.75rem;
+}
+
+.otp-box{
+  width: 3rem;
+  height: 3rem;
+  text-align: center;
+  font-size: 1.25rem;
+}
+
+.otp-box-success{
+  border-color: #198754;
+  box-shadow: 0 0 0 0.25rem rgba(25, 135, 84, 0.15);
+}
+
+.otp-box-error{
+  border-color: #dc3545;
+  box-shadow: 0 0 0 0.25rem rgba(220, 53, 69, 0.15);
+}
+
+.blur-content{
+  filter: blur(2px);
+  pointer-events: none;
+}
+
+.otp-request .btn{
+  white-space: nowrap;
+}

@@ -1,4 +1,26 @@
+:root {
 
+  /* Brand */
+  --color-primary: #1A9AD6;
+  --color-primary-hover: #1688D8;
+
+  /* Dark Surfaces */
+  --color-surface-dark: #181828;
+  --color-surface-strong: #333144;
+
+  /* Backgrounds */
+  --color-bg-app: #F5F7FA;
+  --color-card: #FFFFFF;
+
+  /* Text */
+  --color-text-strong: #333144;
+  --color-text-light: #6B7280;
+
+  /* Effects */
+  --shadow-soft: 0 10px 30px rgba(0, 0, 0, 0.08);
+  --radius-xl: 18px;
+  --radius-md: 12px;
+}
 
 .install-banner {
   position: fixed;

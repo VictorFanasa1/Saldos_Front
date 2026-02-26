@@ -5,6 +5,7 @@ import { AgenteRoutingModule } from './agente-routing.module';
 import { AgenteComponent } from './agente.component';
 import { DashboardComponentAgent } from './pages/dashboard/dashboard.component';
 import { FormagenteComponent } from './pages/formagente/formagente.component';
+import { EstadoCuentaComponent } from './pages/estado-cuenta/estado-cuenta.component';
 
 
 
@@ -15,7 +16,8 @@ import { FormagenteComponent } from './pages/formagente/formagente.component';
   declarations: [
     AgenteComponent,
     DashboardComponentAgent,
-    FormagenteComponent
+    FormagenteComponent,
+    EstadoCuentaComponent
   ],
   imports: [
     CommonModule,

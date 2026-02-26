@@ -45,7 +45,8 @@ export class ClientesComponent implements OnInit {
   ngOnInit(): void {
     
     this.rol = localStorage.getItem('id_rol') ?? '0';
-    this.excelSvc.consultaRegistrosCuentas().subscribe({
+    let ubicacion = localStorage.getItem('ubicacion') ?? ''
+    this.excelSvc.consultaRegistrosCuentas(ubicacion).subscribe({
       next: respons =>{
         console.log(respons)
         this.datacuentas = respons
@@ -60,6 +61,7 @@ export class ClientesComponent implements OnInit {
       this.setMenu();
       this.showfirstcard = true;
     }
+    console.log(localStorage.getItem('ubicacion'))
   }
 
   setMenu() {

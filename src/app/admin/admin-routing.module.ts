@@ -9,6 +9,7 @@ import { CuentasconincidenciasComponent } from './pages/cuentasconincidencias/cu
 import { ClientesComponent } from './pages/clientes/clientes.component';
 import { AgenteComponent } from '../agente/agente.component';
 import { DashboardComponentAgent } from '../agente/pages/dashboard/dashboard.component';
+import { EstadosCuentaComponent } from '../estados-cuenta/estados-cuenta.component';
 
 const routes: Routes = [
   { path: '', component: DashboardComponent },
@@ -18,7 +19,8 @@ const routes: Routes = [
   {path: 'conincidencias', component: CuentasconincidenciasComponent},
   {path: 'clientes', component: ClientesComponent},
   {path: 'config', component: ConfiguracionesComponent},
-  {path: 'agente', component: DashboardComponentAgent}
+  {path: 'agente', component: DashboardComponentAgent},
+  {path: 'cargac', component: EstadosCuentaComponent}
 ];
 
 @NgModule({

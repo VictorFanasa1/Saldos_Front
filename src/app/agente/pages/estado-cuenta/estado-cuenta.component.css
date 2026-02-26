@@ -1,0 +1,193 @@
+:host {
+  --ui-bg: var(--color-bg-app, var(--app-bg, #f5f7fa));
+  --ui-card: var(--color-card, var(--card-bg, #ffffff));
+  --ui-text-strong: var(--color-text-strong, var(--text-strong, #333144));
+  --ui-text-light: var(--color-text-light, var(--text-muted, #6b7280));
+  --ui-primary: var(--color-primary, var(--primary, #1a9ad6));
+  --ui-primary-hover: var(--color-primary-hover, var(--primary-hover, #1688d8));
+  --ui-surface-dark: var(--color-surface-dark, #181828);
+  --ui-radius-xl: var(--radius-xl, 18px);
+  --ui-radius-md: var(--radius-md, 12px);
+  --ui-shadow: var(--shadow-soft, 0 10px 30px rgba(0, 0, 0, 0.08));
+}
+
+.estado-shell {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px;
+  min-height: calc(100vh - 92px);
+  background: var(--ui-bg);
+}
+
+.estado-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 18px;
+  flex-wrap: wrap;
+}
+
+.back-btn {
+  border-radius: var(--ui-radius-md);
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  background: #fff;
+  color: var(--ui-text-strong);
+  min-height: 42px;
+  padding: 8px 14px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+}
+
+.back-btn:hover {
+  background: rgba(26, 154, 214, 0.1);
+  border-color: rgba(26, 154, 214, 0.35);
+  color: var(--ui-text-strong);
+}
+
+.estado-title {
+  margin: 0;
+  color: var(--ui-text-strong);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  font-size: clamp(1.35rem, 2.5vw, 1.8rem);
+}
+
+.estado-subtitle {
+  margin: 4px 0 0;
+  color: var(--ui-text-light);
+}
+
+.loading-wrap {
+  background: var(--ui-card);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: var(--ui-radius-xl);
+  box-shadow: var(--ui-shadow);
+  padding: 24px;
+  text-align: center;
+}
+
+.loading-spinner {
+  color: var(--ui-primary);
+}
+
+.loading-text {
+  margin: 12px 0 0;
+  color: var(--ui-text-light);
+}
+
+.empty-card {
+  background: var(--ui-card);
+  border: 1px dashed rgba(0, 0, 0, 0.14);
+  border-radius: var(--ui-radius-xl);
+  box-shadow: var(--ui-shadow);
+  padding: 26px;
+  color: var(--ui-text-light);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.empty-card i {
+  font-size: 1.2rem;
+  color: var(--ui-primary);
+}
+
+.table-card {
+  background: var(--ui-card);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: var(--ui-radius-xl);
+  box-shadow: var(--ui-shadow);
+  overflow: hidden;
+}
+
+.table-modern {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  margin-bottom: 0;
+}
+
+.table-modern-head th,
+.table-modern thead th {
+  background: var(--ui-surface-dark) !important;
+  color: #fff !important;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 14px 12px;
+  font-weight: 700;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.table-modern tbody td {
+  padding: 13px 12px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  color: var(--ui-text-strong);
+  vertical-align: middle;
+}
+
+.table-modern tbody tr:nth-child(even) {
+  background: rgba(51, 49, 68, 0.03);
+}
+
+.table-modern tbody tr:hover {
+  background: rgba(26, 154, 214, 0.08);
+}
+
+.table-modern td:nth-child(5),
+.table-modern td:nth-child(6),
+.table-modern td:nth-child(7),
+.table-modern td:nth-child(8) {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.amount-positive {
+  color: #15803d !important;
+}
+
+.amount-negative {
+  color: #dc2626 !important;
+}
+
+.pagination-wrap {
+  margin-top: 14px;
+}
+
+.pagination .page-link {
+  border-radius: 10px !important;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  color: var(--ui-text-strong);
+  background: #fff;
+  min-width: 40px;
+}
+
+.pagination .page-link:hover {
+  background: rgba(26, 154, 214, 0.1);
+  border-color: rgba(26, 154, 214, 0.35);
+}
+
+.pagination .page-item.active .page-link {
+  background: var(--ui-primary);
+  border-color: var(--ui-primary);
+  color: #fff;
+}
+
+@media (max-width: 768px) {
+  .estado-shell {
+    padding: 16px;
+  }
+
+  .table-modern-head th,
+  .table-modern thead th {
+    font-size: 11px;
+    padding: 10px;
+  }
+
+  .table-modern tbody td {
+    padding: 10px;
+  }
+}

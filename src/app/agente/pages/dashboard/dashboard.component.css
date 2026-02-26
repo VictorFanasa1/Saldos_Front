@@ -1,43 +1,227 @@
-:root{
-  /* Azules corporativos */
-  --fana-navy:   #1E5485; /* Títulos, header, botones primarios */
-  --fana-steel:  #5F82A4; /* Textos destacados / bordes */
-  --fana-slate:  #84A1BF; /* Accentos suaves / hover */
-  --fana-sky:    #B2CFE9; /* Fondos claros / cards */
-  --fana-ice:    #E4F1F7; /* Fondo muy tenue general */
-
-  /* Aciento */
-  --fana-orange: #EA7347; /* Llamados a la acción / badges */
+:host {
+  --ui-bg: var(--color-bg-app, var(--app-bg, #f5f7fa));
+  --ui-card: var(--color-card, var(--card-bg, #ffffff));
+  --ui-text-strong: var(--color-text-strong, var(--text-strong, #333144));
+  --ui-text-light: var(--color-text-light, var(--text-muted, #6b7280));
+  --ui-primary: var(--color-primary, var(--primary, #1a9ad6));
+  --ui-primary-hover: var(--color-primary-hover, var(--primary-hover, #1688d8));
+  --ui-surface-dark: var(--color-surface-dark, #1A9AD6);
+  --ui-radius-xl: var(--radius-xl, 18px);
+  --ui-radius-md: var(--radius-md, 12px);
+  --ui-shadow: var(--shadow-soft, 0 10px 30px rgba(0, 0, 0, 0.08));
 }
 
-body, html {
-  height: 100%;
-}
-.bg-soft-blue {
-  background-color: var(--fana-navy); /* azul clarito */
-}
-
-.bg-fana           { background-color: var(--fana-ice) !important; }
-.bg-fana-soft      { background-color: var(--fana-sky) !important; }
-.text-fana         { color: var(--fana-navy) !important; }
-.text-fana-accent  { color: var(--fana-orange) !important; }
-.border-fana       { border-color: var(--fana-steel) !important; }
-
-.btn-fana{
-  background: var(--fana-navy);
-  color:#fff;
-  border-color: var(--fana-navy);
-}
-.btn-fana:hover{
-  background: var(--fana-steel);
-  border-color: var(--fana-steel);
+.dashboard-shell {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px;
 }
 
-.btn-fana-accent{
-  background: var(--fana-orange);
-  color:#fff;
-  border-color: var(--fana-orange);
+.title-row {
+  margin-bottom: 4px;
 }
-.btn-fana-accent:hover{
-  filter: brightness(0.95);
+
+.page-title {
+  margin: 0;
+  color: var(--ui-text-strong);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  font-size: clamp(1.3rem, 2.6vw, 1.85rem);
+}
+
+.dashboard-card {
+  background: var(--ui-card);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: var(--ui-radius-xl);
+  box-shadow: var(--ui-shadow);
+  overflow: hidden;
+}
+
+.table-wrap {
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.agent-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  margin-bottom: 0;
+}
+
+.agent-table-head th {
+  background: var(--ui-surface-dark) !important;
+  color: #fff !important;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 14px 12px;
+  font-weight: 700;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.agent-table-head .col-id {
+  box-shadow: inset 0 3px 0 #38bdf8;
+}
+
+.agent-table-head .col-procesado {
+  box-shadow: inset 0 3px 0 #22c55e;
+}
+
+.agent-table-head .col-cuenta {
+  box-shadow: inset 0 3px 0 #a78bfa;
+}
+
+.agent-table-head .col-farmacia {
+  box-shadow: inset 0 3px 0 #fb923c;
+}
+
+.agent-table-head .col-fecha {
+  box-shadow: inset 0 3px 0 #facc15;
+}
+
+.agent-table-head .col-acciones {
+  box-shadow: inset 0 3px 0 var(--ui-primary);
+}
+
+.agent-table tbody td {
+  padding: 13px 12px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  color: var(--ui-text-strong);
+  vertical-align: middle;
+}
+
+.agent-table tbody tr:nth-child(even) {
+  background: rgba(51, 49, 68, 0.03);
+}
+
+.agent-table tbody tr:hover {
+  background: rgba(26, 154, 214, 0.08);
+}
+
+.cell-id {
+  font-weight: 700;
+  color: #0f4c81;
+}
+
+.cell-procesado {
+  background: rgba(34, 197, 94, 0.08);
+}
+
+.cell-cuenta {
+  color: #6d28d9;
+  font-weight: 600;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+}
+
+.cell-farmacia {
+  color: #9a3412;
+  font-weight: 600;
+}
+
+.cell-fecha {
+  color: #0f766e;
+  font-variant-numeric: tabular-nums;
+}
+
+.cell-acciones {
+  white-space: nowrap;
+}
+
+.form-check-input {
+  cursor: pointer;
+  border-color: rgba(22, 163, 74, 0.45);
+}
+
+.form-check-input:checked {
+  background-color: #16a34a;
+  border-color: #16a34a;
+}
+
+.action-icon {
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease, background 0.2s ease, color 0.2s ease;
+}
+
+.edit-icon {
+  color: #1d4ed8;
+  background: rgba(29, 78, 216, 0.12);
+}
+
+.estado-icon {
+  color: #0f766e;
+  background: rgba(15, 118, 110, 0.12);
+}
+
+.action-icon:hover {
+  transform: translateY(-1px);
+}
+
+.edit-icon:hover {
+  background: rgba(29, 78, 216, 0.2);
+}
+
+.estado-icon:hover {
+  background: rgba(15, 118, 110, 0.2);
+}
+
+:host ::ng-deep .dashboard-shell .dataTables_wrapper .dataTables_length,
+:host ::ng-deep .dashboard-shell .dataTables_wrapper .dataTables_filter,
+:host ::ng-deep .dashboard-shell .dataTables_wrapper .dataTables_info {
+  color: var(--ui-text-light);
+  margin-top: 10px;
+}
+
+:host ::ng-deep .dashboard-shell .dataTables_wrapper .dataTables_length label,
+:host ::ng-deep .dashboard-shell .dataTables_wrapper .dataTables_filter label {
+  color: var(--ui-text-strong);
+  font-weight: 600;
+}
+
+:host ::ng-deep .dashboard-shell .dataTables_wrapper .dataTables_filter input,
+:host ::ng-deep .dashboard-shell .dataTables_wrapper .dataTables_length select {
+  height: 38px;
+  border-radius: var(--ui-radius-md) !important;
+  border: 1px solid rgba(0, 0, 0, 0.12) !important;
+  padding: 6px 10px;
+}
+
+:host ::ng-deep .dashboard-shell .dataTables_wrapper .dataTables_filter input:focus,
+:host ::ng-deep .dashboard-shell .dataTables_wrapper .dataTables_length select:focus {
+  outline: none;
+  border-color: var(--ui-primary) !important;
+  box-shadow: 0 0 0 4px rgba(26, 154, 214, 0.2) !important;
+}
+
+:host ::ng-deep .dashboard-shell .dataTables_wrapper .dataTables_paginate .paginate_button {
+  border-radius: 10px !important;
+  border: 1px solid rgba(0, 0, 0, 0.1) !important;
+  background: #fff !important;
+  color: var(--ui-text-strong) !important;
+  padding: 6px 12px !important;
+}
+
+:host ::ng-deep .dashboard-shell .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+  background: rgba(26, 154, 214, 0.1) !important;
+  border-color: rgba(26, 154, 214, 0.35) !important;
+}
+
+@media (max-width: 768px) {
+  .dashboard-shell {
+    padding: 16px;
+  }
+
+  .agent-table-head th {
+    font-size: 11px;
+    padding: 10px;
+  }
+
+  .agent-table tbody td {
+    padding: 10px;
+  }
 }

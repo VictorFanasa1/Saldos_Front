@@ -5,6 +5,7 @@ import { Ubicacion } from 'src/app/core/shared/ubicaciones.model';
 import { CrearUsuarioDto, Usuario } from 'src/app/core/shared/Usuarios.model';
 import { concatMap, tap } from 'rxjs/operators';
 import { Observable } from 'rxjs';
+import { UiService } from 'src/app/shared/service/ui.service';
 @Component({
   selector: 'app-configuraciones',
   templateUrl: './configuraciones.component.html',
@@ -16,16 +17,27 @@ export class ConfiguracionesComponent implements OnInit {
     roles: RolesModel[] = [];
     ubicacionesAsignadas: [] = []
   searchTerm: string = '';
-
+  rol = "0"
   selectedUsuario: Usuario | null = null;
+  selectedUbicaciones: number[] = [];
   newUserPayload: Usuario | null = null;
+  newUserUbicaciones: number[] = [];
   isSaving: boolean = false;
-
+ showfirstcard= true;
   errorMessage: string = '';
 
-  constructor(private usuarioService:  SaldosService) { }
+  constructor(private usuarioService:  SaldosService, private ui: UiService) { }
 
   ngOnInit(): void {
+    this.rol = localStorage.getItem('id_rol') ?? '0'
+
+    if(this.rol == '3'){
+      this.setMenuAdmin()
+      this.showfirstcard = false
+    }else{
+      this.setMenu();
+      this.showfirstcard = true
+    }
     this.iniciarCargaSecuencial()
     this.newUserPayload =  {
         uiRow: 0,
@@ -38,10 +50,25 @@ export class ConfiguracionesComponent implements OnInit {
         ubicacion: '',
         nombre_usuario_ad: '',
         id_grupo: '',
-        password: ''
+        password: '',
+        correo: ''
       }
+    this.newUserUbicaciones = [];
   }
-
+ setMenu(){
+    this.ui.showNavbar(true)
+              this.ui.showAdmin(true)
+              this.ui.showHeaderset(true)
+              this.ui.showrRepresentante(false)
+               this.ui.showAdminDownSet(false)
+  }
+  setMenuAdmin(){
+    this.ui.showNavbar(true)
+              this.ui.showAdmin(false)
+              this.ui.showHeaderset(true)
+              this.ui.showrRepresentante(false)
+              this.ui.showAdminDownSet(true)
+  }
 iniciarCargaSecuencial(): void {
   this.loadUbicaciones$().pipe(
 
@@ -115,6 +142,8 @@ getNombreUbicacion(idUbicacion?: string | null): string {
   onEdit(usuario: Usuario): void {
     // Clonamos para no tocar el original hasta guardar
     this.selectedUsuario = { ...usuario };
+    //this.selectedUsuario.id_rol = 0
+    this.selectedUbicaciones = this.parseUbicaciones(this.selectedUsuario.ubicacion);
     this.errorMessage = '';
   }
 
@@ -124,18 +153,26 @@ getNombreUbicacion(idUbicacion?: string | null): string {
 
     this.isSaving = true;
     this.errorMessage = '';
-
+    let grupo = "0"
+   
+    if(this.selectedUsuario.id_rol === 3){
+      grupo = "2"
+    }else if(this.selectedUsuario.id_rol === 4){
+      grupo = "1"
+    }
     const id = this.selectedUsuario.uiRow;
     // Armamos el DTO sin uiRow, dtCreate y dtModificacion si tu API lo requiere
     const payload: CrearUsuarioDto = {
       uiRow: id,
       uiIdUsuario: this.selectedUsuario.uiIdUsuario,
       nombreUsario: this.selectedUsuario.nombreUsario,
-      ubicacion: this.selectedUsuario.ubicacion?.toString(),
+      ubicacion: this.joinUbicaciones(this.selectedUbicaciones),
       id_rol: this.selectedUsuario.id_rol,
       id_usuario_excel: this.selectedUsuario.id_usuario_excel,
-      id_grupo: this.selectedUsuario.id_grupo
+      id_grupo: grupo,
+      correo: this.selectedUsuario.correo
     };
+    this.selectedUsuario.ubicacion = payload.ubicacion;
 
     this.usuarioService.updateUsuario(id, payload).subscribe({
       next: () => {
@@ -167,18 +204,23 @@ getNombreUbicacion(idUbicacion?: string | null): string {
 
     this.isSaving = true;
     this.errorMessage = '';
-
-
+    let grupo = "0"
+    if(this.newUserPayload.id_rol === 3){
+      grupo = "2"
+    }else if(this.newUserPayload.id_rol === 4){
+      grupo = "1"
+    }
+ 
     const payload: CrearUsuarioDto = {
       uiRow: 0,
       uiIdUsuario: this.newUserPayload.uiIdUsuario,
       nombreUsario: this.newUserPayload.nombreUsario,
       nombre_usuario_ad: this.newUserPayload.nombre_usuario_ad,
       password: this.newUserPayload.password,
-      ubicacion: this.newUserPayload.ubicacion?.toString(),
+      ubicacion: this.joinUbicaciones(this.newUserUbicaciones),
       id_rol: this.newUserPayload.id_rol,
       id_usuario_excel: this.newUserPayload.id_usuario_excel,
-      id_grupo: this.newUserPayload.id_grupo
+      id_grupo: grupo
     };
 
      this.usuarioService.createUsuario( payload).subscribe({
@@ -191,7 +233,7 @@ getNombreUbicacion(idUbicacion?: string | null): string {
           const modal = (window as any).bootstrap?.Modal.getInstance(modalEl)
             || new (window as any).bootstrap.Modal(modalEl);
           modal.hide();
-          location.reload();
+          //location.reload();
         }
       },
       error: (err) => {
@@ -200,6 +242,27 @@ getNombreUbicacion(idUbicacion?: string | null): string {
         this.errorMessage = 'Ocurrió un error al guardar los cambios.';
       }
     });
+  }
+
+  getNombreUbicaciones(ubicaciones?: string | null): string {
+    const ids = this.parseUbicaciones(ubicaciones);
+    if (ids.length === 0) return 'Sin ubicaciИn';
+    return ids.map(id => this.getNombreUbicacion(String(id))).join(', ');
+  }
+
+  private parseUbicaciones(value?: string | null): number[] {
+    if (!value) return [];
+    return value
+      .split(',')
+      .map(v => Number(v.trim()))
+      .filter(v => !Number.isNaN(v));
+  }
+
+  private joinUbicaciones(ids: number[]): string {
+    return (ids || [])
+      .filter(v => typeof v === 'number' && Number.isFinite(v))
+      .map(String)
+      .join(',');
   }
 
 }

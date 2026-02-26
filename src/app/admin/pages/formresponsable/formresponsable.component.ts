@@ -6,6 +6,8 @@ import {
   OnDestroy,
   OnInit,
   ViewChild,
+  ViewChildren,
+  QueryList,
 } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import {
@@ -18,6 +20,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { take } from 'rxjs/operators';
 import { AuthService } from 'src/app/core/services/auth.service';
 import { SaldosService } from 'src/app/core/services/saldos.service';
+import { SendMailBodyRequest } from 'src/app/core/shared/sendMailClient.Model';
 import { UiService } from 'src/app/shared/service/ui.service';
 import Swal from 'sweetalert2';
 declare const L: any;
@@ -28,7 +31,7 @@ declare const L: any;
   templateUrl: './formresponsable.component.html',
   styleUrls: ['./formresponsable.component.css'],
 })
-export class FormresponsableComponent implements OnInit {
+export class FormresponsableComponent implements OnInit, AfterViewInit {
   id!: number;
   flag!: number;
   formularioaadminsinincidencia: FormGroup;
@@ -55,6 +58,14 @@ export class FormresponsableComponent implements OnInit {
   firmaSafeUrl?: SafeUrl;
   primerbloque = true;
   segundobloque = true;
+  expectedOtp = '';
+  otpDigits: string[] = Array(6).fill('');
+  otpError = '';
+  otpSuccess = false;
+  otpValidated = false;
+  otpEmail = '';
+  otpRequesting = false;
+  @ViewChildren('otpInput') otpInputs!: QueryList<ElementRef<HTMLInputElement>>;
   @ViewChild('osmMap', { static: false }) mapEl!: ElementRef<HTMLDivElement>;
   private map: any;
   private marker: any;
@@ -129,11 +140,12 @@ export class FormresponsableComponent implements OnInit {
     const idgrupo = localStorage.getItem('id_grupo');
     this.rol = localStorage.getItem('id_rol') ?? '0'
 
-    if(this.rol == '3'){
-     this.setMenuAdmin()
+    if(this.rol == '3' || this.rol == '4'){
+      this.setMenuAdmin()
+      
     }else{
       this.setMenu();
-
+     
     }
     if (idgrupo == '1') {
       this.primerbloque = true;
@@ -191,7 +203,16 @@ export class FormresponsableComponent implements OnInit {
     await this.cargaSecuencial();
     await this.buildMapp();
   }
-  ngAfterViewInit(): void {}
+  ngAfterViewInit(): void {
+    this.otpInputs?.changes.subscribe(() => {
+      if (!this.otpValidated) {
+        setTimeout(() => this.focusOtp(0), 0);
+      }
+    });
+    if (!this.otpValidated) {
+      setTimeout(() => this.focusOtp(0), 0);
+    }
+  }
 
    setMenu(){
     this.ui.showNavbar(true)
@@ -287,6 +308,8 @@ export class FormresponsableComponent implements OnInit {
     this.latitud = dto[0].lat;
     this.longitud = dto[0].long;
     this.iddelestatus = dto[0].id_estatus_cuenta
+    this.expectedOtp = String(dto[0].otp ?? '').trim();
+    this.otpValidated = !this.expectedOtp;
     this.formularioagenteEvidencias.patchValue({
       estatusName: dto[0].id_estatus_cuenta ?? 0
     })
@@ -442,6 +465,112 @@ export class FormresponsableComponent implements OnInit {
     // Si quieres, guarda solo el nombre en el form:
     this.formularioagenteEvidencias.patchValue({
       evidencia: this.archivoSeleccionado.name,
+    });
+  }
+
+  onOtpInput(event: Event, index: number) {
+    const input = event.target as HTMLInputElement;
+    const digit = (input.value || '').replace(/\D/g, '').slice(-1);
+    this.otpDigits[index] = digit;
+    input.value = digit;
+    if (this.otpError) this.otpError = '';
+    if (this.otpSuccess) this.otpSuccess = false;
+
+    if (digit && index < this.otpDigits.length - 1) {
+      this.focusOtp(index + 1);
+    }
+
+    if (this.otpDigits.join('').length === this.otpDigits.length) {
+      this.validateOtp();
+    }
+  }
+
+  onOtpKeydown(event: KeyboardEvent, index: number) {
+    if (event.key === 'Backspace' && !this.otpDigits[index] && index > 0) {
+      this.otpDigits[index - 1] = '';
+      this.focusOtp(index - 1);
+    }
+    if (event.key === 'ArrowLeft' && index > 0) {
+      this.focusOtp(index - 1);
+    }
+    if (event.key === 'ArrowRight' && index < this.otpDigits.length - 1) {
+      this.focusOtp(index + 1);
+    }
+  }
+
+  private focusOtp(index: number) {
+    const el = this.otpInputs?.toArray()[index];
+    el?.nativeElement?.focus();
+    el?.nativeElement?.select?.();
+  }
+
+  validateOtp() {
+    const code = this.otpDigits.join('');
+    if (code.length < this.otpDigits.length) {
+      this.otpSuccess = false;
+      this.otpError = 'Ingresa los 6 digitos';
+      return;
+    }
+    if (!this.expectedOtp) {
+      this.otpSuccess = true;
+      this.otpValidated = true;
+      return;
+    }
+    if (code === this.expectedOtp) {
+      this.otpSuccess = true;
+      this.otpError = '';
+    } else {
+      this.otpSuccess = false;
+      this.otpError = 'Codigo incorrecto';
+      this.otpDigits = Array(6).fill('');
+      setTimeout(() => this.focusOtp(0), 0);
+    }
+  }
+
+  confirmOtp() {
+    if (!this.otpSuccess) {
+      this.validateOtp();
+      return;
+    }
+    this.otpValidated = true;
+    this.otpError = '';
+  }
+
+  requestOtp() {
+    const correo = (this.otpEmail || '').trim();
+    if (!correo) {
+      Swal.fire({
+        title: 'Hey!',
+        icon: 'info',
+        text: 'Ingresa un correo para solicitar el codigo OTP',
+      });
+      return;
+    }
+
+    const payload: SendMailBodyRequest = {
+      id: this.id,
+      farmacia: this.formularioaadminsinincidencia.value.nombreCorto ?? '',
+      correo,
+    };
+
+    this.otpRequesting = true;
+    this.saldosservice.sendMailtoClient(payload).subscribe({
+      next: () => {
+        this.otpRequesting = false;
+        Swal.fire({
+          title: 'Listo',
+          icon: 'success',
+          text: 'Enviamos el codigo a tu correo',
+        });
+      },
+      error: () => {
+        this.otpRequesting = false;
+        Swal.fire({
+          title: 'Error',
+          icon: 'error',
+          text: 'No pudimos enviar el codigo, valida el correo o tu conexion.',
+        });
+      },
     });
   }
 

@@ -1,125 +1,111 @@
-<div class="login-wrap">
-  <!-- Fondo decorativo con ondas -->
-  <div class="login-bg"></div>
+<div class="login-shell">
+  <div class="login-ambient"></div>
 
-  <div class="container py-5">
-    <div class="row justify-content-center">
-      <div class="col-sm-10 col-md-7 col-lg-5 col-xl-4">
-        <div class="card login-card shadow-lg border-0">
-          <div class="card-body p-4 p-md-5">
-            <div class="text-center mb-4">
-              <div class="logo-badge mx-auto mb-3">
-                <!-- Estetoscopio / cruz médica -->
-               <img src="./assets/icons/saldosicon512x512.png" alt="" width="100%">
-              </div>
-              <!--<h1 class="h4 fw-semibold mb-1 text-primary-800">Saldos</h1>
-              <p class="text-secondary-600 small mb-0">Acceso seguro al panel</p>-->
-            </div>
+  <main class="login-main" role="main">
+    <section class="login-card" [class.shake]="shakeCard">
+      <header class="logo-block">
+        <div class="logo-circle">
+          <img src="./assets/icons/saldosicon512x512.png" alt="Logo de Saldos" />
+        </div>
+        <h1 class="login-title">Saldos</h1>
+        <p class="login-subtitle">Plataforma financiera corporativa</p>
+      </header>
 
-            <form #loginForm="ngForm" (ngSubmit)="onSubmit()" novalidate>
-              <!-- Usuario -->
-              <div class="mb-3">
-                <label for="username" class="form-label">Usuario</label>
-                <div class="input-group input-group-lg">
-                  <span class="input-group-text">
-                    <i class="bi bi-person"></i>
-                  </span>
-                  <input
-                    id="username"
-                    class="form-control"
-                    [(ngModel)]="username"
-                    name="username"
-                    required
-                    autocomplete="username"
-                    [class.is-invalid]="loginForm.submitted && !username"
-                    placeholder="tu.usuario@empresa"
-                  />
-                  <div class="invalid-feedback">Ingresa tu usuario.</div>
-                </div>
-              </div>
-
-              <!-- Contraseña -->
-              <div class="mb-2">
-                <label for="password" class="form-label">Contraseña</label>
-                <div class="input-group input-group-lg">
-                  <span class="input-group-text">
-                    <i class="bi bi-shield-lock"></i>
-                  </span>
-                  <input
-                    id="password"
-                    [type]="showPassword ? 'text' : 'password'"
-                    class="form-control"
-                    [(ngModel)]="password"
-                    name="password"
-                    required
-                    autocomplete="current-password"
-                    [class.is-invalid]="loginForm.submitted && !password"
-                    placeholder="••••••••"
-                  />
-                  <button type="button"
-                          class="btn btn-outline-secondary px-3"
-                          (click)="showPassword = !showPassword"
-                          aria-label="Mostrar/ocultar contraseña">
-                    <i class="bi" [ngClass]="showPassword ? 'bi-eye-slash' : 'bi-eye'"></i>
-                  </button>
-                  <div class="invalid-feedback">Ingresa tu contraseña.</div>
-                </div>
-              </div>
-
-
-              <!-- Botón -->
-              <button class="btn btn-primary btn-lg w-100 d-flex align-items-center justify-content-center gap-2"
-                      type="submit"
-                      [disabled]="loading">
-                <span *ngIf="!loading">Entrar</span>
-                <span *ngIf="loading" class="d-inline-flex align-items-center gap-2">
-                  <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-                  Verificando…
-                </span>
-              </button>
-
-              <!-- Version -->
-              <div class="text-center mt-3">
-                <span class="badge rounded-pill bg-soft-primary text-primary-800" style="color: black !important;">V 1.0.10
-
-                </span>
-              </div>
-            </form>
-
+      <form #loginForm="ngForm" (ngSubmit)="onSubmit(loginForm)" novalidate aria-label="Formulario de acceso">
+        <div class="field-group">
+          <label for="username">Usuario</label>
+          <div class="input-shell" [class.invalid]="formSubmitted && usernameModel.invalid">
+            <span class="field-icon left" aria-hidden="true">
+              <i class="bi bi-person"></i>
+            </span>
+            <input
+              id="username"
+              #usernameModel="ngModel"
+              type="text"
+              name="username"
+              [(ngModel)]="username"
+              required
+              autocomplete="username"
+              placeholder="tu.usuario@empresa"
+              [attr.aria-invalid]="formSubmitted && usernameModel.invalid ? 'true' : 'false'"
+              aria-describedby="username-help username-error"
+            />
           </div>
+          <p id="username-help" class="field-help">Usa tu usuario corporativo.</p>
+          <p id="username-error" class="field-error" *ngIf="formSubmitted && usernameModel.invalid">
+            Ingresa tu usuario.
+          </p>
         </div>
 
-        <!-- Footer mini -->
-        <div class="text-center mt-3">
-          <small class="text-secondary-600">© {{ currentYear }} Saldos ·</small>
+        <div class="field-group">
+          <label for="password">Contraseña</label>
+          <div class="input-shell" [class.invalid]="formSubmitted && passwordModel.invalid">
+            <span class="field-icon left" aria-hidden="true">
+              <i class="bi bi-shield-lock"></i>
+            </span>
+            <input
+              id="password"
+              #passwordModel="ngModel"
+              [type]="showPassword ? 'text' : 'password'"
+              name="password"
+              [(ngModel)]="password"
+              required
+              autocomplete="current-password"
+              placeholder="••••••••"
+              [attr.aria-invalid]="formSubmitted && passwordModel.invalid ? 'true' : 'false'"
+              aria-describedby="password-help password-error"
+            />
+            <button
+              type="button"
+              class="field-icon-btn"
+              (click)="togglePasswordVisibility()"
+              [attr.aria-label]="showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'"
+              [attr.aria-pressed]="showPassword"
+            >
+              <i class="bi" [ngClass]="showPassword ? 'bi-eye-slash' : 'bi-eye'"></i>
+            </button>
+          </div>
+          <p id="password-help" class="field-help">Debe coincidir con tu acceso corporativo.</p>
+          <p id="password-error" class="field-error" *ngIf="formSubmitted && passwordModel.invalid">
+            Ingresa tu contraseña.
+          </p>
         </div>
-      </div>
-    </div>
-  </div>
+
+        <div class="form-links">
+          <a href="#" class="secondary-link" (click)="$event.preventDefault()">¿Olvidaste tu contraseña?</a>
+        </div>
+
+        <button class="login-submit" type="submit" [disabled]="loading" [attr.aria-busy]="loading">
+          <span *ngIf="!loading">Entrar</span>
+          <span *ngIf="loading" class="loading-content">
+            <span class="loading-spinner" role="status" aria-hidden="true"></span>
+            Verificando...
+          </span>
+        </button>
+
+        <div class="version-wrap">
+          <span class="version-pill">v 1.0.15</span>
+        </div>
+      </form>
+    </section>
+
+    <p class="login-footer">© 2026 Saldos</p>
+  </main>
 </div>
-
 
 <div *ngIf="(canInstall$ | async)" class="install-banner">
-  <div class="install-text">
-    ¿Quieres instalar <b>SaldosApp</b> para un acceso más rápido?
-  </div>
+  <div class="install-text">¿Quieres instalar <b>SaldosApp</b> para un acceso más rápido?</div>
   <div class="install-actions">
-    <button class="btn-primary" (click)="instalar()">Instalar</button>
+    <button class="install-btn" (click)="instalar()">Instalar</button>
   </div>
 </div>
 
-<!-- Pista para iOS (no hay beforeinstallprompt) -->
- <div class="row">
-  <div class="col-12" style="text-align: center;">
-    <div *ngIf="showIosHint" class="install-banner ios">
+<div *ngIf="showIosHint" class="install-banner ios">
   <div class="install-text">
     Para instalar en iPhone/iPad: toca <b>Compartir</b> (<span aria-label="share">⬆️</span>) y luego
     <b>Añadir a pantalla de inicio</b>.
   </div>
   <div class="install-actions">
-    <button class="btn btn-primary btn-lg w-100 d-flex align-items-center justify-content-center gap-2" (click)="cerrarIosHint()">Cerrar</button>
+    <button class="install-btn" (click)="cerrarIosHint()">Cerrar</button>
   </div>
 </div>
-  </div>
- </div>
-

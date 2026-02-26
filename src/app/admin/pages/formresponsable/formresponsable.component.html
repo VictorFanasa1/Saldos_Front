@@ -1,4 +1,70 @@
-<section class="min-vh-100">
+<!--<div class="otp-overlay" *ngIf="!otpValidated">
+  <div class="otp-modal card shadow-lg border-0">
+    <div class="card-body">
+      <h4 class="mb-2">Validar codigo OTP</h4>
+      <p class="text-muted mb-3">Ingresa los 6 digitos que recibiste.</p>
+
+      <div class="otp-inputs">
+        <input
+          *ngFor="let digit of otpDigits; let i = index"
+          #otpInput
+          class="form-control otp-box"
+          [ngClass]="{ 'otp-box-success': otpSuccess, 'otp-box-error': otpError }"
+          type="text"
+          inputmode="numeric"
+          maxlength="1"
+          autocomplete="one-time-code"
+          [ngModelOptions]="{ standalone: true }"
+          [(ngModel)]="otpDigits[i]"
+          [name]="'otp'+i"
+          (input)="onOtpInput($event, i)"
+          (keydown)="onOtpKeydown($event, i)"
+        />
+      </div>
+
+      <div class="mt-3" *ngIf="otpError || otpSuccess">
+        <small class="text-success" *ngIf="otpSuccess">Codigo correcto</small>
+        <small class="text-danger" *ngIf="otpError">{{ otpError }}</small>
+      </div>
+
+      <button
+        *ngIf="otpSuccess"
+        type="button"
+        class="btn btn-success w-100 mt-3"
+        (click)="confirmOtp()"
+      >
+        Continuar
+      </button>
+
+      <div class="otp-request mt-4">
+        <p class="text-muted mb-2">
+          No tienes el codigo? Solicitalo y lo enviaremos a tu correo.
+        </p>
+        <div class="input-group">
+          <input
+            type="email"
+            class="form-control"
+            placeholder="Correo para enviar el codigo"
+            [ngModelOptions]="{ standalone: true }"
+            [(ngModel)]="otpEmail"
+            name="otpEmail"
+          />
+          <button
+            class="btn btn-outline-primary"
+            type="button"
+            (click)="requestOtp()"
+            [disabled]="otpRequesting"
+          >
+            {{ otpRequesting ? 'Enviando...' : 'Solicitar codigo' }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  [class.blur-content]="!otpValidated"
+</div>-->
+
+<section class="min-vh-100" >
   <div class="container">
     <div class="row justify-content-center">
       <div class="col-12 col-lg-6">

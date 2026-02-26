@@ -7,7 +7,7 @@ import { SaldosService } from 'src/app/core/services/saldos.service';
 import { AdmCuentasSaldos } from 'src/app/core/shared/cuentasagente.model';
 import { IncidenciasRequest } from 'src/app/core/shared/cuentasrowResponse.model';
 import { AuthService } from 'src/app/core/services/auth.service';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { UiService } from 'src/app/shared/service/ui.service';
 import Swal from 'sweetalert2';
 declare const $: any;
@@ -41,7 +41,7 @@ periodoFin?: string;
 rol = "0"
    private readonly USER_KEY = 'app_user';
   private readonly USER_ID = 'app_user_id';
-  constructor(private excelSvc: SaldosService, private auth: AuthService, private router: Router, private ui: UiService, private cdr: ChangeDetectorRef) { }
+  constructor(private excelSvc: SaldosService, private route: ActivatedRoute, private auth: AuthService, private router: Router, private ui: UiService, private cdr: ChangeDetectorRef) { }
 
 get finMin(): string {
   return this.periodoInicio ?? this.todayISO;
@@ -174,10 +174,10 @@ private addMonths(d: Date, months: number): Date {
 
 
   ngOnInit(): void {
-
+    this.reloadModule()
     this.rol = localStorage.getItem('id_rol') ?? '0'
-
-    if(this.rol == '3'){
+   
+    if(this.rol == '3' || this.rol == '4'){
       this.setMenuAdmin()
       this.showfirstcard = false
     }else{
@@ -185,6 +185,20 @@ private addMonths(d: Date, months: number): Date {
       this.showfirstcard = true
     }
 
+  }
+
+  reloadModule(){
+    this.route.queryParams.subscribe(params => {
+    if (!params['reloaded']) {
+      this.router.navigate([], {
+        relativeTo: this.route,
+        queryParams: { reloaded: 'true' },
+        queryParamsHandling: 'merge'
+      }).then(() => {
+        location.reload(); // Recarga una vez y la URL tendrá el parámetro
+      });
+    }
+  });
   }
   setMenu(){
     this.ui.showNavbar(true)
@@ -304,6 +318,7 @@ private addMonths(d: Date, months: number): Date {
                 console.log('username:', u?.username);
                 usuario = this.apellidosLuegoNombres(u?.username ?? '')
               });
+              
       this.excelSvc.consultaporidecuentaconincidenciabygerente(usuario ?? '' ).subscribe({
           next: (res)=>{
           this.datoscuenta = res
@@ -348,7 +363,10 @@ private addMonths(d: Date, months: number): Date {
                 console.log('username:', u?.username);
                 usuario = this.apellidosLuegoNombres(u?.username ?? '')
               });
-      this.excelSvc.consultaporidecuentasinincidenciabygerente(usuario ?? '' ).subscribe({
+              let ubicacion :string | null = null;
+      ubicacion = localStorage.getItem('ubicacion')
+      const ubicacionSegura = ubicacion ?? ''; 
+      this.excelSvc.consultaporidecuentasinincidenciabygerente(usuario ?? '', ubicacionSegura ).subscribe({
           next: (res)=>{
           this.datoscuentaS = res
           this.buildDT();

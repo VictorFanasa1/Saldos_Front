@@ -18,6 +18,8 @@ export interface CuentasSaldosPreguntasDto {
   lat: string;
   longi: string;
   firma:string;
-  tipo_incidencia: string
+  tipo_incidencia: string,
+  ubicacion: string,
+  CorreoCliente: string
 }
 

@@ -7,9 +7,52 @@
 
             <h5 class="mb-4">Confirmación de cliente</h5>
             <form [formGroup]="formularioagente" (ngSubmit)="grabarRespuestas()" class="border p-4 shadow-sm bg-light">
+              <div class="position-relative">
+                <div *ngIf="submitting"
+                  class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center bg-white bg-opacity-75"
+                  style="z-index: 10;">
+                  <div class="text-center">
+                    <div class="spinner-border text-primary" role="status" aria-label="Cargando"></div>
+                    <div class="mt-2">Registrando...</div>
+                  </div>
+                </div>
+                <ng-container *ngIf="!otpConfirmado">
+                  <div class="modal-backdrop fade show"></div>
+                  <div class="modal d-block" tabindex="-1" role="dialog" aria-modal="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h5 class="modal-title">Verificacion OTP</h5>
+                        </div>
+                        <div class="modal-body">
+                          <p class="mb-3">Ingresa tu correo y el codigo OTP para continuar.</p>
+                          <div class="mb-3">
+                            <label class="form-label">Correo</label>
+                            <input type="email" class="form-control" placeholder="Correo electronico"
+                              formControlName="correocliente">
+                          </div>
+                          <div class="mb-3">
+                            <label class="form-label">Codigo OTP</label>
+                            <input type="text" class="form-control" placeholder="Ingresa el codigo" maxlength="6"
+                              formControlName="otp">
+                          </div>
+                          <div class="d-flex gap-2">
+                            <button type="button" class="btn btn-outline-primary" (click)="enviarotp()">
+                              Solicitar OTP
+                            </button>
+                            <button type="button" class="btn btn-primary" (click)="confirmarOtp()">
+                              Continuar
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </ng-container>
+                <div [class.opacity-50]="!otpConfirmado || submitting" [class.pe-none]="!otpConfirmado || submitting">
               <!-- Datos básicos -->
               <div class="row g-3">
-                <div class="col-12">
+                <!--<div class="col-12">
                   <div class="row align-items-center">
                     <label class="col-md-5 col-form-label">Confirmación de cliente:</label>
                     <div class="col-md-7">
@@ -38,13 +81,13 @@
                         </div>
                         <div class="col-4 text-end">
                           <button type="button" class="btn btn-primary w-100 w-md-auto" (click)="enviarotp()"
-                            *ngIf="cargandos">Solicitar OTP</button>
+                            *ngIf="cargandos">Solicitar OTP</button> 
                         </div>
                       </div>
                     </div>
 
                   </div>
-                </div>
+                </div> -->
 
                 <div class="col-12">
                   <div class="row align-items-center">
@@ -327,15 +370,17 @@
 
               <!-- Botón -->
               <div class="text-center mt-4" *ngIf="visibleBtnGuardar">
-                <button type="submit" class="btn btn-primary px-4">
+                <button type="submit" class="btn btn-primary px-4" [disabled]="submitting">
                   Grabar
                 </button>
               </div>
 
               <div class="text-center mt-4">
-                <button type="button" class="btn btn-danger px-4" (click)="volver()">
+                <button type="button" class="btn btn-danger px-4" (click)="volver()" [disabled]="submitting">
                   Regresar
                 </button>
+              </div>
+                </div>
               </div>
             </form>
           </div>

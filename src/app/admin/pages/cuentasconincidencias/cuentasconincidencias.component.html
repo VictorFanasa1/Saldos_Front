@@ -23,7 +23,7 @@
                     <td>{{ item.folio_soporte }}</td>
                     <td> {{item.tipo_incidencia}}</td>
                     <td>{{ item.cuenta_oracle }}</td>
-                    <td>{{ item.created_at  }}</td>
+                    <td>{{ item.fecha_creacion_incidencia   | date: 'dd/MM/yyyy' }}</td>
                     <td> {{item.estatus}} </td>
                     <td> {{ item.fecha_solucion }}</td>
                     <td> {{ item.usuario_actualiza}} </td>

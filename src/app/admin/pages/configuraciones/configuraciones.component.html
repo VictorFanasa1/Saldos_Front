@@ -38,7 +38,7 @@
           <p class="card-text mb-1">
             <strong>Ubicación:</strong>
             <span *ngIf="usuario.ubicacion; else sinUbicacion">
-              {{ getNombreUbicacion(usuario.ubicacion) }}
+              {{ getNombreUbicaciones(usuario.ubicacion) }}
             </span>
             <ng-template #sinUbicacion>Sin ubicación</ng-template>
           </p>
@@ -132,11 +132,19 @@
               [(ngModel)]="selectedUsuario.id_usuario_excel">
           </div>
 
+          <div class="col-md-6">
+            <label class="form-label">Correo</label>
+            <input
+              type="text"
+              class="form-control"
+              [(ngModel)]="selectedUsuario.correo">
+          </div>
+
             <div class="col-md-6">
                 <label class="form-label">Ubicación (IdUbicacion)</label>
                 <select
                     class="form-select"
-                    [(ngModel)]="selectedUsuario.ubicacion">
+                    [(ngModel)]="selectedUbicaciones" multiple>
                     <option [ngValue]="null">-- Selecciona una ubicación --</option>
                     <option
                     *ngFor="let ub of ubicaciones"
@@ -241,7 +249,7 @@ class="modal fade"
                             <option
                             *ngFor="let ub of roles"
                             [ngValue]="ub.idRol">
-                            {{ ub.nombre }}
+                            {{ub.idRol}} - {{ ub.nombre }}
                             </option>
                         </select>
                 </div>
@@ -249,7 +257,7 @@ class="modal fade"
                     <label class="form-label">Ubicación (IdUbicacion)</label>
                     <select
                         class="form-select"
-                        [(ngModel)]="newUserPayload.ubicacion">
+                        [(ngModel)]="newUserUbicaciones" multiple>
                         <option [ngValue]="null">-- Selecciona una ubicación --</option>
                         <option
                         *ngFor="let ub of ubicaciones"
@@ -267,11 +275,11 @@ class="modal fade"
                 </div>
 
                  <div class="col-md-6">
-                    <!--<label for="form-label">Password</label>
+                    <label for="form-label">Correo</label>
                     <input
-                    type="text"
+                    type="email"
                     class="form-control"
-                    [(ngModel)]="newUserPayload.password"> -->
+                    [(ngModel)]="newUserPayload.correo">
                 </div>
             </div>
             <div *ngIf="errorMessage" class="alert alert-danger mt-3">

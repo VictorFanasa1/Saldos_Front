@@ -65,6 +65,7 @@ export interface IncidenciasRequest {
   pp_usuario_registra: string | null;
   pp_usuario_actualiza: string | null;
   p1_razon: string | null;
+  fecha_creacion_incidencia: string;
   p2_razon: string | null;
   p3_razon: string | null;
   p4_razon: string | null;

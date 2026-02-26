@@ -1,6 +1,20 @@
-/* Dashboard: Carga de informacion */
+:host {
+  --upload-bg: var(--color-bg-app, var(--app-bg));
+  --upload-card: var(--color-card, var(--card-bg));
+  --upload-text-strong: var(--color-text-strong, var(--text-strong));
+  --upload-text-muted: var(--color-text-light, var(--text-muted));
+  --upload-primary: var(--color-primary, var(--primary));
+  --upload-primary-hover: var(--color-primary-hover, var(--primary-hover));
+  --upload-radius-xl: var(--radius-xl, 18px);
+  --upload-radius-md: var(--radius-md, 12px);
+  --upload-shadow: var(--shadow-soft, 0 10px 30px rgba(0, 0, 0, .08));
+  --upload-border: rgba(51, 49, 68, .16);
+  --upload-focus: rgba(26, 154, 214, .25);
+}
+
+/* Estados cuenta: carga de informacion */
 .medical-hero {
-  background: var(--app-bg);
+  background: var(--upload-bg);
   align-items: flex-start !important;
 }
 
@@ -26,10 +40,10 @@
 
 .card-upload {
   backdrop-filter: none;
-  background: var(--card-bg);
-  border: 1px solid var(--border-soft);
-  border-radius: var(--radius-xl);
-  box-shadow: var(--shadow-soft);
+  background: var(--upload-card);
+  border: 1px solid var(--upload-border);
+  border-radius: var(--upload-radius-xl);
+  box-shadow: var(--upload-shadow);
   overflow: hidden;
   transition: transform .2s ease, box-shadow .2s ease;
 }
@@ -55,8 +69,8 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background: rgba(29, 78, 216, .08);
-  color: var(--primary);
+  background: rgba(26, 154, 214, .12);
+  color: var(--upload-primary);
   margin-bottom: 8px;
 }
 
@@ -69,12 +83,12 @@
   font-size: 1.375rem;
   line-height: 1.25;
   font-weight: 700;
-  color: var(--text-strong);
+  color: var(--upload-text-strong);
 }
 
 .item-sub {
   margin: 8px 0 0;
-  color: var(--text-muted);
+  color: var(--upload-text-muted);
 }
 
 .upload-grid {
@@ -94,7 +108,7 @@
 
 .card-upload .form-label {
   margin-bottom: 6px;
-  color: var(--text-strong);
+  color: var(--upload-text-strong);
   font-weight: 600;
 }
 
@@ -102,35 +116,35 @@
 .card-upload input[type='date'],
 .card-upload .form-control {
   height: 46px;
-  border-radius: var(--radius-md) !important;
-  border: 1px solid var(--border-soft) !important;
+  border-radius: var(--upload-radius-md) !important;
+  border: 1px solid var(--upload-border) !important;
   padding: 10px 12px;
-  color: var(--text-strong);
+  color: var(--upload-text-strong);
   background: #fff;
 }
 
 .card-upload input:focus,
 .card-upload .form-control:focus {
-  border-color: var(--primary) !important;
-  box-shadow: 0 0 0 4px var(--focus) !important;
+  border-color: var(--upload-primary) !important;
+  box-shadow: 0 0 0 4px var(--upload-focus) !important;
   outline: none;
 }
 
 .card-upload .text-muted {
-  color: var(--text-muted) !important;
+  color: var(--upload-text-muted) !important;
 }
 
 .actions-row {
   display: flex;
   gap: 12px;
   flex-wrap: wrap;
-  margin-top: 12px;
+  margin-top: 18px;
 }
 
 .actions-row .btn {
   min-height: 44px;
   padding: 10px 16px;
-  border-radius: var(--radius-md) !important;
+  border-radius: var(--upload-radius-md) !important;
   font-weight: 600;
   display: inline-flex;
   align-items: center;
@@ -139,15 +153,15 @@
 }
 
 .btn-primary-modern {
-  background: var(--primary) !important;
-  border: 1px solid var(--primary) !important;
+  background: var(--upload-primary) !important;
+  border: 1px solid var(--upload-primary) !important;
   color: #fff !important;
-  box-shadow: 0 10px 18px rgba(29, 78, 216, .18);
+  box-shadow: 0 10px 18px rgba(26, 154, 214, .22);
 }
 
 .btn-primary-modern:hover {
-  background: var(--primary-hover) !important;
-  border-color: var(--primary-hover) !important;
+  background: var(--upload-primary-hover) !important;
+  border-color: var(--upload-primary-hover) !important;
 }
 
 .btn-primary-modern:disabled {
@@ -158,17 +172,17 @@
 
 .btn-secondary-modern {
   background: #fff !important;
-  border: 1px solid var(--border-soft) !important;
-  color: var(--text-strong) !important;
+  border: 1px solid var(--upload-border) !important;
+  color: var(--upload-text-strong) !important;
 }
 
 .btn-secondary-modern:hover {
-  background: rgba(15, 23, 42, .04) !important;
+  background: rgba(51, 49, 68, .05) !important;
 }
 
 .btn-primary-modern:focus-visible,
 .btn-secondary-modern:focus-visible {
-  box-shadow: 0 0 0 4px var(--focus) !important;
+  box-shadow: 0 0 0 4px var(--upload-focus) !important;
   outline: none;
 }
 
@@ -180,7 +194,7 @@
 }
 
 .card-upload .progress-bar {
-  background: linear-gradient(90deg, #2563eb, #1d4ed8);
+  background: linear-gradient(90deg, var(--upload-primary), var(--upload-primary-hover));
 }
 
 @media (max-width: 768px) {

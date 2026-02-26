@@ -1,49 +1,79 @@
-
-  <div class="container py-5">
-    <div class="row justify-content-center">
-      <div class="col-12 col-lg-12">
-        <div class="card shadow-sm">
-          <div class="card-body">
-            <h1 class="h4 text-center mb-4">Cuentas a confirmación de saldos</h1>
-
-
-            <div class="table-responsive">
-              <table #dTable class="table table-striped table-hover table-sm align-middle mb-0">
-                <thead class="table-light">
-                  <tr>
-                    <th>#</th>
-                    <th>Procesado</th>
-                    <th>Cuenta</th>
-                    <th>Farmacia</th>
-                    <th>Fecha</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr *ngFor="let item of datoscuenta">
-                    <td (click)="goToDetalle(item.uiRow)">{{ item.uiRow }}</td>
-                    <td class="text-center" (click)="$event.stopPropagation()">
-                        <input
-                            class="form-check-input"
-                            type="checkbox"
-                            [checked]="item.bProcesado"
-                            (change)="onProcesadoChange(item, $any($event.target).checked)"
-                            aria-label="Procesado"
-                            readonly
-                        />
-                    </td>
-                    <td>{{ item.sCuentaOracle }}</td>
-                    <td>{{ item.sNombreCorto }}</td>
-                    <td>{{ item.dtModificacion  }}</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-
-
-
+<div class="container py-5 page-shell agente-dashboard dashboard-shell">
+  <div class="row title-row" style="text-align: -webkit-center;">
+    <div class="col-12">
+      <h1 class="h4 text-center mb-4 page-title">Cuentas para confirmacion de saldos</h1>
+    </div>
+    <!--<div class=" col-lg-6  col-12">
+      <div class="card text-white bg-primary mb-3" style="max-width: 18rem;">
+        <div class="card-header">Header</div>
+        <div class="card-body">
+          <h5 class="card-title">Primary card title</h5>
+          <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+        </div>
+      </div>
+    </div>
+    <div class=" col-lg-6 col-12">
+      <div class="card text-white bg-primary mb-3" style="max-width: 18rem;">
+        <div class="card-header">Header</div>
+        <div class="card-body">
+          <h5 class="card-title">Primary card title</h5>
+          <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+        </div>
+      </div>
+    </div> -->
+  </div>
+</div>
+<div class="container py-5 page-shell agente-dashboard dashboard-shell">
+  <div class="row justify-content-center">
+    <div class="col-12 col-lg-12">
+      <div class="card shadow-sm table-card dashboard-card">
+        <div class="card-body">
+          <div class="table-responsive table-wrap">
+            <table #dTable class="table table-striped table-hover table-sm align-middle mb-0 table-modern agent-table">
+              <thead class="table-light table-modern-head agent-table-head">
+                <tr>
+                  <th class="col-id">#</th>
+                  <th class="col-procesado">Procesado</th>
+                  <th class="col-cuenta">Cuenta</th>
+                  <th class="col-farmacia">Farmacia</th>
+                  <th class="col-fecha">Fecha</th>
+                  <th class="col-acciones">Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let item of datoscuenta">
+                  <td class="cell-id">{{ item.uiRow }}</td>
+                  <td class="text-center status-cell cell-procesado" (click)="$event.stopPropagation()">
+                    <input
+                      class="form-check-input"
+                      type="checkbox"
+                      [checked]="item.bProcesado"
+                      (change)="onProcesadoChange(item, $any($event.target).checked)"
+                      aria-label="Procesado"
+                      readonly
+                    />
+                  </td>
+                  <td class="cell-cuenta">{{ item.sCuentaOracle }}</td>
+                  <td class="cell-farmacia">{{ item.sNombreCorto }}</td>
+                  <td class="cell-fecha">{{ item.dtModificacion }}</td>
+                  <td class="cell-acciones" style="cursor: pointer;">
+                    <i
+                      class="bi bi-pencil-fill me-3 action-icon edit-icon"
+                      title="Editar"
+                      (click)="goToDetalle(item.uiRow)"
+                    ></i>
+                    <i
+                      class="bi bi-file-earmark-text-fill action-icon estado-icon"
+                      title="Estado de cuenta"
+                      (click)="goToEstadoCuenta(item.sCuentaOracle)"
+                    ></i>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
       </div>
     </div>
   </div>
-
+</div>

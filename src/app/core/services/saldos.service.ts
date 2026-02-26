@@ -10,13 +10,15 @@ import { getRolUserRequest, UserRolResponse } from '../shared/UserResponseRol';
 import { CuentasSaldosPreguntasDto } from '../shared/cuentasPreguentasRequest';
 import { PreguntasResponse } from '../shared/preguntas.model';
 import { IncidenciasRequest } from '../shared/cuentasrowResponse.model';
-import { environment } from 'src/environments/environment';
+import { environment } from 'src/environments/environment.prod';
 import { ClientsRequest } from '../shared/ClientsRequest.model';
 import { CuentasResponse } from '../shared/CuentasResponse.model';
 import { CrearUsuarioDto, Usuario } from '../shared/Usuarios.model';
 import { CrearUbicacionDto, Ubicacion } from '../shared/ubicaciones.model';
 import { RolesModel } from '../shared/roles.mnodel';
 import { Role } from './auth.service';
+import { RegistroCuentaApi } from '../shared/RegistroCuentaApi.model';
+import { PagedResponse } from '../shared/PagedResponse.model';
 
 @Injectable({
   providedIn: 'root'
@@ -30,8 +32,9 @@ export class SaldosService{
     consultaRegistros():Observable<AdmCuentasSaldos[]> {
       return this.http.get<AdmCuentasSaldos[]>(`${this.apiUrl}/GetRegistros`);
     }
-     consultaRegistrosCuentas():Observable<CuentasResponse[]> {
-      return this.http.get<CuentasResponse[]>(`${this.apiUrl}/GetCuentasResponse`);
+    
+     consultaRegistrosCuentas(ubicacion: String):Observable<CuentasResponse[]> {
+      return this.http.get<CuentasResponse[]>(`${this.apiUrl}/GetCuentasResponse/${ubicacion}`);
     }
 
     consultaregistroid(idCuenta: Number): Observable<AdmCuentasSaldos>{
@@ -55,12 +58,12 @@ export class SaldosService{
     consultaporidecuentaconincidenciaAll(ubicacion: string){
       return this.http.get<IncidenciasRequest[]>(`${this.apiUrl}/GetCuentaConPreguntasBySumFlagAll/${1}/${ubicacion}`);
     }
-    consultaCredito(){
-      return this.http.get<IncidenciasRequest[]>(`${this.apiUrl}/GetCuentasCredito`);
+    consultaCredito(ubicacion: string, idincidencia: number){
+      return this.http.get<IncidenciasRequest[]>(`${this.apiUrl}/GetCuentasCredito/${ubicacion}/${idincidencia}`);
     }
 
-    consultaCobranza(){
-      return this.http.get<IncidenciasRequest[]>(`${this.apiUrl}/GetCuentasCobranza`);
+    consultaCobranza(ubicacion: string, idincidencia: number){
+      return this.http.get<IncidenciasRequest[]>(`${this.apiUrl}/GetCuentasCobranza/${ubicacion}/${idincidencia}`);
     }
     
     enviarIncidenciaBase64(json: any){
@@ -83,8 +86,8 @@ export class SaldosService{
       return this.http.get<IncidenciasRequest[]>(`${this.apiUrl}/GetByGerenteZonaSumFlag/${gerente}/${1}`);
     }
 
-    consultaporidecuentasinincidenciabygerente(gerente: string){
-      return this.http.get<IncidenciasRequest[]>(`${this.apiUrl}/GetByGerenteZonaSumFlag/${gerente}/${0}`);
+    consultaporidecuentasinincidenciabygerente(gerente: string, ubicacion: string){
+      return this.http.get<IncidenciasRequest[]>(`${this.apiUrl}/GetByGerenteZonaSumFlag/${gerente}/${0}/${ubicacion}`);
     }
     consultaPorgerenteZona(payload: getregistrossaldogerente):Observable<AdmCuentasSaldos[]>{
       console.log(payload)
@@ -95,6 +98,27 @@ export class SaldosService{
       'Content-Type': 'application/json'
     });
       return this.http.post<AdmCuentasSaldos>(`${this.apiUrl}/Insert`, payload, {headers});
+    }
+
+    insertEdoCuenta(payload: RegistroCuentaApi[]): Observable<AdmCuentasSaldos> {
+      const headers = new HttpHeaders({
+        'Content-Type': 'application/json'
+      });
+
+      return this.http.post<AdmCuentasSaldos>(
+        `${this.apiUrl}/InsertEdoCuenta`,
+        payload,
+        { headers }
+      );
+    }
+
+    getByCuentaOraclePaged(
+        cuentaOracle: string,
+        page: number = 1,
+        pageSize: number = 20
+      ): Observable<PagedResponse<RegistroCuentaApi>> {
+
+        return this.http.get<PagedResponse<RegistroCuentaApi>>(`${this.apiUrl}/GetByCuentaOraclePaged/${cuentaOracle}/${page}/${pageSize}`);
     }
 
 
@@ -119,6 +143,8 @@ export class SaldosService{
       const headers = new HttpHeaders({
         'Content-Type': 'application/json'
       });
+      console.log("CUERPO ENVIADO")
+      console.log(payload)
       return this.http.post<CuentasSaldosPreguntasDto>(`${this.apiUrl}/InsertPreguntar`, payload, {headers})
     }
 
@@ -176,6 +202,7 @@ export class SaldosService{
       // POST: crear usuario
       createUsuario(usuario: CrearUsuarioDto): Observable<Usuario> {
         console.log(usuario)
+        
         return this.http.post<Usuario>(`${this.apiUrl}/CreateUsuario`, usuario);
       }
 
