@@ -15,7 +15,6 @@ export class AppComponent {
   title = 'saldosapp';
   showNavbar = false
    visible$ = this.overlay.state$.pipe(map(s => s.visible));
-  src$     = this.overlay.state$.pipe(map(s => s.src ?? 'assets/icons/icon-512x512.png'));
   size$    = this.overlay.state$.pipe(map(s => s.size ?? 160));
   dism$    = this.overlay.state$.pipe(map(s => s.dismissible ?? true));
   showNavbar$!: Observable<boolean>;

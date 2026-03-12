@@ -1,16 +1,17 @@
 <app-spin-overlay
   [visible]="(visible$ | async)!"
-  [src]="(src$ | async)!"
   [size]="(size$ | async)!"
   [dismissible]="(dism$ | async)!"
   (closed)="onClosed()">
 </app-spin-overlay>
-<div class="d-flex">
+<div class="d-flex app-shell">
   <app-navbar *ngIf="showNavbar$ | async"></app-navbar>
-  <main class="flex-grow-1">
+  <main class="flex-grow-1 app-main-shell">
     <app-header></app-header>
-    <app-app-update-available></app-app-update-available>
-    <router-outlet></router-outlet>
+    <div class="app-content-shell">
+      <app-app-update-available></app-app-update-available>
+      <router-outlet></router-outlet>
+    </div>
   </main>
 </div>
 

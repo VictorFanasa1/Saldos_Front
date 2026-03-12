@@ -1,391 +1,569 @@
-<section class="bg-soft-blue min-vh-100 d-flex align-items-start py-4">
-  <div class="container">
-    <div class="row justify-content-center">
-      <div class="col-12 col-lg-8">
-        <div class="card shadow-sm">
-          <div class="card-body">
+<section class="form-agent-page min-vh-100">
+  <div class="container page-shell">
+    <div class="page-header">
+      <div class="page-heading">
+        <p class="page-eyebrow">Agente</p>
+        <div class="page-title-row">
+          <h1 class="page-title">Confirmacion de cliente</h1>
+          <span
+            class="status-chip"
+            [ngClass]="{
+              'status-chip--success': otpStatusTone === 'success',
+              'status-chip--warning': otpStatusTone === 'warning'
+            }">
+            <span class="status-chip__dot"></span>
+            {{ otpStatusText }}
+          </span>
+          <span
+            class="status-chip"
+            [ngClass]="{
+              'status-chip--success': captureStatusTone === 'success',
+              'status-chip--warning': captureStatusTone === 'warning'
+            }">
+            <span class="status-chip__dot"></span>
+            {{ captureStatusText }}
+          </span>
+        </div>
+        <p class="page-subtitle">
+          Revision de cartera, respuestas y firma del cliente con el mismo flujo actual de captura.
+        </p>
+      </div>
+    </div>
 
-            <h5 class="mb-4">Confirmación de cliente</h5>
-            <form [formGroup]="formularioagente" (ngSubmit)="grabarRespuestas()" class="border p-4 shadow-sm bg-light">
-              <div class="position-relative">
-                <div *ngIf="submitting"
-                  class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center bg-white bg-opacity-75"
-                  style="z-index: 10;">
-                  <div class="text-center">
-                    <div class="spinner-border text-primary" role="status" aria-label="Cargando"></div>
-                    <div class="mt-2">Registrando...</div>
-                  </div>
-                </div>
-                <ng-container *ngIf="!otpConfirmado">
-                  <div class="modal-backdrop fade show"></div>
-                  <div class="modal d-block" tabindex="-1" role="dialog" aria-modal="true">
-                    <div class="modal-dialog modal-dialog-centered">
-                      <div class="modal-content">
-                        <div class="modal-header">
-                          <h5 class="modal-title">Verificacion OTP</h5>
-                        </div>
-                        <div class="modal-body">
-                          <p class="mb-3">Ingresa tu correo y el codigo OTP para continuar.</p>
-                          <div class="mb-3">
-                            <label class="form-label">Correo</label>
-                            <input type="email" class="form-control" placeholder="Correo electronico"
-                              formControlName="correocliente">
-                          </div>
-                          <div class="mb-3">
-                            <label class="form-label">Codigo OTP</label>
-                            <input type="text" class="form-control" placeholder="Ingresa el codigo" maxlength="6"
-                              formControlName="otp">
-                          </div>
-                          <div class="d-flex gap-2">
-                            <button type="button" class="btn btn-outline-primary" (click)="enviarotp()">
-                              Solicitar OTP
-                            </button>
-                            <button type="button" class="btn btn-primary" (click)="confirmarOtp()">
-                              Continuar
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </ng-container>
-                <div [class.opacity-50]="!otpConfirmado || submitting" [class.pe-none]="!otpConfirmado || submitting">
-              <!-- Datos básicos -->
-              <div class="row g-3">
-                <!--<div class="col-12">
-                  <div class="row align-items-center">
-                    <label class="col-md-5 col-form-label">Confirmación de cliente:</label>
-                    <div class="col-md-7">
-                      <input type="text" class="form-control" placeholder="Folio / ID de confirmación"
-                        formControlName="confirmacionCliente">
-                    </div>
-                  </div>
-                </div>
+    <form [formGroup]="formularioagente" (ngSubmit)="grabarRespuestas()" class="form-shell">
+      <div *ngIf="submitting" class="page-blocker" aria-live="polite">
+        <div class="loading-state">
+          <div class="loading-ring" aria-hidden="true"></div>
+          <p class="loading-title">Registrando informacion</p>
+          <p class="loading-copy">Espera mientras se procesa la captura.</p>
+        </div>
+      </div>
 
-                <div class="col-12">
-                  <div class="row align-items-center">
-                    <label class="col-md-5 col-form-label mb-0">Correo del cliente:</label>
+      <ng-container *ngIf="!otpConfirmado">
+        <div class="otp-backdrop"></div>
+        <div class="otp-modal-shell" role="dialog" aria-modal="true" aria-labelledby="otp-title">
+          <div class="otp-modal-card">
+            <div class="otp-modal-header">
+              <span class="otp-modal-icon"><i class="bi bi-shield-lock"></i></span>
+              <div>
+                <h2 id="otp-title" class="otp-modal-title">Verificacion OTP</h2>
+                <p class="otp-modal-copy">
+                  Ingresa el correo del cliente y el codigo enviado para habilitar la captura.
+                </p>
+              </div>
+            </div>
 
-                    <div class="col-md-7">
-                      <div class="row g-2 align-items-center">
-                        <div class="col-8">
-                          <input type="email" class="form-control" placeholder="Correo electrónico"
-                            formControlName="correocliente" onchange="getCorreo()">
-                        </div>
-                        <div class="text-danger"
-                          *ngIf="formularioagente.get('correocliente')?.touched && formularioagente.get('correocliente')?.invalid">
-                          <small *ngIf="formularioagente.get('correocliente')?.errors?.['required']">El correo es
-                            obligatorio.</small>
-                          <small *ngIf="formularioagente.get('correocliente')?.errors?.['email']">Formato de correo
-                            inválido.</small>
-                        </div>
-                        <div class="col-4 text-end">
-                          <button type="button" class="btn btn-primary w-100 w-md-auto" (click)="enviarotp()"
-                            *ngIf="cargandos">Solicitar OTP</button> 
-                        </div>
-                      </div>
-                    </div>
+            <div class="field-stack">
+              <label class="field-label" for="correoOtp">Correo</label>
+              <input
+                id="correoOtp"
+                type="email"
+                class="modern-input"
+                placeholder="Correo electronico"
+                formControlName="correocliente" />
+            </div>
 
-                  </div>
-                </div> -->
+            <div class="field-stack">
+              <label class="field-label" for="codigoOtp">Codigo OTP</label>
+              <input
+                id="codigoOtp"
+                type="text"
+                class="modern-input"
+                placeholder="Ingresa el codigo"
+                maxlength="6"
+                formControlName="otp" />
+            </div>
 
-                <div class="col-12">
-                  <div class="row align-items-center">
-                    <label class="col-md-5 col-form-label">Nombre corto:</label>
-                    <div class="col-md-7">
-                      <input type="text" class="form-control" placeholder="Nombre corto" formControlName="nombreCorto"
-                        readonly>
-                    </div>
-                  </div>
-                </div>
+            <div class="inline-actions inline-actions--modal">
+              <button type="button" class="btn-shell btn-shell--ghost" (click)="enviarotp()">
+                Solicitar OTP
+              </button>
+              <button type="button" class="btn-shell btn-shell--primary" (click)="confirmarOtp()">
+                Continuar
+              </button>
+            </div>
+          </div>
+        </div>
+      </ng-container>
 
-                <div class="col-12">
-                  <div class="row align-items-center">
-                    <label class="col-md-5 col-form-label">Cuenta Oracle:</label>
-                    <div class="col-md-7">
-                      <input type="text" class="form-control" placeholder="Cuenta Oracle" formControlName="cuentaOracle"
-                        readonly>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="col-12">
-                  <div class="row align-items-center">
-                    <label class="col-md-5 col-form-label">Razón social:</label>
-                    <div class="col-md-7">
-                      <input type="text" class="form-control" placeholder="Razón social del cliente"
-                        formControlName="razonSocial" readonly>
-                    </div>
+      <div class="row g-4 align-items-start">
+        <div class="col-12 col-xl-7">
+          <div class="content-stack">
+            <article class="agent-card">
+              <div class="section-header">
+                <div class="section-title-wrap">
+                  <span class="section-icon"><i class="bi bi-building"></i></span>
+                  <div>
+                    <h2 class="section-title">Informacion del cliente</h2>
+                    <p class="section-subtitle">Datos base de la cuenta y del contacto validado.</p>
                   </div>
                 </div>
               </div>
 
-              <hr class="my-4">
-
-              <!-- Cartera -->
-              <h6 class="mb-3">Cartera</h6>
-              <div class="row g-3">
-                <div class="col-12">
-                  <div class="row align-items-center">
-                    <label class="col-md-5 col-form-label">Cartera total:</label>
-                    <div class="col-md-7">
-                      <input type="text" class="form-control align_money" placeholder="0.00"
-                        formControlName="carteraTotal" readonly>
-                    </div>
-                  </div>
+              <div class="field-grid">
+                <div class="readonly-field">
+                  <span class="field-label">Confirmacion de cliente</span>
+                  <div class="field-value">{{ displayValue('confirmacionCliente', 'Se asigna al guardar') }}</div>
                 </div>
 
-                <div class="col-12">
-                  <div class="row align-items-center">
-                    <label class="col-md-5 col-form-label">Cartera por vencer:</label>
-                    <div class="col-md-7">
-                      <input type="text" class="form-control align_money" placeholder="0.00"
-                        formControlName="carteraPorVencer" readonly>
-                    </div>
-                  </div>
+                <div class="readonly-field">
+                  <span class="field-label">Cuenta Oracle</span>
+                  <div class="field-value">{{ displayValue('cuentaOracle') }}</div>
                 </div>
 
-                <div class="col-12">
-                  <div class="row align-items-center">
-                    <label class="col-md-5 col-form-label">Cartera vencida:</label>
-                    <div class="col-md-7">
-                      <input type="text" class="form-control align_money" placeholder="0.00"
-                        formControlName="carteraVencida" readonly>
-                    </div>
-                  </div>
+                <div class="readonly-field field-span-2">
+                  <span class="field-label">Nombre corto</span>
+                  <div class="field-value">{{ displayValue('nombreCorto') }}</div>
                 </div>
 
-                <div class="col-12">
-                  <div class="row align-items-center">
-                    <label class="col-md-5 col-form-label">Vencida a 7 días:</label>
-                    <div class="col-md-7">
-                      <input type="text" class="form-control align_money" placeholder="0.00" formControlName="vencida7"
-                        readonly>
-                    </div>
-                  </div>
+                <div class="readonly-field field-span-2">
+                  <span class="field-label">Razon social</span>
+                  <div class="field-value">{{ displayValue('razonSocial') }}</div>
                 </div>
 
-                <div class="col-12">
-                  <div class="row align-items-center">
-                    <label class="col-md-5 col-form-label">Vencido de 8 a 14 días:</label>
-                    <div class="col-md-7">
-                      <input type="text" class="form-control align_money" placeholder="0.00"
-                        formControlName="vencida8a14" readonly>
-                    </div>
+                <div class="readonly-field field-span-2">
+                  <span class="field-label">Correo del cliente</span>
+                  <div class="field-value">
+                    {{ displayValue('correocliente', 'Captura pendiente para validacion OTP') }}
                   </div>
                 </div>
+              </div>
+            </article>
 
-                <div class="col-12">
-                  <div class="row align-items-center">
-                    <label class="col-md-5 col-form-label">Vencido de 15 a 21 días:</label>
-                    <div class="col-md-7">
-                      <input type="text" class="form-control align_money" placeholder="0.00"
-                        formControlName="vencida15a21" readonly>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="col-12">
-                  <div class="row align-items-center">
-                    <label class="col-md-5 col-form-label">Vencido mayor a 22 días:</label>
-                    <div class="col-md-7">
-                      <input type="text" class="form-control align_money" placeholder="0.00"
-                        formControlName="vencida22Plus" readonly>
-                    </div>
+            <article class="agent-card">
+              <div class="section-header">
+                <div class="section-title-wrap">
+                  <span class="section-icon"><i class="bi bi-cash-stack"></i></span>
+                  <div>
+                    <h2 class="section-title">Cartera</h2>
+                    <p class="section-subtitle">Resumen visible y aging de vencimiento.</p>
                   </div>
                 </div>
               </div>
 
-              <hr class="my-4">
+              <div class="summary-grid">
+                <div class="summary-card summary-card--accent">
+                  <span class="summary-label">Cartera total</span>
+                  <strong class="summary-value">{{ displayValue('carteraTotal', '$ 0.00') }}</strong>
+                </div>
 
-              <!-- Preguntas Sí/No -->
-              <div class="vstack gap-3">
-                <div class="row">
-                  <div class="col-12">
-                    <label class="form-label">¿Estás de acuerdo con el saldo de su cuenta?</label>
-                    <div class="d-flex gap-3">
-                      <div class="form-check">
-                        <input class="form-check-input" type="radio" name="acuerdoSaldo" formControlName="acuerdoSaldo"
-                          [value]="true" id="acuerdoSi" [disabled]="disbaledradios">
-                        <label class="form-check-label" for="acuerdoSi">Sí</label>
-                      </div>
-                      <div class="form-check">
-                        <input class="form-check-input" type="radio" name="acuerdoSaldo" formControlName="acuerdoSaldo"
-                          [value]="false" id="acuerdoNo" [disabled]="disbaledradios">
-                        <label class="form-check-label" for="acuerdoNo">No</label>
-                      </div>
-                    </div>
-                    <div class="mt-2" *ngIf="formularioagente.get('acuerdoSaldo')?.value === false">
-                      <textarea class="form-control" rows="2" placeholder="Describe el motivo"
-                        formControlName="p1_razon"></textarea>
-                      <div class="text-danger small" *ngIf="
-            formularioagente.get('p1_razon')?.invalid &&
-            formularioagente.get('p1_razon')?.touched">
-                        Este campo es obligatorio cuando respondes "No".
-                      </div>
+                <div class="summary-card summary-card--success">
+                  <span class="summary-label">Por vencer</span>
+                  <strong class="summary-value">{{ displayValue('carteraPorVencer', '$ 0.00') }}</strong>
+                </div>
+
+                <div class="summary-card summary-card--danger summary-card--wide">
+                  <span class="summary-label">Cartera vencida</span>
+                  <strong class="summary-value">{{ displayValue('carteraVencida', '$ 0.00') }}</strong>
+                </div>
+              </div>
+
+              <div class="table-shell">
+                <table class="aging-table">
+                  <thead>
+                    <tr>
+                      <th>Periodo</th>
+                      <th>Monto</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>Vencida a 7 dias</td>
+                      <td class="aging-value" [class.amount-alert]="hasNonZero('vencida7')">
+                        {{ displayValue('vencida7', '$ 0.00') }}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Vencido de 8 a 14 dias</td>
+                      <td class="aging-value" [class.amount-alert]="hasNonZero('vencida8a14')">
+                        {{ displayValue('vencida8a14', '$ 0.00') }}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Vencido de 15 a 21 dias</td>
+                      <td class="aging-value" [class.amount-alert]="hasNonZero('vencida15a21')">
+                        {{ displayValue('vencida15a21', '$ 0.00') }}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Vencido mayor a 22 dias</td>
+                      <td class="aging-value" [class.amount-alert]="hasNonZero('vencida22Plus')">
+                        {{ displayValue('vencida22Plus', '$ 0.00') }}
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </article>
+
+            <article class="agent-card">
+              <div class="section-header">
+                <div class="section-title-wrap">
+                  <span class="section-icon"><i class="bi bi-card-checklist"></i></span>
+                  <div>
+                    <h2 class="section-title">Cuestionario</h2>
+                    <p class="section-subtitle">Las preguntas conservan el flujo y validaciones actuales.</p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="question-list">
+                <div class="question-item">
+                  <p class="question-text">Estas de acuerdo con el saldo de su cuenta?</p>
+                  <div class="radio-group">
+                    <label class="choice-pill" for="acuerdoSi">
+                      <input
+                        class="question-radio"
+                        type="radio"
+                        name="acuerdoSaldo"
+                        formControlName="acuerdoSaldo"
+                        [value]="true"
+                        id="acuerdoSi"
+                        [disabled]="disbaledradios" />
+                      <span>Si</span>
+                    </label>
+
+                    <label class="choice-pill" for="acuerdoNo">
+                      <input
+                        class="question-radio"
+                        type="radio"
+                        name="acuerdoSaldo"
+                        formControlName="acuerdoSaldo"
+                        [value]="false"
+                        id="acuerdoNo"
+                        [disabled]="disbaledradios" />
+                      <span>No</span>
+                    </label>
+                  </div>
+
+                  <div class="question-reason" *ngIf="formularioagente.get('acuerdoSaldo')?.value === false">
+                    <textarea
+                      class="modern-textarea"
+                      rows="3"
+                      placeholder="Describe el motivo"
+                      formControlName="p1_razon"></textarea>
+                    <div
+                      class="field-error"
+                      *ngIf="
+                        formularioagente.get('p1_razon')?.invalid &&
+                        formularioagente.get('p1_razon')?.touched
+                      ">
+                      Este campo es obligatorio.
                     </div>
                   </div>
                 </div>
 
-                <div>
-                  <label class="form-label">¿Recibe un comprobante al realizar sus pagos?</label>
-                  <div class="d-flex gap-3">
-                    <div class="form-check">
-                      <input class="form-check-input" type="radio" name="comprobantePagos"
-                        formControlName="comprobantePagos" [value]="true" id="comprobanteSi">
-                      <label class="form-check-label" for="comprobanteSi">Sí</label>
-                    </div>
-                    <div class="form-check">
-                      <input class="form-check-input" type="radio" name="comprobantePagos"
-                        formControlName="comprobantePagos" [value]="false" id="comprobanteNo">
-                      <label class="form-check-label" for="comprobanteNo">No</label>
-                    </div>
+                <div class="question-item">
+                  <p class="question-text">Recibe un comprobante al realizar sus pagos?</p>
+                  <div class="radio-group">
+                    <label class="choice-pill" for="comprobanteSi">
+                      <input
+                        class="question-radio"
+                        type="radio"
+                        name="comprobantePagos"
+                        formControlName="comprobantePagos"
+                        [value]="true"
+                        id="comprobanteSi" />
+                      <span>Si</span>
+                    </label>
+
+                    <label class="choice-pill" for="comprobanteNo">
+                      <input
+                        class="question-radio"
+                        type="radio"
+                        name="comprobantePagos"
+                        formControlName="comprobantePagos"
+                        [value]="false"
+                        id="comprobanteNo" />
+                      <span>No</span>
+                    </label>
                   </div>
-                  <div class="mt-2" *ngIf="formularioagente.get('comprobantePagos')?.value === false">
-                    <textarea class="form-control" rows="2" placeholder="Describe el motivo"
+
+                  <div class="question-reason" *ngIf="formularioagente.get('comprobantePagos')?.value === false">
+                    <textarea
+                      class="modern-textarea"
+                      rows="3"
+                      placeholder="Describe el motivo"
                       formControlName="p2_razon"></textarea>
-                    <div class="text-danger small" *ngIf="
-            formularioagente.get('p2_razon')?.invalid &&
-            formularioagente.get('p2_razon')?.touched">
-                      Este campo es obligatorio cuando respondes "No".
+                    <div
+                      class="field-error"
+                      *ngIf="
+                        formularioagente.get('p2_razon')?.invalid &&
+                        formularioagente.get('p2_razon')?.touched
+                      ">
+                      Este campo es obligatorio.
                     </div>
                   </div>
                 </div>
 
-                <div>
-                  <label class="form-label">¿Identifica pagos pendientes de aplicar?</label>
-                  <div class="d-flex gap-3">
-                    <div class="form-check">
-                      <input class="form-check-input" type="radio" name="pagosPendientes"
-                        formControlName="pagosPendientes" [value]="true" id="pagosPendSi">
-                      <label class="form-check-label" for="pagosPendSi">Sí</label>
-                    </div>
-                    <div class="form-check">
-                      <input class="form-check-input" type="radio" name="pagosPendientes"
-                        formControlName="pagosPendientes" [value]="false" id="pagosPendNo">
-                      <label class="form-check-label" for="pagosPendNo">No</label>
-                    </div>
+                <div class="question-item">
+                  <p class="question-text">Identifica pagos pendientes de aplicar?</p>
+                  <div class="radio-group">
+                    <label class="choice-pill" for="pagosPendSi">
+                      <input
+                        class="question-radio"
+                        type="radio"
+                        name="pagosPendientes"
+                        formControlName="pagosPendientes"
+                        [value]="true"
+                        id="pagosPendSi" />
+                      <span>Si</span>
+                    </label>
+
+                    <label class="choice-pill" for="pagosPendNo">
+                      <input
+                        class="question-radio"
+                        type="radio"
+                        name="pagosPendientes"
+                        formControlName="pagosPendientes"
+                        [value]="false"
+                        id="pagosPendNo" />
+                      <span>No</span>
+                    </label>
                   </div>
-                  <div class="mt-2" *ngIf="formularioagente.get('pagosPendientes')?.value === true">
-                    <textarea class="form-control" rows="2" placeholder="Describe el motivo"
+
+                  <div class="question-reason" *ngIf="formularioagente.get('pagosPendientes')?.value === true">
+                    <textarea
+                      class="modern-textarea"
+                      rows="3"
+                      placeholder="Describe el motivo"
                       formControlName="p3_razon"></textarea>
-                    <div class="text-danger small" *ngIf="
-            formularioagente.get('p3_razon')?.invalid &&
-            formularioagente.get('p3_razon')?.touched">
-                      Este campo es obligatorio cuando respondes "No".
+                    <div
+                      class="field-error"
+                      *ngIf="
+                        formularioagente.get('p3_razon')?.invalid &&
+                        formularioagente.get('p3_razon')?.touched
+                      ">
+                      Este campo es obligatorio.
                     </div>
                   </div>
                 </div>
 
-                <div>
-                  <label class="form-label">¿Identificas devoluciones pendientes de notas de crédito?</label>
-                  <div class="d-flex gap-3">
-                    <div class="form-check">
-                      <input class="form-check-input" type="radio" name="devolucionesPendientes"
-                        formControlName="devolucionesPendientes" [value]="true" id="devolPendSi">
-                      <label class="form-check-label" for="devolPendSi">Sí</label>
-                    </div>
-                    <div class="form-check">
-                      <input class="form-check-input" type="radio" name="devolucionesPendientes"
-                        formControlName="devolucionesPendientes" [value]="false" id="devolPendNo">
-                      <label class="form-check-label" for="devolPendNo">No</label>
-                    </div>
+                <div class="question-item">
+                  <p class="question-text">Identificas devoluciones pendientes de notas de credito?</p>
+                  <div class="radio-group">
+                    <label class="choice-pill" for="devolPendSi">
+                      <input
+                        class="question-radio"
+                        type="radio"
+                        name="devolucionesPendientes"
+                        formControlName="devolucionesPendientes"
+                        [value]="true"
+                        id="devolPendSi" />
+                      <span>Si</span>
+                    </label>
+
+                    <label class="choice-pill" for="devolPendNo">
+                      <input
+                        class="question-radio"
+                        type="radio"
+                        name="devolucionesPendientes"
+                        formControlName="devolucionesPendientes"
+                        [value]="false"
+                        id="devolPendNo" />
+                      <span>No</span>
+                    </label>
                   </div>
-                  <div class="mt-2" *ngIf="formularioagente.get('devolucionesPendientes')?.value === true">
-                    <textarea class="form-control" rows="2" placeholder="Describe el motivo"
+
+                  <div
+                    class="question-reason"
+                    *ngIf="formularioagente.get('devolucionesPendientes')?.value === true">
+                    <textarea
+                      class="modern-textarea"
+                      rows="3"
+                      placeholder="Describe el motivo"
                       formControlName="p4_razon"></textarea>
-                    <div class="text-danger small" *ngIf="
-            formularioagente.get('p4_razon')?.invalid &&
-            formularioagente.get('p4_razon')?.touched">
-                      Este campo es obligatorio cuando respondes "No".
+                    <div
+                      class="field-error"
+                      *ngIf="
+                        formularioagente.get('p4_razon')?.invalid &&
+                        formularioagente.get('p4_razon')?.touched
+                      ">
+                      Este campo es obligatorio.
                     </div>
                   </div>
                 </div>
 
-                <div>
-                  <label class="form-label">¿Identificas reclamaciones pendientes de notas de crédito?</label>
-                  <div class="d-flex gap-3">
-                    <div class="form-check">
-                      <input class="form-check-input" type="radio" name="reclamacionesPendientes"
-                        formControlName="reclamacionesPendientes" [value]="true" id="reclaPendSi">
-                      <label class="form-check-label" for="reclaPendSi">Sí</label>
-                    </div>
-                    <div class="form-check">
-                      <input class="form-check-input" type="radio" name="reclamacionesPendientes"
-                        formControlName="reclamacionesPendientes" [value]="false" id="reclaPendNo">
-                      <label class="form-check-label" for="reclaPendNo">No</label>
-                    </div>
+                <div class="question-item">
+                  <p class="question-text">Identificas reclamaciones pendientes de notas de credito?</p>
+                  <div class="radio-group">
+                    <label class="choice-pill" for="reclaPendSi">
+                      <input
+                        class="question-radio"
+                        type="radio"
+                        name="reclamacionesPendientes"
+                        formControlName="reclamacionesPendientes"
+                        [value]="true"
+                        id="reclaPendSi" />
+                      <span>Si</span>
+                    </label>
+
+                    <label class="choice-pill" for="reclaPendNo">
+                      <input
+                        class="question-radio"
+                        type="radio"
+                        name="reclamacionesPendientes"
+                        formControlName="reclamacionesPendientes"
+                        [value]="false"
+                        id="reclaPendNo" />
+                      <span>No</span>
+                    </label>
                   </div>
-                  <div class="mt-2" *ngIf="formularioagente.get('reclamacionesPendientes')?.value === true">
-                    <textarea class="form-control" rows="2" placeholder="Describe el motivo"
+
+                  <div
+                    class="question-reason"
+                    *ngIf="formularioagente.get('reclamacionesPendientes')?.value === true">
+                    <textarea
+                      class="modern-textarea"
+                      rows="3"
+                      placeholder="Describe el motivo"
                       formControlName="p5_razon"></textarea>
-                    <div class="text-danger small" *ngIf="
-            formularioagente.get('p5_razon')?.invalid &&
-            formularioagente.get('p5_razon')?.touched">
-                      Este campo es obligatorio cuando respondes "No".
+                    <div
+                      class="field-error"
+                      *ngIf="
+                        formularioagente.get('p5_razon')?.invalid &&
+                        formularioagente.get('p5_razon')?.touched
+                      ">
+                      Este campo es obligatorio.
                     </div>
                   </div>
                 </div>
               </div>
-              <hr class="my-4">
-              <div class="vstack gap-3">
-                <div class="row">
-                  <div class="col-12">
+            </article>
+          </div>
+        </div>
 
-                    <div class="d-flex gap-3" *ngIf="cargandos">
-                      <label class="lbl">Firma del usuario</label>
-                      <div class="sig-wrap">
-                        <canvas #sigCanvas class="sig-canvas" (pointerdown)="onDown($event)"
-                          (pointermove)="onMove($event)" (pointerup)="onUp($event)"
-                          (pointerleave)="onUp($event)"></canvas>
-
-                        <div class="toolbar">
-                          <button type="button" (click)="clearSig()">Limpiar</button>
-                        </div>
-                      </div>
-
-                      <small *ngIf="formularioagente.get('firma')?.value">✓ Firma capturada</small>
-                      <div *ngIf="formularioagente.get('firma')?.invalid && formularioagente.get('firma')?.touched"
-                        class="err">
-                        La firma es obligatoria.
-                      </div>
-
-
-                    </div>
-                    <div class="d-flex gap-3" *ngIf="!cargandos">
-                      <div class="row">
-                        <div class="col-12">
-                          <p>Firma: </p>
-                        </div>
-                        <div class="col-12">
-                          <img *ngIf="firmaSafeUrl" [src]="firmaSafeUrl" alt="Firma"
-                            style="max-width:100%; height:auto; border:1px solid #e5e7eb; border-radius:8px;">
-                        </div>
-                      </div>
-
-                    </div>
+        <div class="col-12 col-xl-5">
+          <div class="content-stack content-stack--sm">
+            <article class="agent-card">
+              <div class="section-header">
+                <div class="section-title-wrap">
+                  <span class="section-icon"><i class="bi bi-shield-check"></i></span>
+                  <div>
+                    <h2 class="section-title">Validacion de acceso</h2>
+                    <p class="section-subtitle">Confirmacion previa para capturar o revisar el registro.</p>
                   </div>
                 </div>
               </div>
 
-              <!-- Botón -->
-              <div class="text-center mt-4" *ngIf="visibleBtnGuardar">
-                <button type="submit" class="btn btn-primary px-4" [disabled]="submitting">
-                  Grabar
+              <div
+                class="state-banner"
+                [ngClass]="{
+                  'state-banner--success': otpConfirmado,
+                  'state-banner--warning': !otpConfirmado
+                }">
+                {{ otpConfirmado ? 'OTP validado para esta cuenta.' : 'Debes validar el OTP antes de continuar.' }}
+              </div>
+
+              <div class="field-stack field-stack--spaced">
+                <span class="field-label">Correo del cliente</span>
+                <div class="field-value">{{ displayValue('correocliente', 'Sin correo capturado') }}</div>
+              </div>
+
+              <div class="field-stack">
+                <span class="field-label">Codigo OTP</span>
+                <div class="field-value">{{ displayValue('otp', 'Verificado previamente') }}</div>
+              </div>
+            </article>
+
+            <article class="agent-card">
+              <div class="section-header">
+                <div class="section-title-wrap">
+                  <span class="section-icon"><i class="bi bi-pen"></i></span>
+                  <div>
+                    <h2 class="section-title">Firma del cliente</h2>
+                    <p class="section-subtitle">Mantiene el mismo flujo actual de captura y consulta.</p>
+                  </div>
+                </div>
+              </div>
+
+              <ng-container *ngIf="cargandos; else signaturePreview">
+                <p class="signature-copy">
+                  Firma dentro del recuadro para habilitar el registro final. Puedes limpiar la firma si necesitas repetirla.
+                </p>
+
+                <div class="sig-wrap">
+                  <canvas
+                    #sigCanvas
+                    class="sig-canvas"
+                    (pointerdown)="onDown($event)"
+                    (pointermove)="onMove($event)"
+                    (pointerup)="onUp($event)"
+                    (pointerleave)="onUp($event)"></canvas>
+                </div>
+
+                <div class="inline-actions">
+                  <button type="button" class="btn-shell btn-shell--ghost" (click)="clearSig()">
+                    Limpiar firma
+                  </button>
+                </div>
+
+                <div class="signature-feedback" *ngIf="formularioagente.get('firma')?.value">
+                  Firma capturada correctamente.
+                </div>
+
+                <div
+                  class="field-error"
+                  *ngIf="formularioagente.get('firma')?.invalid && formularioagente.get('firma')?.touched">
+                  La firma es obligatoria.
+                </div>
+              </ng-container>
+
+              <ng-template #signaturePreview>
+                <div class="signature-preview-wrap">
+                  <div class="state-banner state-banner--success">
+                    La firma ya fue registrada para este folio.
+                  </div>
+                  <img *ngIf="firmaSafeUrl" [src]="firmaSafeUrl" alt="Firma" class="signature-preview" />
+                </div>
+              </ng-template>
+            </article>
+
+            <article class="agent-card">
+              <div class="section-header">
+                <div class="section-title-wrap">
+                  <span class="section-icon"><i class="bi bi-check2-square"></i></span>
+                  <div>
+                    <h2 class="section-title">Acciones</h2>
+                    <p class="section-subtitle">Salida y guardado con el mismo comportamiento actual.</p>
+                  </div>
+                </div>
+              </div>
+
+              <div
+                class="state-banner"
+                [ngClass]="{
+                  'state-banner--success': visibleBtnGuardar,
+                  'state-banner--warning': !visibleBtnGuardar
+                }">
+                {{
+                  visibleBtnGuardar
+                    ? 'El registro sigue editable. Revisa respuestas y firma antes de guardar.'
+                    : 'El registro ya fue capturado y permanece en modo solo lectura.'
+                }}
+              </div>
+
+              <div class="action-row">
+                <button
+                  *ngIf="visibleBtnGuardar"
+                  type="submit"
+                  class="btn-shell btn-shell--primary"
+                  [disabled]="submitting">
+                  Guardar confirmacion
                 </button>
-              </div>
 
-              <div class="text-center mt-4">
-                <button type="button" class="btn btn-danger px-4" (click)="volver()" [disabled]="submitting">
+                <button
+                  type="button"
+                  class="btn-shell btn-shell--ghost btn-shell--danger"
+                  (click)="volver()"
+                  [disabled]="submitting">
                   Regresar
                 </button>
               </div>
-                </div>
-              </div>
-            </form>
+            </article>
           </div>
         </div>
       </div>
-    </div>
+    </form>
   </div>
 </section>

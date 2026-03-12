@@ -1,85 +1,158 @@
-<section class="medical-hero d-flex align-items-center clients-upload-section">
-    <div class="container page-shell upload-card" style="background-color: rgb(145, 144, 144); color: whitesmoke; padding:  10px; border-radius: 10px;">
-        <input
-            #fileInput
-            class="input-modern"
-            type="file"
-            accept=".xlsx,.xls,.csv"
-            (change)="onFileSelected($event)"
-            hidden
-        />
+<section class="clients-page min-vh-100 py-4">
+  <div class="container page-shell clients-shell">
+    <div class="page-header">
+      <div>
+        <p class="page-kicker">Administracion</p>
+        <h1 class="page-title">Clientes</h1>
+        <p class="page-subtitle">
+          Carga archivos de clientes y consulta el avance por gerente con el mismo lenguaje visual del modulo admin.
+        </p>
+      </div>
 
-        <div class="row"> 
-            <div class="col-12">
-                <h1>Carga de información de clientes</h1>
-            </div>
-            <div class="col-12">
-                <div class="d-flex flex-wrap gap-3 upload-actions">
-              <button class="btn btn-medical-primary" type="button" (click)="openPicker()">
-                <i class="bi bi-cloud-upload"></i> Cargar Excel
-              </button>
-              <button class="btn btn-medical-success"
-                      type="button"
-                      [disabled]="!selectedFile || uploading"
-                      (click)="subir()">
-                <i class="bi bi-send-check"></i>
-                {{ uploading ? (' Subiendo... ' + progress + '%') : 'Enviar al servicio' }}
-              </button>
-
-            </div>
-
-            <div class="mt-3 small text-muted" *ngIf="selectedFile">
-          <i class="bi bi-check2-circle"></i>
-          Archivo listo: <strong>{{ selectedFile.name }}</strong>
-        </div>
-
-        <div class="mt-2 small text-muted" *ngIf="!selectedFile">
-          Máximo sugerido: 400 MB. Se envía el archivo directo al servidor sin procesarlo en navegador.
-        </div>
-
-        <div class="progress mt-2" *ngIf="uploading">
-          <div class="progress-bar progress-bar-striped progress-bar-animated"
-               role="progressbar"
-               [style.width.%]="progress"
-               aria-valuemin="0" aria-valuemax="100"></div>
-            </div>
-            </div>
-        </div>
+      <div class="header-chip">
+        <span class="header-chip__dot"></span>
+        {{ totalGerentes }} gerentes
+      </div>
     </div>
-</section>
-<section class="d-flex align-items-center clients-table-section pagination-modern" style="margin-top: 50px;">
-    <div class="container page-shell table-card">
-        <div class="row table-toolbar">
-            <div class="col-12">
-                <h3>Información de cuentas</h3>
-            </div>
-            <table #dTable class="table-responsive table-modern select-modern">
-                <thead class="table-modern-head" style="background-color: rgb(55, 13, 161); color: white; text-align: center;">
-                    <tr style="height: auto;">
-                        <th>GERENTE</th>
-                        <th>PERIODO</th>
-                        <th>CLIENTES ASIGNADOS</th>
-                        <th> MES </th>
-                        <th> CUOTA MENSUAL</th>
-                        <th>CLIENTES AUDITADOS</th>
-                        <th> PORCENTAJE</th>
-                        <th>CLIENTES RESTANTES</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr *ngFor= "let item of  datacuentas">
-                        <td>{{item.gerente}}</td>
-                        <td>{{item.periodo}}</td>
-                        <td>{{item.clientes_asignados}}</td>
-                        <td>{{item.mes}}</td>
-                        <td>{{item.cuota_mensual | number:'1.0-0'}}</td>
-                        <td>{{item.clientes_auditados}}</td>
-                        <td>{{ ((item?.porcentaje || 0) * 100 ) | number:'1.2-2' }} %</td>
-                        <td>{{item.clientes_restantes}}</td>
-                    </tr>
-                </tbody>
-            </table>
-        
+
+    <article class="admin-card upload-card" *ngIf="showfirstcard && showCargaInformacion">
+      <input
+        #fileInput
+        class="input-modern"
+        type="file"
+        accept=".xlsx,.xls,.csv"
+        (change)="onFileSelected($event)"
+        hidden />
+
+      <div class="section-header">
+        <div class="section-title-wrap">
+          <span class="section-icon"><i class="bi bi-cloud-arrow-up"></i></span>
+          <div>
+            <h2 class="section-title">Carga de informacion</h2>
+            <p class="section-subtitle">Sube el archivo de clientes sin procesarlo en el navegador.</p>
+          </div>
         </div>
+      </div>
+
+      <div class="upload-actions">
+        <button class="btn-shell btn-shell--ghost" type="button" (click)="openPicker()">
+          <i class="bi bi-file-earmark-spreadsheet"></i>
+          Cargar Excel
+        </button>
+
+        <button
+          class="btn-shell btn-shell--primary"
+          type="button"
+          [disabled]="!selectedFile || uploading"
+          (click)="subir()">
+          <i class="bi bi-send-check"></i>
+          {{ uploading ? ('Subiendo ' + progress + '%') : 'Enviar al servicio' }}
+        </button>
+      </div>
+
+      <div class="upload-status upload-status--success" *ngIf="selectedFile">
+        <i class="bi bi-check2-circle"></i>
+        <span>Archivo listo: <strong>{{ selectedFile.name }}</strong></span>
+      </div>
+
+      <div class="upload-status upload-status--info" *ngIf="!selectedFile">
+        <i class="bi bi-info-circle"></i>
+        <span>Maximo sugerido: 400 MB. El archivo se envia directo al servidor.</span>
+      </div>
+
+      <div class="progress modern-progress" *ngIf="uploading">
+        <div
+          class="progress-bar progress-bar-striped progress-bar-animated"
+          role="progressbar"
+          [style.width.%]="progress"
+          aria-valuemin="0"
+          aria-valuemax="100"></div>
+      </div>
+    </article>
+
+    <div class="summary-grid" *ngIf="showKpis">
+      <article class="summary-card summary-card--accent">
+        <span class="summary-label">Gerentes</span>
+        <strong class="summary-value">{{ totalGerentes }}</strong>
+        <span class="summary-meta">Registros visibles en la tabla actual.</span>
+      </article>
+
+      <article class="summary-card summary-card--success">
+        <span class="summary-label">Clientes auditados</span>
+        <strong class="summary-value">{{ totalAuditados | number:'1.0-0' }}</strong>
+        <span class="summary-meta">Suma total de clientes ya auditados.</span>
+      </article>
+
+      <article class="summary-card summary-card--warning">
+        <span class="summary-label">Clientes restantes</span>
+        <strong class="summary-value">{{ totalRestantes | number:'1.0-0' }}</strong>
+        <span class="summary-meta">Pendientes por completar en el periodo.</span>
+      </article>
+
+      <article class="summary-card summary-card--wide">
+        <span class="summary-label">Promedio de cumplimiento</span>
+        <strong class="summary-value">{{ promedioPorcentaje | number:'1.2-2' }}%</strong>
+        <span class="summary-meta">Promedio calculado con el porcentaje visible por gerente.</span>
+      </article>
     </div>
+
+    <article class="admin-card table-card">
+      <div class="section-header">
+        <div class="section-title-wrap">
+          <span class="section-icon"><i class="bi bi-table"></i></span>
+          <div>
+            <h2 class="section-title">Informacion de cuentas</h2>
+            <p class="section-subtitle">Vista responsiva de clientes asignados, auditados y pendientes.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="table-scroll">
+        <table #dTable class="table table-modern clients-table align-middle mb-0">
+          <thead class="table-modern-head clients-table-head">
+            <tr>
+              <th>Gerente</th>
+              <th>Periodo</th>
+              <th>Clientes asignados</th>
+              <th>Mes</th>
+              <th>Cuota mensual</th>
+              <th>Clientes auditados</th>
+              <th>Porcentaje</th>
+              <th>Clientes restantes</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of datacuentas; trackBy: trackByCliente">
+              <td class="cell-text cell-gerente" attr.data-label="Gerente">
+                {{ item.gerente || 'Sin gerente' }}
+              </td>
+              <td class="cell-code" attr.data-label="Periodo">
+                {{ item.periodo || 'Sin periodo' }}
+              </td>
+              <td class="cell-number" attr.data-label="Clientes asignados">
+                {{ item.clientes_asignados || 0 }}
+              </td>
+              <td class="cell-number" attr.data-label="Mes">
+                {{ item.mes || 0 }}
+              </td>
+              <td class="cell-money" attr.data-label="Cuota mensual">
+                {{ item.cuota_mensual | number:'1.0-0' }}
+              </td>
+              <td class="cell-number" attr.data-label="Clientes auditados">
+                {{ item.clientes_auditados || 0 }}
+              </td>
+              <td class="cell-percent" attr.data-label="Porcentaje">
+                <span class="status-badge">
+                  {{ porcentajeCliente(item) | number:'1.2-2' }} %
+                </span>
+              </td>
+              <td class="cell-number cell-number--danger" attr.data-label="Clientes restantes">
+                {{ item.clientes_restantes || 0 }}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </article>
+  </div>
 </section>

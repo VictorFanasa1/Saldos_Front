@@ -11,7 +11,7 @@ import { RegistroCuentaApi } from 'src/app/core/shared/RegistroCuentaApi.model';
 })
 export class EstadoCuentaComponent implements OnInit {
 
-   cuentaOracle: string = '';
+  cuentaOracle: string = '';
   registros: RegistroCuentaApi[] = [];
 
   page: number = 1;
@@ -20,6 +20,7 @@ export class EstadoCuentaComponent implements OnInit {
   total: number = 0;
 
   loading: boolean = false;
+  errorMsg: string = '';
 
   constructor(private service: SaldosService, private route: ActivatedRoute) {}
 
@@ -48,6 +49,7 @@ export class EstadoCuentaComponent implements OnInit {
     if (!this.cuentaOracle) return;
 
     this.loading = true;
+    this.errorMsg = '';
 
     this.service
       .getByCuentaOraclePaged(this.cuentaOracle, this.page, this.pageSize)
@@ -61,6 +63,7 @@ export class EstadoCuentaComponent implements OnInit {
         error: (err) => {
           console.error(err);
           this.registros = [];
+          this.errorMsg = 'No fue posible consultar el estado de cuenta.';
           this.loading = false;
         }
       });
@@ -70,6 +73,31 @@ export class EstadoCuentaComponent implements OnInit {
     if (nuevaPagina < 1 || nuevaPagina > this.totalPages) return;
     this.page = nuevaPagina;
     this.buscar();
+  }
+
+  get saldoVisible(): number {
+    return this.registros.reduce((acc, item) => acc + Number(item.saldo_debido ?? 0), 0);
+  }
+
+  get pageNumbers(): number[] {
+    return Array.from({ length: this.totalPages }, (_, index) => index + 1);
+  }
+
+  formatFechaDisplay(value: string | null | undefined): string {
+    if (!value) return 'Sin fecha';
+    const parsed = new Date(value);
+    if (Number.isNaN(parsed.getTime())) {
+      return value;
+    }
+    return new Intl.DateTimeFormat('es-MX', {
+      day: '2-digit',
+      month: 'short',
+      year: 'numeric'
+    }).format(parsed);
+  }
+
+  trackByRegistro(_: number, item: RegistroCuentaApi): number {
+    return item.id_registro;
   }
 
 }

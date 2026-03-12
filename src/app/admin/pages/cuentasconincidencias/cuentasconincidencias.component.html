@@ -1,36 +1,59 @@
-<section class="medical-hero min-vh-100 d-flex align-items-center">
-  <div class="container py-5">
+<section class="medical-hero min-vh-100 py-4">
+  <div class="container page-shell conincidencias-shell">
+    <div class="page-header">
+      <div>
+        <p class="page-kicker">Administracion</p>
+        <h1 class="page-title">Cuentas con incidencias</h1>
+        <p class="page-subtitle">
+          Seguimiento de folios, estatus y responsables de atencion.
+        </p>
+      </div>
+    </div>
 
-    <h2 style="color: #ffc107;">Cuentas con incidencias</h2>
-    <div class="table-responsive">
-       <div class="table-responsive">
-              <table #dTable class="table table-striped table-hover table-sm |align-middle mb-0">
-                <thead class="table-light">
-                  <tr>
-                    <th>#</th>
-                    <th>Folio</th>
-                    <th>Tipo de incidencia</th>
-                    <th>Cuenta</th>
-                    <th>Fecha</th>
-                    <th>Estatus</th>
-                    <th>Fecha de solución</th>
-                    <th>Usuario Responsable</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr *ngFor="let item of datoscuenta">
-                    <td (click)="goToDetalle(item.pp_uiRow, 1)" style="cursor: pointer;">{{ item.uiRow }}</td>
-                    <td>{{ item.folio_soporte }}</td>
-                    <td> {{item.tipo_incidencia}}</td>
-                    <td>{{ item.cuenta_oracle }}</td>
-                    <td>{{ item.fecha_creacion_incidencia   | date: 'dd/MM/yyyy' }}</td>
-                    <td> {{item.estatus}} </td>
-                    <td> {{ item.fecha_solucion }}</td>
-                    <td> {{ item.usuario_actualiza}} </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
+    <div class="card shadow-sm table-card conincidencias-card">
+      <div class="card-body">
+        <div class="table-responsive table-wrap">
+          <table
+            #dTable
+            class="table table-striped table-hover table-sm align-middle mb-0 table-modern conincidencias-table">
+            <thead class="table-light table-modern-head conincidencias-table-head">
+              <tr>
+                <th class="col-id">#</th>
+                <th class="col-folio">Folio</th>
+                <th class="col-tipo">Tipo de incidencia</th>
+                <th class="col-cuenta">Cuenta</th>
+                <th class="col-fecha-creacion">Fecha</th>
+                <th class="col-estatus">Estatus</th>
+                <th class="col-fecha-solucion">Fecha de solucion</th>
+                <th class="col-responsable">Usuario responsable</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let item of datoscuenta">
+                <td class="cell-id clickable-cell" (click)="goToDetalle(item.pp_uiRow, 1)">
+                  {{ item.uiRow }}
+                </td>
+                <td class="cell-folio">{{ item.folio_soporte }}</td>
+                <td class="cell-tipo">{{ item.tipo_incidencia }}</td>
+                <td class="cell-cuenta">{{ item.cuenta_oracle }}</td>
+                <td class="cell-fecha">{{ item.fecha_creacion_incidencia | date: 'dd/MM/yyyy' }}</td>
+                <td class="cell-estatus">
+                  <span
+                    class="status-badge"
+                    [class.status-resuelto]="(item.estatus || '').toLowerCase().includes('cerrad') || (item.estatus || '').toLowerCase().includes('resuelt') || (item.estatus || '').toLowerCase().includes('solucion')"
+                    [class.status-pendiente]="(item.estatus || '').toLowerCase().includes('pend') || (item.estatus || '').toLowerCase().includes('proceso') || (item.estatus || '').toLowerCase().includes('abiert')"
+                    [class.status-riesgo]="(item.estatus || '').toLowerCase().includes('cancel') || (item.estatus || '').toLowerCase().includes('rechaz')"
+                    [class.status-neutral]="!(item.estatus || '').toLowerCase().includes('cerrad') && !(item.estatus || '').toLowerCase().includes('resuelt') && !(item.estatus || '').toLowerCase().includes('solucion') && !(item.estatus || '').toLowerCase().includes('pend') && !(item.estatus || '').toLowerCase().includes('proceso') && !(item.estatus || '').toLowerCase().includes('abiert') && !(item.estatus || '').toLowerCase().includes('cancel') && !(item.estatus || '').toLowerCase().includes('rechaz')">
+                    {{ item.estatus }}
+                  </span>
+                </td>
+                <td class="cell-fecha-solucion">{{ item.fecha_solucion }}</td>
+                <td class="cell-responsable">{{ item.usuario_actualiza }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
   </div>
 </section>

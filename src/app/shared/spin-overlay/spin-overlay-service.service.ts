@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 export interface SpinOverlayState {
   visible: boolean;
-  src?: string;
   size?: number;
   dismissible?: boolean;
 }
@@ -20,7 +19,6 @@ export class SpinOverlayServiceService {
     const current = this._state$.value;
     this._state$.next({
       visible: true,
-      src: opts.src ?? current.src ?? 'assets/icons/icon-512x512.png',
       size: opts.size ?? current.size ?? 160,
       dismissible: opts.dismissible ?? true,
     });

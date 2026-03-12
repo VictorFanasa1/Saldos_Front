@@ -1,18 +1,15 @@
 import { FormresponsableComponent } from './pages/formresponsable/formresponsable.component';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { DashboardComponent } from './pages/dashboard/dashboard.component';
 
 import { ConfiguracionesComponent } from './pages/configuraciones/configuraciones.component';
 import { CuentasincidenciasComponent } from './pages/cuentasincidencias/cuentasincidencias.component';
 import { CuentasconincidenciasComponent } from './pages/cuentasconincidencias/cuentasconincidencias.component';
 import { ClientesComponent } from './pages/clientes/clientes.component';
-import { AgenteComponent } from '../agente/agente.component';
 import { DashboardComponentAgent } from '../agente/pages/dashboard/dashboard.component';
-import { EstadosCuentaComponent } from '../estados-cuenta/estados-cuenta.component';
 
 const routes: Routes = [
-  { path: '', component: DashboardComponent },
+  { path: '', redirectTo: 'clientes', pathMatch: 'full' },
   {path: 'fomrAdmin/:id/:flag', component: FormresponsableComponent},
   {path: 'configuraciones', component: ConfiguracionesComponent},
   {path: 'incidencias', component: CuentasincidenciasComponent},
@@ -20,7 +17,7 @@ const routes: Routes = [
   {path: 'clientes', component: ClientesComponent},
   {path: 'config', component: ConfiguracionesComponent},
   {path: 'agente', component: DashboardComponentAgent},
-  {path: 'cargac', component: EstadosCuentaComponent}
+  {path: 'cargac', redirectTo: 'clientes', pathMatch: 'full'}
 ];
 
 @NgModule({

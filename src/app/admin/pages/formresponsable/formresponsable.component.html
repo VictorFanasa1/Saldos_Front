@@ -1,404 +1,492 @@
-<!--<div class="otp-overlay" *ngIf="!otpValidated">
-  <div class="otp-modal card shadow-lg border-0">
-    <div class="card-body">
-      <h4 class="mb-2">Validar codigo OTP</h4>
-      <p class="text-muted mb-3">Ingresa los 6 digitos que recibiste.</p>
-
-      <div class="otp-inputs">
-        <input
-          *ngFor="let digit of otpDigits; let i = index"
-          #otpInput
-          class="form-control otp-box"
-          [ngClass]="{ 'otp-box-success': otpSuccess, 'otp-box-error': otpError }"
-          type="text"
-          inputmode="numeric"
-          maxlength="1"
-          autocomplete="one-time-code"
-          [ngModelOptions]="{ standalone: true }"
-          [(ngModel)]="otpDigits[i]"
-          [name]="'otp'+i"
-          (input)="onOtpInput($event, i)"
-          (keydown)="onOtpKeydown($event, i)"
-        />
-      </div>
-
-      <div class="mt-3" *ngIf="otpError || otpSuccess">
-        <small class="text-success" *ngIf="otpSuccess">Codigo correcto</small>
-        <small class="text-danger" *ngIf="otpError">{{ otpError }}</small>
-      </div>
-
-      <button
-        *ngIf="otpSuccess"
-        type="button"
-        class="btn btn-success w-100 mt-3"
-        (click)="confirmOtp()"
-      >
-        Continuar
-      </button>
-
-      <div class="otp-request mt-4">
-        <p class="text-muted mb-2">
-          No tienes el codigo? Solicitalo y lo enviaremos a tu correo.
-        </p>
-        <div class="input-group">
-          <input
-            type="email"
-            class="form-control"
-            placeholder="Correo para enviar el codigo"
-            [ngModelOptions]="{ standalone: true }"
-            [(ngModel)]="otpEmail"
-            name="otpEmail"
-          />
-          <button
-            class="btn btn-outline-primary"
-            type="button"
-            (click)="requestOtp()"
-            [disabled]="otpRequesting"
-          >
-            {{ otpRequesting ? 'Enviando...' : 'Solicitar codigo' }}
-          </button>
+<section class="form-admin-page min-vh-100">
+  <div class="container page-shell">
+    <div class="page-header">
+      <div class="page-heading">
+        <p class="page-eyebrow">Administracion</p>
+        <div class="page-title-row">
+          <h1 class="page-title">Confirmacion de cliente</h1>
+          <span
+            class="status-chip"
+            [ngClass]="{
+              'status-chip--danger': statusTone === 'danger',
+              'status-chip--success': statusTone === 'success',
+              'status-chip--warning': statusTone === 'warning'
+            }">
+            <span class="status-chip__dot"></span>
+            {{ statusText }}
+          </span>
         </div>
+        <p class="page-subtitle">
+          Revision de cartera, respuestas y soporte capturado para la cuenta.
+        </p>
       </div>
     </div>
-  </div>
-  [class.blur-content]="!otpValidated"
-</div>-->
 
-<section class="min-vh-100" >
-  <div class="container">
-    <div class="row justify-content-center">
-      <div class="col-12 col-lg-6">
-        <div class="card shadow-sm">
-          <div class="card-body">
-            <h5 class="mb-4">Confirmación de cliente</h5>
-            <form [formGroup]="formularioaadminsinincidencia" (ngSubmit)="grabarRespuestas()"
-              class="border p-4 shadow-sm bg-light">
-              <!-- Datos básicos -->
-
-              <div class="row">
-                <div class="col-12">
-                  <div class="row g-3">
-                    <div class="col-12">
-                      <div class="row align-items-center">
-                        <label class="col-md-6 col-form-label">Confirmación de cliente:</label>
-                        <div class="col-md-6">
-                          <input type="text" class="form-control" placeholder="Folio / ID de confirmación"
-                            formControlName="confirmacionCliente" readonly />
-                        </div>
-                      </div>
-                    </div>
-
-                    <div class="col-12">
-                      <div class="row align-items-center">
-                        <label class="col-md-5 col-form-label">Nombre corto:</label>
-                        <div class="col-md-7">
-                          <input type="text" class="form-control" placeholder="Nombre corto"
-                            formControlName="nombreCorto" readonly />
-                        </div>
-                      </div>
-                    </div>
-
-                    <div class="col-12">
-                      <div class="row align-items-center">
-                        <label class="col-md-5 col-form-label">Cuenta Oracle:</label>
-                        <div class="col-md-7">
-                          <input type="text" class="form-control" placeholder="Cuenta Oracle"
-                            formControlName="cuentaOracle" readonly />
-                        </div>
-                      </div>
-                    </div>
-
-                    <div class="col-12">
-                      <div class="row align-items-center">
-                        <label class="col-md-5 col-form-label">Razón social:</label>
-                        <div class="col-md-7">
-                          <input type="text" class="form-control" placeholder="Razón social del cliente"
-                            formControlName="razonSocial" readonly />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-6"></div>
-              </div>
-              <hr class="my-4" />
-
-              <!-- Cartera -->
-              <h6 class="mb-3">Cartera</h6>
-              <div class="row g-3">
-                <div class="col-12">
-                  <div class="row align-items-center">
-                    <label class="col-md-5 col-form-label">Cartera total:</label>
-                    <div class="col-md-7">
-                      <input type="text" class="form-control align_money" placeholder="0.00"
-                        formControlName="carteraTotal" readonly />
-                    </div>
-                  </div>
-                </div>
-
-                <div class="col-12">
-                  <div class="row align-items-center">
-                    <label class="col-md-5 col-form-label">Cartera por vencer:</label>
-                    <div class="col-md-7">
-                      <input type="text" class="form-control align_money" placeholder="0.00"
-                        formControlName="carteraPorVencer" readonly />
-                    </div>
-                  </div>
-                </div>
-
-                <div class="col-12">
-                  <div class="row align-items-center">
-                    <label class="col-md-5 col-form-label">Cartera vencida:</label>
-                    <div class="col-md-7">
-                      <input type="text" class="form-control align_money" placeholder="0.00"
-                        formControlName="carteraVencida" readonly />
-                    </div>
-                  </div>
-                </div>
-
-                <div class="col-12">
-                  <div class="row align-items-center">
-                    <label class="col-md-5 col-form-label">Vencida a 7 días:</label>
-                    <div class="col-md-7">
-                      <input type="text" class="form-control align_money" placeholder="0.00" formControlName="vencida7"
-                        readonly />
-                    </div>
-                  </div>
-                </div>
-
-                <div class="col-12">
-                  <div class="row align-items-center">
-                    <label class="col-md-5 col-form-label">Vencido de 8 a 14 días:</label>
-                    <div class="col-md-7">
-                      <input type="text" class="form-control align_money" placeholder="0.00"
-                        formControlName="vencida8a14" readonly />
-                    </div>
-                  </div>
-                </div>
-
-                <div class="col-12">
-                  <div class="row align-items-center">
-                    <label class="col-md-5 col-form-label">Vencido de 15 a 21 días:</label>
-                    <div class="col-md-7">
-                      <input type="text" class="form-control align_money" placeholder="0.00"
-                        formControlName="vencida15a21" readonly />
-                    </div>
-                  </div>
-                </div>
-
-                <div class="col-12">
-                  <div class="row align-items-center">
-                    <label class="col-md-5 col-form-label">Vencido mayor a 22 días:</label>
-                    <div class="col-md-7">
-                      <input type="text" class="form-control align_money" placeholder="0.00"
-                        formControlName="vencida22Plus" readonly />
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <hr class="my-4" />
-
-              <!-- Preguntas Sí/No -->
-              <div class="vstack gap-3">
-                <div class="row">
-                  <div class="col-12" *ngIf="primerbloque">
-                    <label class="form-label">¿Estás de acuerdo con el saldo de su cuenta?</label>
-                    <div class="d-flex gap-3">
-                      <div class="form-check">
-                        <input class="form-check-input" type="radio" name="acuerdoSaldo" formControlName="acuerdoSaldo"
-                          [value]="true" id="acuerdoSi" />
-                        <label class="form-check-label" for="acuerdoSi">Sí</label>
-                      </div>
-                      <div class="form-check">
-                        <input class="form-check-input" type="radio" name="acuerdoSaldo" formControlName="acuerdoSaldo"
-                          [value]="false" id="acuerdoNo" />
-                        <label class="form-check-label" for="acuerdoNo">No</label>
-                      </div>
-                    </div>
-                    <div class="mt-2" *ngIf="mostrartextareas">
-                      <textarea class="form-control" rows="2" placeholder="Describe el motivo"
-                        formControlName="p1_razon" readonly></textarea>
-                    </div>
-                  </div>
-
-                  <div class="col-12" *ngIf="primerbloque">
-                    <label class="form-label">¿Recibe un comprobante al realizar sus pagos?</label>
-                    <div class="d-flex gap-3">
-                      <div class="form-check">
-                        <input class="form-check-input" type="radio" name="comprobantePagos"
-                          formControlName="comprobantePagos" [value]="true" id="comprobanteSi" />
-                        <label class="form-check-label" for="comprobanteSi">Sí</label>
-                      </div>
-                      <div class="form-check">
-                        <input class="form-check-input" type="radio" name="comprobantePagos"
-                          formControlName="comprobantePagos" [value]="false" id="comprobanteNo" />
-                        <label class="form-check-label" for="comprobanteNo">No</label>
-                      </div>
-                    </div>
-                    <div class="mt-2" *ngIf="mostrartextareas">
-                      <textarea class="form-control" rows="2" placeholder="Describe el motivo"
-                        formControlName="p2_razon" readonly></textarea>
-                    </div>
-                  </div>
-
-                  <div class="col-12" *ngIf="primerbloque">
-                    <label class="form-label">¿Identifica pagos pendientes de aplicar?</label>
-                    <div class="d-flex gap-3">
-                      <div class="form-check">
-                        <input class="form-check-input" type="radio" name="pagosPendientes"
-                          formControlName="pagosPendientes" [value]="true" id="pagosPendSi" />
-                        <label class="form-check-label" for="pagosPendSi">Sí</label>
-                      </div>
-                      <div class="form-check">
-                        <input class="form-check-input" type="radio" name="pagosPendientes"
-                          formControlName="pagosPendientes" [value]="false" id="pagosPendNo" />
-                        <label class="form-check-label" for="pagosPendNo">No</label>
-                      </div>
-                    </div>
-                    <div class="mt-2" *ngIf="mostrartextareas">
-                      <textarea class="form-control" rows="2" placeholder="Describe el motivo"
-                        formControlName="p3_razon" readonly></textarea>
-                    </div>
-                  </div>
-
-                  <div class="col-12" *ngIf="segundobloque">
-                    <label class="form-label">¿Identificas devoluciones pendientes de notas de
-                      crédito?</label>
-                    <div class="d-flex gap-3">
-                      <div class="form-check">
-                        <input class="form-check-input" type="radio" name="devolucionesPendientes"
-                          formControlName="devolucionesPendientes" [value]="true" id="devolPendSi" />
-                        <label class="form-check-label" for="devolPendSi">Sí</label>
-                      </div>
-                      <div class="form-check">
-                        <input class="form-check-input" type="radio" name="devolucionesPendientes"
-                          formControlName="devolucionesPendientes" [value]="false" id="devolPendNo" />
-                        <label class="form-check-label" for="devolPendNo">No</label>
-                      </div>
-                    </div>
-                    <div class="mt-2" *ngIf="mostrartextareas">
-                      <textarea class="form-control" rows="2" placeholder="Describe el motivo"
-                        formControlName="p4_razon" readonly></textarea>
-                    </div>
-                  </div>
-
-                  <div class="col-12" *ngIf="segundobloque">
-                    <label class="form-label">¿Identificas reclamaciones pendientes de notas de
-                      crédito?</label>
-                    <div class="d-flex gap-3">
-                      <div class="form-check">
-                        <input class="form-check-input" type="radio" name="reclamacionesPendientes"
-                          formControlName="reclamacionesPendientes" [value]="true" id="reclaPendSi" />
-                        <label class="form-check-label" for="reclaPendSi">Sí</label>
-                      </div>
-                      <div class="form-check">
-                        <input class="form-check-input" type="radio" name="reclamacionesPendientes"
-                          formControlName="reclamacionesPendientes" [value]="false" id="reclaPendNo" />
-                        <label class="form-check-label" for="reclaPendNo">No</label>
-                      </div>
-                    </div>
-                    <div class="mt-2" *ngIf="mostrartextareas">
-                      <textarea class="form-control" rows="2" placeholder="Describe el motivo"
-                        formControlName="p5_razon" readonly></textarea>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Botón -->
-            </form>
-          </div>
-        </div>
-      </div>
-      <div class="col-12 col-lg-6" *ngIf="mostrarEvidencia">
-        <div class="card shadow-sm">
-          <div class="card-body">
-            <div class="row">
-              <div class="col-12">
-                <p>Ubicación donde se capturo la informacion</p>
-                <div #osmMap id="osm-map" style="height:300px"></div>
-              </div>
-
-              <div class="col-12">
-                <div class="d-flex gap-3" *ngIf="!cargandos">
-                  <div class="row">
-                    <div class="col-12">
-                      <p>Firma:</p>
-                    </div>
-                    <div class="col-12">
-                      <img *ngIf="firmaSafeUrl" [src]="firmaSafeUrl" alt="Firma" style="
-                          max-width: 100%;
-                          height: auto;
-                          border: 1px solid #e5e7eb;
-                          border-radius: 8px;
-                        " />
-                    </div>
-                  </div>
+    <div class="row g-4 align-items-start">
+      <div
+        class="col-12"
+        [class.col-lg-7]="mostrarEvidencia"
+        [class.col-lg-12]="!mostrarEvidencia">
+        <form
+          [formGroup]="formularioaadminsinincidencia"
+          (ngSubmit)="grabarRespuestas()"
+          class="content-stack">
+          <article class="admin-card">
+            <div class="section-header">
+              <div class="section-title-wrap">
+                <span class="section-icon"><i class="bi bi-building"></i></span>
+                <div>
+                  <h2 class="section-title">Informacion del cliente</h2>
+                  <p class="section-subtitle">Datos base de la confirmacion.</p>
                 </div>
               </div>
             </div>
-            <form [formGroup]="formularioagenteEvidencias" (ngSubmit)="grabarRespuestas()">
-              <div class="row g-3">
-                <div class="col-12">
-                  <label for=""> Estatus </label>
-                  <select name="estatus" id="estatusName" formControlName="estatusName" class="form-control">
-                    <option value="0" selected>Seleccione una opción</option>
-                    <option value="1">Cerrado con Incidencia</option>
-                    <option value="2">Abierto - En Seguimiento</option>
-                  </select>
-                </div>
-                <div class="col-12" *ngIf="!evidenciaexiste">
-                  <label class="form-label">Observaciones</label>
-                  <textarea class="form-control" rows="3" formControlName="comentarios"
-                    placeholder="Escribe tus observaciones"></textarea>
-                </div>
-                <div class="col-12" *ngIf="!evidenciaexiste">
-                  <label class="form-label">Evidencia (imágenes, PDF o Word)</label>
-                  <input type="file" class="form-control" (change)="onFileSelected($event)"
-                    accept="image/*,.pdf,.doc,.docx" />
-                </div>
-                <div class="col-12" *ngIf="evidenciaexiste">
-                  <h1>Evidencia:</h1>
-                  <div *ngIf="loadings">Cargando evidencia…</div>
 
-                  <!-- Imagen -->
-                  <img *ngIf="!loadings && kind === 'image'" [src]="imgUrl" alt="Evidencia" style="
-                      max-width: 100%;
-                      height: auto;
-                      border: 1px solid #e5e7eb;
-                      border-radius: 8px;
-                    " />
+            <div class="field-grid">
+              <div class="readonly-field">
+                <span class="field-label">Confirmacion de cliente</span>
+                <div class="field-value">{{ displayValue('confirmacionCliente') }}</div>
+              </div>
 
-                  <!-- PDF (usa iframe u object; ambos valen) -->
-                  <iframe *ngIf="!loadings && kind === 'pdf'" [src]="pdfUrl" title="Evidencia PDF" style="
-                      width: 100%;
-                      height: 70vh;
-                      border: 1px solid #e5e7eb;
-                      border-radius: 8px;
-                    "></iframe>
+              <div class="readonly-field">
+                <span class="field-label">Cuenta Oracle</span>
+                <div class="field-value">{{ displayValue('cuentaOracle') }}</div>
+              </div>
 
-                  <!-- Desconocido: muestra botón de descarga -->
-                  <div *ngIf="!loadings && kind === 'other'">
-                    <a [href]="imgUrl || pdfUrl" download="{{ downloadName }}">Descargar evidencia</a>
-                  </div>
-                </div>
-                <div class="col-12">
-                  <h1>Comentarios</h1>
-                  <p>{{ comentarios }}</p>
-                </div>
-                <div class="text-center mt-4" *ngIf=" iddelestatus == 2 || iddelestatus == 0">
-                  <button type="submit" class="btn btn-primary">GUARDAR</button>
-                </div>
-                <div class="text-center mt-4">
-                  <button type="button" class="btn btn-danger px-4" (click)="volver()">
-                    Regresar
-                  </button>
+              <div class="readonly-field field-span-2">
+                <span class="field-label">Nombre corto</span>
+                <div class="field-value">{{ displayValue('nombreCorto') }}</div>
+              </div>
+
+              <div class="readonly-field field-span-2">
+                <span class="field-label">Razon social</span>
+                <div class="field-value">{{ displayValue('razonSocial') }}</div>
+              </div>
+            </div>
+          </article>
+
+          <article class="admin-card">
+            <div class="section-header">
+              <div class="section-title-wrap">
+                <span class="section-icon"><i class="bi bi-cash-stack"></i></span>
+                <div>
+                  <h2 class="section-title">Cartera</h2>
+                  <p class="section-subtitle">Resumen y detalle de aging.</p>
                 </div>
               </div>
-            </form>
+            </div>
+
+            <div class="summary-grid">
+              <div class="summary-card summary-card--accent">
+                <span class="summary-label">Cartera total</span>
+                <strong class="summary-value">{{ displayValue('carteraTotal', '$ 0.00') }}</strong>
+              </div>
+
+              <div class="summary-card summary-card--success">
+                <span class="summary-label">Por vencer</span>
+                <strong class="summary-value">{{ displayValue('carteraPorVencer', '$ 0.00') }}</strong>
+              </div>
+
+              <div class="summary-card summary-card--danger summary-card--wide">
+                <span class="summary-label">Cartera vencida</span>
+                <strong class="summary-value">{{ displayValue('carteraVencida', '$ 0.00') }}</strong>
+              </div>
+            </div>
+
+            <div class="table-shell">
+              <table class="aging-table">
+                <thead>
+                  <tr>
+                    <th>Periodo</th>
+                    <th>Monto</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Vencida a 7 dias</td>
+                    <td class="aging-value" [class.amount-alert]="hasNonZero('vencida7')">
+                      {{ displayValue('vencida7', '$ 0.00') }}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Vencido de 8 a 14 dias</td>
+                    <td class="aging-value" [class.amount-alert]="hasNonZero('vencida8a14')">
+                      {{ displayValue('vencida8a14', '$ 0.00') }}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Vencido de 15 a 21 dias</td>
+                    <td class="aging-value" [class.amount-alert]="hasNonZero('vencida15a21')">
+                      {{ displayValue('vencida15a21', '$ 0.00') }}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Vencido mayor a 22 dias</td>
+                    <td class="aging-value" [class.amount-alert]="hasNonZero('vencida22Plus')">
+                      {{ displayValue('vencida22Plus', '$ 0.00') }}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+          </article>
+
+          <article class="admin-card">
+            <div class="section-header">
+              <div class="section-title-wrap">
+                <span class="section-icon"><i class="bi bi-card-checklist"></i></span>
+                <div>
+                  <h2 class="section-title">Cuestionario</h2>
+                  <p class="section-subtitle">Preguntas registradas durante la captura.</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="question-list">
+              <div class="question-item" *ngIf="primerbloque">
+                <p class="question-text">Estas de acuerdo con el saldo de su cuenta?</p>
+                <div class="radio-group">
+                  <label class="choice-pill" for="acuerdoSi">
+                    <input
+                      class="form-check-input"
+                      type="radio"
+                      name="acuerdoSaldo"
+                      formControlName="acuerdoSaldo"
+                      [value]="true"
+                      id="acuerdoSi" />
+                    <span>Si</span>
+                  </label>
+
+                  <label class="choice-pill" for="acuerdoNo">
+                    <input
+                      class="form-check-input"
+                      type="radio"
+                      name="acuerdoSaldo"
+                      formControlName="acuerdoSaldo"
+                      [value]="false"
+                      id="acuerdoNo" />
+                    <span>No</span>
+                  </label>
+                </div>
+
+                <textarea
+                  *ngIf="mostrartextareas"
+                  class="modern-textarea"
+                  rows="3"
+                  placeholder="Describe el motivo"
+                  formControlName="p1_razon"
+                  readonly></textarea>
+              </div>
+
+              <div class="question-item" *ngIf="primerbloque">
+                <p class="question-text">Recibe un comprobante al realizar sus pagos?</p>
+                <div class="radio-group">
+                  <label class="choice-pill" for="comprobanteSi">
+                    <input
+                      class="form-check-input"
+                      type="radio"
+                      name="comprobantePagos"
+                      formControlName="comprobantePagos"
+                      [value]="true"
+                      id="comprobanteSi" />
+                    <span>Si</span>
+                  </label>
+
+                  <label class="choice-pill" for="comprobanteNo">
+                    <input
+                      class="form-check-input"
+                      type="radio"
+                      name="comprobantePagos"
+                      formControlName="comprobantePagos"
+                      [value]="false"
+                      id="comprobanteNo" />
+                    <span>No</span>
+                  </label>
+                </div>
+
+                <textarea
+                  *ngIf="mostrartextareas"
+                  class="modern-textarea"
+                  rows="3"
+                  placeholder="Describe el motivo"
+                  formControlName="p2_razon"
+                  readonly></textarea>
+              </div>
+
+              <div class="question-item" *ngIf="primerbloque">
+                <p class="question-text">Identifica pagos pendientes de aplicar?</p>
+                <div class="radio-group">
+                  <label class="choice-pill" for="pagosPendSi">
+                    <input
+                      class="form-check-input"
+                      type="radio"
+                      name="pagosPendientes"
+                      formControlName="pagosPendientes"
+                      [value]="true"
+                      id="pagosPendSi" />
+                    <span>Si</span>
+                  </label>
+
+                  <label class="choice-pill" for="pagosPendNo">
+                    <input
+                      class="form-check-input"
+                      type="radio"
+                      name="pagosPendientes"
+                      formControlName="pagosPendientes"
+                      [value]="false"
+                      id="pagosPendNo" />
+                    <span>No</span>
+                  </label>
+                </div>
+
+                <textarea
+                  *ngIf="mostrartextareas"
+                  class="modern-textarea"
+                  rows="3"
+                  placeholder="Describe el motivo"
+                  formControlName="p3_razon"
+                  readonly></textarea>
+              </div>
+
+              <div class="question-item" *ngIf="segundobloque">
+                <p class="question-text">
+                  Identificas devoluciones pendientes de notas de credito?
+                </p>
+                <div class="radio-group">
+                  <label class="choice-pill" for="devolPendSi">
+                    <input
+                      class="form-check-input"
+                      type="radio"
+                      name="devolucionesPendientes"
+                      formControlName="devolucionesPendientes"
+                      [value]="true"
+                      id="devolPendSi" />
+                    <span>Si</span>
+                  </label>
+
+                  <label class="choice-pill" for="devolPendNo">
+                    <input
+                      class="form-check-input"
+                      type="radio"
+                      name="devolucionesPendientes"
+                      formControlName="devolucionesPendientes"
+                      [value]="false"
+                      id="devolPendNo" />
+                    <span>No</span>
+                  </label>
+                </div>
+
+                <textarea
+                  *ngIf="mostrartextareas"
+                  class="modern-textarea"
+                  rows="3"
+                  placeholder="Describe el motivo"
+                  formControlName="p4_razon"
+                  readonly></textarea>
+              </div>
+
+              <div class="question-item" *ngIf="segundobloque">
+                <p class="question-text">
+                  Identificas reclamaciones pendientes de notas de credito?
+                </p>
+                <div class="radio-group">
+                  <label class="choice-pill" for="reclaPendSi">
+                    <input
+                      class="form-check-input"
+                      type="radio"
+                      name="reclamacionesPendientes"
+                      formControlName="reclamacionesPendientes"
+                      [value]="true"
+                      id="reclaPendSi" />
+                    <span>Si</span>
+                  </label>
+
+                  <label class="choice-pill" for="reclaPendNo">
+                    <input
+                      class="form-check-input"
+                      type="radio"
+                      name="reclamacionesPendientes"
+                      formControlName="reclamacionesPendientes"
+                      [value]="false"
+                      id="reclaPendNo" />
+                    <span>No</span>
+                  </label>
+                </div>
+
+                <textarea
+                  *ngIf="mostrartextareas"
+                  class="modern-textarea"
+                  rows="3"
+                  placeholder="Describe el motivo"
+                  formControlName="p5_razon"
+                  readonly></textarea>
+              </div>
+            </div>
+          </article>
+        </form>
+      </div>
+
+      <div class="col-12 col-lg-5" *ngIf="mostrarEvidencia">
+        <form
+          [formGroup]="formularioagenteEvidencias"
+          (ngSubmit)="grabarRespuestas()"
+          class="content-stack">
+          <article class="admin-card">
+            <div class="section-header">
+              <div class="section-title-wrap">
+                <span class="section-icon"><i class="bi bi-geo-alt"></i></span>
+                <div>
+                  <h2 class="section-title">Ubicacion de captura</h2>
+                  <p class="section-subtitle">Mapa y estatus del registro.</p>
+                </div>
+              </div>
+            </div>
+
+            <div #osmMap id="osm-map" class="map-surface"></div>
+
+            <div class="status-inline">
+              <span
+                class="status-chip"
+                [ngClass]="{
+                  'status-chip--danger': statusTone === 'danger',
+                  'status-chip--success': statusTone === 'success',
+                  'status-chip--warning': statusTone === 'warning'
+                }">
+                <span class="status-chip__dot"></span>
+                {{ statusText }}
+              </span>
+            </div>
+
+            <div class="field-stack">
+              <label class="field-label" for="estatusName">Estatus</label>
+              <select
+                name="estatus"
+                id="estatusName"
+                formControlName="estatusName"
+                class="modern-select">
+                <option value="0" selected>Seleccione una opcion</option>
+                <option value="1">Cerrado con Incidencia</option>
+                <option value="2">Abierto - En Seguimiento</option>
+              </select>
+            </div>
+          </article>
+
+          <article class="admin-card">
+            <div class="section-header">
+              <div class="section-title-wrap">
+                <span class="section-icon"><i class="bi bi-journal-text"></i></span>
+                <div>
+                  <h2 class="section-title">Observaciones y evidencia</h2>
+                  <p class="section-subtitle">Notas del responsable y archivos adjuntos.</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="content-stack content-stack--sm">
+              <div class="field-stack" *ngIf="!evidenciaexiste">
+                <label class="field-label" for="comentariosAdmin">Observaciones</label>
+                <textarea
+                  id="comentariosAdmin"
+                  class="modern-textarea"
+                  rows="4"
+                  formControlName="comentarios"
+                  placeholder="Escribe tus observaciones"></textarea>
+              </div>
+
+              <div class="field-stack" *ngIf="!evidenciaexiste">
+                <span class="field-label">Evidencia</span>
+                <input
+                  #fileInput
+                  type="file"
+                  class="visually-hidden"
+                  (change)="onFileSelected($event)"
+                  accept="image/*,.pdf,.doc,.docx" />
+                <button type="button" class="upload-zone" (click)="fileInput.click()">
+                  <i class="bi bi-cloud-arrow-up"></i>
+                  <span class="upload-zone__title">Adjuntar evidencia</span>
+                  <span class="upload-zone__copy">Imagenes, PDF o Word</span>
+                  <span class="upload-zone__file" *ngIf="archivoSeleccionado">
+                    {{ archivoSeleccionado.name }}
+                  </span>
+                </button>
+              </div>
+
+              <div class="evidence-panel" *ngIf="evidenciaexiste">
+                <div class="panel-head">
+                  <span class="field-label">Evidencia adjunta</span>
+                  <span class="caption-text" *ngIf="loadings">Cargando evidencia...</span>
+                </div>
+
+                <img
+                  *ngIf="!loadings && kind === 'image'"
+                  [src]="imgUrl"
+                  alt="Evidencia"
+                  class="media-preview" />
+
+                <iframe
+                  *ngIf="!loadings && kind === 'pdf'"
+                  [src]="pdfUrl"
+                  title="Evidencia PDF"
+                  class="pdf-preview"></iframe>
+
+                <div class="download-panel" *ngIf="!loadings && kind === 'other'">
+                  <a [href]="imgUrl || pdfUrl" download="{{ downloadName }}">Descargar evidencia</a>
+                </div>
+              </div>
+
+              <div class="signature-panel" *ngIf="!cargandos && firmaSafeUrl">
+                <div class="panel-head">
+                  <span class="field-label">Firma capturada</span>
+                </div>
+                <img [src]="firmaSafeUrl" alt="Firma" class="media-preview signature-preview" />
+              </div>
+            </div>
+          </article>
+
+          <article class="admin-card">
+            <div class="section-header">
+              <div class="section-title-wrap">
+                <span class="section-icon"><i class="bi bi-chat-left-text"></i></span>
+                <div>
+                  <h2 class="section-title">Comentarios</h2>
+                  <p class="section-subtitle">Historial visible del registro.</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="comment-thread" *ngIf="comentarios; else emptyComments">
+              <div class="comment-item">
+                <div class="comment-avatar">{{ comentarioIniciales }}</div>
+                <div class="comment-body">
+                  <div class="comment-meta">
+                    <span class="comment-author">{{ comentarioAutor }}</span>
+                    <span class="comment-date">{{ comentarioFechaTexto }}</span>
+                  </div>
+                  <p class="comment-text">{{ comentarios }}</p>
+                </div>
+              </div>
+            </div>
+
+            <ng-template #emptyComments>
+              <div class="empty-state">
+                <i class="bi bi-chat-square-dots"></i>
+                <p>No hay comentarios registrados.</p>
+              </div>
+            </ng-template>
+          </article>
+
+          <div class="action-bar">
+            <button type="button" class="btn btn-ghost-modern" (click)="volver()">
+              <i class="bi bi-arrow-left"></i>
+              Regresar
+            </button>
+
+            <button *ngIf="canSaveChanges" type="submit" class="btn btn-primary-modern">
+              Guardar cambios
+            </button>
           </div>
-        </div>
+        </form>
       </div>
     </div>
   </div>

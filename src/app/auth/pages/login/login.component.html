@@ -4,10 +4,7 @@
   <main class="login-main" role="main">
     <section class="login-card" [class.shake]="shakeCard">
       <header class="logo-block">
-        <div class="logo-circle">
-          <img src="./assets/icons/saldosicon512x512.png" alt="Logo de Saldos" />
-        </div>
-        <h1 class="login-title">Saldos</h1>
+        <h1 class="login-title">AudiFarma</h1>
         <p class="login-subtitle">Plataforma financiera corporativa</p>
       </header>
 
@@ -89,12 +86,12 @@
       </form>
     </section>
 
-    <p class="login-footer">© 2026 Saldos</p>
+    <p class="login-footer">© 2026 AudiFarma</p>
   </main>
 </div>
 
 <div *ngIf="(canInstall$ | async)" class="install-banner">
-  <div class="install-text">¿Quieres instalar <b>SaldosApp</b> para un acceso más rápido?</div>
+  <div class="install-text">¿Quieres instalar <b>AudiFarma</b> para un acceso más rápido?</div>
   <div class="install-actions">
     <button class="install-btn" (click)="instalar()">Instalar</button>
   </div>

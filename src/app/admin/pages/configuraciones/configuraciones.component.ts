@@ -17,6 +17,8 @@ export class ConfiguracionesComponent implements OnInit {
     roles: RolesModel[] = [];
     ubicacionesAsignadas: [] = []
   searchTerm: string = '';
+  currentPage: number = 1;
+  readonly pageSize: number = 6;
   rol = "0"
   selectedUsuario: Usuario | null = null;
   selectedUbicaciones: number[] = [];
@@ -136,6 +138,51 @@ getNombreUbicacion(idUbicacion?: string | null): string {
     return this.usuarios.filter(u =>
       (u.nombreUsario || '').toLowerCase().includes(term)
     );
+  }
+
+  get pagedUsuarios(): Usuario[] {
+    const start = (this.currentPageClamped - 1) * this.pageSize;
+    return this.filteredUsuarios.slice(start, start + this.pageSize);
+  }
+
+  get totalPages(): number {
+    return Math.ceil(this.filteredUsuarios.length / this.pageSize);
+  }
+
+  get currentPageClamped(): number {
+    if (this.totalPages === 0) return 1;
+    return Math.min(Math.max(this.currentPage, 1), this.totalPages);
+  }
+
+  get pageNumbers(): number[] {
+    return Array.from({ length: this.totalPages }, (_, index) => index + 1);
+  }
+
+  get pageStart(): number {
+    if (this.filteredUsuarios.length === 0) return 0;
+    return (this.currentPageClamped - 1) * this.pageSize + 1;
+  }
+
+  get pageEnd(): number {
+    if (this.filteredUsuarios.length === 0) return 0;
+    return Math.min(this.currentPageClamped * this.pageSize, this.filteredUsuarios.length);
+  }
+
+  onSearchChange(): void {
+    this.currentPage = 1;
+  }
+
+  clearSearch(): void {
+    this.searchTerm = '';
+    this.currentPage = 1;
+  }
+
+  changePage(page: number): void {
+    if (page < 1 || page > this.totalPages || page === this.currentPageClamped) {
+      return;
+    }
+
+    this.currentPage = page;
   }
 
   // Cuando se da clic en "Editar"
@@ -263,6 +310,33 @@ getNombreUbicacion(idUbicacion?: string | null): string {
       .filter(v => typeof v === 'number' && Number.isFinite(v))
       .map(String)
       .join(',');
+  }
+
+  getUbicacionList(ubicaciones?: string | null): string[] {
+    const ids = this.parseUbicaciones(ubicaciones);
+    if (ids.length === 0) return [];
+    return ids.map(id => this.getNombreUbicacion(String(id)));
+  }
+
+  getUsuarioInitials(nombre?: string | null): string {
+    const source = (nombre || 'Usuario').trim();
+    const parts = source.split(/\s+/).filter(Boolean).slice(0, 2);
+    if (!parts.length) return 'US';
+    return parts.map(part => part.charAt(0).toUpperCase()).join('');
+  }
+
+  getRolTone(idRol?: number | null): 'primary' | 'success' | 'warning' | 'neutral' {
+    const roleName = this.getNombreDelRol(idRol).toLowerCase();
+
+    if (roleName.includes('admin')) return 'primary';
+    if (roleName.includes('credit')) return 'success';
+    if (roleName.includes('cobran')) return 'warning';
+
+    return 'neutral';
+  }
+
+  trackByUsuario(_: number, usuario: Usuario): number {
+    return usuario.uiRow;
   }
 
 }

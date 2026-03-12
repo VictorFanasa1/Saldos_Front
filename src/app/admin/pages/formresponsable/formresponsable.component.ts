@@ -44,6 +44,8 @@ export class FormresponsableComponent implements OnInit, AfterViewInit {
   mostrarEvidencia = false;
   loadings = true;
   comentarios = '';
+  comentarioAutor = 'Sistema';
+  comentarioFecha = '';
   kind: 'image' | 'pdf' | 'other' | null = null;
   private objectUrl?: string;
   imgUrl?: SafeUrl; // para <img [src]>
@@ -332,7 +334,19 @@ export class FormresponsableComponent implements OnInit, AfterViewInit {
       },
       { emitEvent: false }
     );
-    this.comentarios = dto[0].comentarios;
+    this.comentarios = dto[0].comentarios ?? '';
+    this.comentarioAutor =
+      dto[0].pp_usuario_actualiza ??
+      dto[0].usuario_actualiza ??
+      dto[0].pp_usuario_registra ??
+      dto[0].usuario_registra ??
+      'Sistema';
+    this.comentarioFecha =
+      dto[0].fecha_solucion ??
+      dto[0].updated_at ??
+      dto[0].fecha_creacion_incidencia ??
+      dto[0].created_at ??
+      '';
   }
   patchPreguntas(src: any) {
     console.log(src);
@@ -400,6 +414,90 @@ export class FormresponsableComponent implements OnInit, AfterViewInit {
     } else {
       ctrl.enable({ emitEvent: false }); // sin dato → editable
     }
+  }
+
+  displayValue(ctrlName: string, fallback = 'Sin dato'): string {
+    const value = this.formularioaadminsinincidencia.get(ctrlName)?.value;
+    if (value === null || value === undefined || value === '') {
+      return fallback;
+    }
+    return String(value);
+  }
+
+  hasNonZero(ctrlName: string): boolean {
+    return Math.abs(this.parseDisplayAmount(this.displayValue(ctrlName, '0'))) > 0;
+  }
+
+  get statusText(): string {
+    const currentStatus = Number(
+      this.formularioagenteEvidencias.get('estatusName')?.value ??
+        this.iddelestatus ??
+        0
+    );
+
+    if (currentStatus === 1) {
+      return 'Cerrado con Incidencia';
+    }
+
+    if (currentStatus === 2) {
+      return 'Abierto - En Seguimiento';
+    }
+
+    if (this.flag === 0) {
+      return 'Cerrado';
+    }
+
+    return 'Pendiente';
+  }
+
+  get statusTone(): 'danger' | 'success' | 'warning' {
+    if (this.statusText === 'Cerrado con Incidencia') {
+      return 'danger';
+    }
+
+    if (this.statusText === 'Cerrado') {
+      return 'success';
+    }
+
+    return 'warning';
+  }
+
+  get comentarioIniciales(): string {
+    const base = (this.comentarioAutor || 'Sistema').trim();
+    const parts = base.split(/\s+/).filter(Boolean).slice(0, 2);
+    if (!parts.length) {
+      return 'SI';
+    }
+    return parts.map((part) => part.charAt(0).toUpperCase()).join('');
+  }
+
+  get comentarioFechaTexto(): string {
+    if (!this.comentarioFecha) {
+      return 'Sin fecha disponible';
+    }
+
+    const parsed = new Date(this.comentarioFecha);
+    if (Number.isNaN(parsed.getTime())) {
+      return this.comentarioFecha;
+    }
+
+    return new Intl.DateTimeFormat('es-MX', {
+      year: 'numeric',
+      month: 'short',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+    }).format(parsed);
+  }
+
+  get canSaveChanges(): boolean {
+    return this.iddelestatus === 2 || this.iddelestatus === 0;
+  }
+
+  private parseDisplayAmount(value: string): number {
+    const normalized = value.replace(/[^0-9.-]/g, '');
+    const parsed = Number(normalized);
+    return Number.isFinite(parsed) ? parsed : 0;
   }
 
   volver() {

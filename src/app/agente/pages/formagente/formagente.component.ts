@@ -255,6 +255,37 @@ formatMoneyRegex(txt: number | string | null | undefined): string {
   const n = parseFloat(clean || '0');
   return negative ? -n : n;
 }
+displayValue(controlName: string, fallback = 'Sin dato'): string {
+  const value = this.formularioagente.get(controlName)?.value;
+  if (value === null || value === undefined || value === '') {
+    return fallback;
+  }
+  return String(value);
+}
+
+hasNonZero(controlName: string): boolean {
+  const value = this.formularioagente.get(controlName)?.value;
+  return this.parseMoneyToNumber(String(value ?? '0')) > 0;
+}
+
+get otpStatusText(): string {
+  return this.otpConfirmado ? 'OTP validado' : 'Validacion pendiente';
+}
+
+get otpStatusTone(): 'success' | 'warning' {
+  return this.otpConfirmado ? 'success' : 'warning';
+}
+
+get captureStatusText(): string {
+  if (!this.cargandos) {
+    return 'Firma registrada';
+  }
+  return this.visibleBtnGuardar ? 'Captura editable' : 'Registro guardado';
+}
+
+get captureStatusTone(): 'success' | 'warning' {
+  return !this.cargandos || !this.visibleBtnGuardar ? 'success' : 'warning';
+}
   consultaRegistros(){
      
     this.saldosservice.consultaregistroid(this.id).subscribe({

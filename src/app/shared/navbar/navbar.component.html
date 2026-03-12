@@ -1,30 +1,81 @@
 <aside class="sb" [class.is-open]="(sidebarOpen$ | async) ?? false">
-  <div class="sb__profile">
-    <div class="avatar">{{alias}}</div>
-    <div class="name">{{nombreuser}}</div>
-    <div class="role">{{tipousuario}}</div>
+  <div class="sb__brand">
+    <div class="sb__brand-copy">
+      <strong>AudiFarma</strong>
+      <small>Centro de navegacion</small>
+    </div>
   </div>
-  <!-- MENU DE ADMINISTRADOR-->
-  <nav class="sb__nav" *ngIf="showAdmin$  | async">
-    <a routerLink="/admin"  *ngIf="showAdmin$ | async" (click)="closeMenu()"><i class="bi bi-grid-1x2"></i> Cargar Cartera</a>
-    <a routerLink="admin/cargac"  *ngIf="showAdmin$ | async" (click)="closeMenu()"><i class="bi bi-file-earmark-text-fill"></i> Carga de Edo. Cuenta</a>
-    <a routerLink="admin/clientes"  *ngIf="showAdmin$ | async" (click)="closeMenu()"><i class="bi bi-people"></i> Clientes</a>
-    <a routerLink="admin/incidencias"  *ngIf="showAdmin$ | async" (click)="closeMenu()"><i class="bi bi-people"></i> Cuentas sin Incidencias</a>
-    <a routerLink="admin/conincidencias"  *ngIf="showAdmin$ | async" (click)="closeMenu()"><i class="bi bi-bag"></i> Cuentas con Incidencias</a>
-    <!-- <a routerLink="/reportes"  *ngIf="showAdmin$ | async"><i class="bi bi-graph-up"></i> Reportes</a> -->
-    <a routerLink="admin/config"  *ngIf="showAdmin$ | async" (click)="closeMenu()"><i class="bi bi-gear"></i> Ajustes</a>
-    
-  </nav>
-<!--MENU DEL GERENTE-->
-   <nav class="sb__nav" *ngIf="showRepresentante$  | async">
-    <a routerLink="/agente"  *ngIf="showRepresentante$ | async" (click)="closeMenu()"><i class="bi bi-grid-1x2"></i> Cuentas del Gerente</a>
-  </nav>
-<!--MENU DEL AGENTE (COMERCIAL Y CARTERA )-->
-  <nav class="sb__nav" *ngIf="showAdminDown$ | async">
 
-    <!--<a routerLink="admin/incidencias"  *ngIf="showAdminDown$ | async" (click)="closeMenu()"><i class="bi bi-people"></i> Cuentas sin Incidencias</a>-->
-    <a routerLink="admin/conincidencias"  *ngIf="showAdminDown$ | async" (click)="closeMenu()"><i class="bi bi-bag"></i> Cuentas con Incidencias</a>
+  <div class="sb__profile">
+    <div class="avatar">{{ alias }}</div>
+    <div class="name">{{ nombreuser }}</div>
+    <div class="role">{{ tipousuario }}</div>
+  </div>
 
-  </nav>
+  <div class="sb__section" *ngIf="showAdmin$ | async">
+    <div class="sb__section-title">Administracion</div>
+    <nav class="sb__nav">
+      <a routerLink="/admin/clientes" routerLinkActive="is-active" (click)="closeMenu()">
+        <span class="sb__icon"><i class="bi bi-people"></i></span>
+        <span class="sb__copy">
+          <strong>Clientes</strong>
+          <small>Catalogo y gestion</small>
+        </span>
+      </a>
+      <a routerLink="/admin/incidencias" routerLinkActive="is-active" (click)="closeMenu()">
+        <span class="sb__icon"><i class="bi bi-clipboard-check"></i></span>
+        <span class="sb__copy">
+          <strong>Cuentas sin incidencias</strong>
+          <small>Seguimiento regular</small>
+        </span>
+      </a>
+      <a routerLink="/admin/conincidencias" routerLinkActive="is-active" (click)="closeMenu()">
+        <span class="sb__icon"><i class="bi bi-exclamation-diamond"></i></span>
+        <span class="sb__copy">
+          <strong>Cuentas con incidencias</strong>
+          <small>Revision prioritaria</small>
+        </span>
+      </a>
+      <a routerLink="/admin/config" routerLinkActive="is-active" (click)="closeMenu()">
+        <span class="sb__icon"><i class="bi bi-gear"></i></span>
+        <span class="sb__copy">
+          <strong>Ajustes</strong>
+          <small>Configuracion del modulo</small>
+        </span>
+      </a>
+    </nav>
+  </div>
+
+  <div class="sb__section" *ngIf="showRepresentante$ | async">
+    <div class="sb__section-title">Representante</div>
+    <nav class="sb__nav">
+      <a routerLink="/agente" routerLinkActive="is-active" [routerLinkActiveOptions]="{ exact: true }" (click)="closeMenu()">
+        <span class="sb__icon"><i class="bi bi-briefcase"></i></span>
+        <span class="sb__copy">
+          <strong>Cuentas del gerente</strong>
+          <small>Seguimiento operativo</small>
+        </span>
+      </a>
+    </nav>
+  </div>
+
+  <div class="sb__section" *ngIf="showAdminDown$ | async">
+    <div class="sb__section-title">Operacion</div>
+    <nav class="sb__nav">
+      <a routerLink="/admin/conincidencias" routerLinkActive="is-active" (click)="closeMenu()">
+        <span class="sb__icon"><i class="bi bi-exclamation-diamond"></i></span>
+        <span class="sb__copy">
+          <strong>Cuentas con incidencias</strong>
+          <small>Vista disponible para tu rol</small>
+        </span>
+      </a>
+    </nav>
+  </div>
+
+  <div class="sb__footer">
+    <span class="sb__footer-dot"></span>
+    Navegacion activa del sistema
+  </div>
 </aside>
+
 <div class="sb__overlay d-lg-none" *ngIf="sidebarOpen$ | async" (click)="closeMenu()"></div>

@@ -8,8 +8,6 @@ import { Component, OnInit, EventEmitter, HostBinding, Input, OnChanges, Output 
 export class SpinOverlayComponent implements OnChanges {
  
   @Input() visible = false;
-
-  @Input() src = 'assets/icons/saldosicon512x512.png';
   
   @Input() size = 160; 
   @Output() closed = new EventEmitter<void>();

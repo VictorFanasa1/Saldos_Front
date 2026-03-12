@@ -23,7 +23,6 @@
             "polyfills": "src/polyfills.ts",
             "tsConfig": "tsconfig.app.json",
             "assets": [
-              "src/favicon.ico",
               "src/assets",
               "src/manifest.webmanifest",
                 {
@@ -41,8 +40,7 @@
               "node_modules/bootstrap/dist/css/bootstrap.min.css",
               "src/styles.css",
               "node_modules/datatables.net-dt/css/jquery.dataTables.min.css",
-              "node_modules/leaflet/dist/leaflet.css",
-              "node_modules/bootstrap-icons/font/bootstrap-icons.css"
+              "node_modules/leaflet/dist/leaflet.css"
             ],
             "scripts": [
               "node_modules/bootstrap/dist/js/bootstrap.bundle.min.js",
@@ -118,7 +116,6 @@
             "tsConfig": "tsconfig.spec.json",
             "karmaConfig": "karma.conf.js",
             "assets": [
-              "src/favicon.ico",
               "src/assets"
             ],
             "styles": [

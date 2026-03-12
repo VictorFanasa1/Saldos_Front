@@ -22,6 +22,22 @@
   --radius-md: 12px;
 }
 
+.app-shell {
+  min-height: 100vh;
+  background: var(--color-bg-app);
+}
+
+.app-main-shell {
+  min-width: 0;
+  background:
+    radial-gradient(circle at top left, rgba(29, 78, 216, 0.05), transparent 22%),
+    linear-gradient(180deg, #f8fafc 0%, var(--color-bg-app) 100%);
+}
+
+.app-content-shell {
+  min-height: calc(100vh - 74px);
+}
+
 .install-banner {
   position: fixed;
   left: 12px;

@@ -1,44 +1,124 @@
-<nav class="navbar navbar-expand-lg navbar-app shadow-sm sticky-top" *ngIf="showHeader$ | async">
-  <div class="container-fluid align-items-center">
-    <div class="d-flex align-items-center gap-2">
+<nav class="topbar navbar-app sticky-top" *ngIf="showHeader$ | async">
+  <div class="container-fluid topbar-shell">
+    <div class="topbar-left">
       <button
         class="btn btn-icon d-lg-none"
         type="button"
-        aria-label="Abrir menú"
+        aria-label="Abrir menu"
         (click)="toggleSidebar()">
         <i class="bi bi-list"></i>
       </button>
-      <a class="navbar-brand d-flex align-items-center gap-2 text-white" routerLink="/">
-        <img src="./assets/icons/ios/32.png" alt="logo" width="28" height="28">
-        <span class="fw-semibold">Saldos</span>
+
+      <a class="brand-lockup" routerLink="/">
+        <span class="brand-copy">
+          <strong>AudiFarma</strong>
+          <small>Panel operativo</small>
+        </span>
       </a>
     </div>
 
-    <div class="d-flex align-items-center gap-3 ms-auto">
-      <div class="d-none d-lg-flex align-items-center gap-2 text-white">
-        <div class="avatar-sm">{{alias}}</div>
-        <div class="text-start lh-sm">
-          <div class="fw-semibold">{{nombreuser}}</div>
-          <small class="text-white-50">{{tipousuario}}</small>
+    <div class="topbar-right">
+      <div class="user-card d-none d-lg-flex">
+        <div class="avatar-sm">{{ alias }}</div>
+        <div class="user-meta">
+          <span class="user-name">{{ nombreuser }}</span>
+          <small>{{ tipousuario }}</small>
         </div>
       </div>
 
       <div class="dropdown">
-        <button class="btn btn-light dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-          <i class="bi bi-person-circle me-1"></i> {{rol}}
+        <button
+          class="btn topbar-role-btn dropdown-toggle"
+          data-bs-toggle="dropdown"
+          aria-expanded="false">
+          <span class="role-pill">{{ rol }}</span>
+          <i class="bi bi-chevron-down"></i>
         </button>
-        <ul class="dropdown-menu dropdown-menu-end">
-          <li class="dropdown-header text-uppercase small text-muted">Navegación</li>
-          <li *ngIf="showAdmin$ | async"><a class="dropdown-item" routerLink="/admin" (click)="closeMenu()">Cargar cartera</a></li>
-          <li *ngIf="showAdmin$ | async"><a class="dropdown-item" routerLink="admin/agente" (click)="closeMenu()">Cuentas del representante</a></li>
-          <li *ngIf="showAdmin$ | async"><a class="dropdown-item" routerLink="admin/clientes" (click)="closeMenu()">Clientes</a></li>
-          <li *ngIf="showAdmin$ | async"><a class="dropdown-item" routerLink="admin/incidencias" (click)="closeMenu()">Cuentas sin incidencias</a></li>
-          <li *ngIf="showAdmin$ | async"><a class="dropdown-item" routerLink="admin/conincidencias" (click)="closeMenu()">Cuentas con incidencias</a></li>
-          <li *ngIf="showAdminDown$ | async"><a class="dropdown-item" routerLink="admin/incidencias" (click)="closeMenu()">Cuentas sin incidencias</a></li>
-          <li *ngIf="showAdminDown$ | async"><a class="dropdown-item" routerLink="admin/conincidencias" (click)="closeMenu()">Cuentas con incidencias</a></li>
-          <li *ngIf="showRepresentante$ | async"><a class="dropdown-item" routerLink="/agente" (click)="closeMenu()">Cuentas del representante</a></li>
-          <li><hr class="dropdown-divider"></li>
-          <li><button class="dropdown-item text-danger" (click)="logoutSys()">Cerrar sesión</button></li>
+
+        <ul class="dropdown-menu dropdown-menu-end topbar-menu">
+          <li class="dropdown-header topbar-menu__header">Navegacion</li>
+
+          <li *ngIf="showAdmin$ | async">
+            <a
+              class="dropdown-item topbar-menu__item"
+              routerLink="/admin/agente"
+              routerLinkActive="topbar-menu__item--active"
+              (click)="closeMenu()">
+              <i class="bi bi-person-badge"></i>
+              <span>Cuentas del representante</span>
+            </a>
+          </li>
+          <li *ngIf="showAdmin$ | async">
+            <a
+              class="dropdown-item topbar-menu__item"
+              routerLink="/admin/clientes"
+              routerLinkActive="topbar-menu__item--active"
+              (click)="closeMenu()">
+              <i class="bi bi-people"></i>
+              <span>Clientes</span>
+            </a>
+          </li>
+          <li *ngIf="showAdmin$ | async">
+            <a
+              class="dropdown-item topbar-menu__item"
+              routerLink="/admin/incidencias"
+              routerLinkActive="topbar-menu__item--active"
+              (click)="closeMenu()">
+              <i class="bi bi-clipboard-check"></i>
+              <span>Cuentas sin incidencias</span>
+            </a>
+          </li>
+          <li *ngIf="showAdmin$ | async">
+            <a
+              class="dropdown-item topbar-menu__item"
+              routerLink="/admin/conincidencias"
+              routerLinkActive="topbar-menu__item--active"
+              (click)="closeMenu()">
+              <i class="bi bi-exclamation-diamond"></i>
+              <span>Cuentas con incidencias</span>
+            </a>
+          </li>
+
+          <li *ngIf="showAdminDown$ | async">
+            <a
+              class="dropdown-item topbar-menu__item"
+              routerLink="/admin/incidencias"
+              routerLinkActive="topbar-menu__item--active"
+              (click)="closeMenu()">
+              <i class="bi bi-clipboard-check"></i>
+              <span>Cuentas sin incidencias</span>
+            </a>
+          </li>
+          <li *ngIf="showAdminDown$ | async">
+            <a
+              class="dropdown-item topbar-menu__item"
+              routerLink="/admin/conincidencias"
+              routerLinkActive="topbar-menu__item--active"
+              (click)="closeMenu()">
+              <i class="bi bi-exclamation-diamond"></i>
+              <span>Cuentas con incidencias</span>
+            </a>
+          </li>
+
+          <li *ngIf="showRepresentante$ | async">
+            <a
+              class="dropdown-item topbar-menu__item"
+              routerLink="/agente"
+              routerLinkActive="topbar-menu__item--active"
+              [routerLinkActiveOptions]="{ exact: true }"
+              (click)="closeMenu()">
+              <i class="bi bi-briefcase"></i>
+              <span>Cuentas del representante</span>
+            </a>
+          </li>
+
+          <li><hr class="dropdown-divider topbar-menu__divider" /></li>
+          <li>
+            <button class="dropdown-item topbar-menu__item topbar-menu__item--danger" (click)="logoutSys()">
+              <i class="bi bi-box-arrow-right"></i>
+              <span>Cerrar sesion</span>
+            </button>
+          </li>
         </ul>
       </div>
     </div>

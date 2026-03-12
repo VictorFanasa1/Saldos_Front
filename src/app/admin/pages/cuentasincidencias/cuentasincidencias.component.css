@@ -1,0 +1,268 @@
+:host {
+  --ui-bg: var(--color-bg-app, var(--app-bg, #f5f7fa));
+  --ui-card: var(--color-card, var(--card-bg, #ffffff));
+  --ui-text-strong: var(--color-text-strong, var(--text-strong, #0f172a));
+  --ui-text-light: var(--color-text-light, var(--text-muted, #64748b));
+  --ui-primary: var(--color-primary, var(--primary, #1d4ed8));
+  --ui-primary-hover: var(--color-primary-hover, var(--primary-hover, #1e40af));
+  --ui-surface-dark: var(--color-surface-dark, #143d66);
+  --ui-radius-xl: var(--radius-xl, 18px);
+  --ui-radius-md: var(--radius-md, 12px);
+  --ui-shadow: var(--shadow-soft, 0 10px 30px rgba(2, 6, 23, 0.08));
+}
+
+.medical-hero {
+  background: var(--ui-bg);
+}
+
+.page-shell {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+.page-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.page-kicker {
+  margin: 0 0 6px;
+  color: var(--ui-primary);
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.page-title {
+  margin: 0;
+  color: var(--ui-text-strong);
+  font-size: clamp(1.45rem, 2.8vw, 2rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+}
+
+.page-subtitle {
+  margin: 8px 0 0;
+  color: var(--ui-text-light);
+}
+
+.table-card {
+  background: var(--ui-card);
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  border-radius: var(--ui-radius-xl);
+  box-shadow: var(--ui-shadow);
+  overflow: hidden;
+}
+
+.incidencias-card .card-body {
+  padding: 18px;
+}
+
+.table-wrap {
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.incidencias-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  margin-bottom: 0;
+}
+
+.incidencias-table-head th {
+  background: var(--ui-surface-dark) !important;
+  color: #fff !important;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 14px 12px;
+  font-weight: 700;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.incidencias-table-head .col-id {
+  box-shadow: inset 0 3px 0 #38bdf8;
+}
+
+.incidencias-table-head .col-procesado {
+  box-shadow: inset 0 3px 0 #22c55e;
+}
+
+.incidencias-table-head .col-cuenta {
+  box-shadow: inset 0 3px 0 #8b5cf6;
+}
+
+.incidencias-table-head .col-farmacia {
+  box-shadow: inset 0 3px 0 #f97316;
+}
+
+.incidencias-table-head .col-estatus {
+  box-shadow: inset 0 3px 0 #facc15;
+}
+
+.incidencias-table-head .col-fecha {
+  box-shadow: inset 0 3px 0 var(--ui-primary);
+}
+
+.incidencias-table tbody td {
+  padding: 13px 12px;
+  border-bottom: 1px solid rgba(15, 23, 42, 0.06);
+  color: var(--ui-text-strong);
+  vertical-align: middle;
+}
+
+.incidencias-table tbody tr:nth-child(even) {
+  background: rgba(51, 49, 68, 0.03);
+}
+
+.incidencias-table tbody tr:hover {
+  background: rgba(29, 78, 216, 0.08);
+}
+
+.cell-id {
+  color: #0f4c81;
+  font-weight: 700;
+}
+
+.clickable-cell {
+  cursor: pointer;
+}
+
+.cell-procesado {
+  background: rgba(34, 197, 94, 0.08);
+}
+
+.cell-cuenta {
+  color: #6d28d9;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+  font-weight: 600;
+}
+
+.cell-farmacia {
+  color: #9a3412;
+  font-weight: 600;
+}
+
+.cell-estatus {
+  text-align: center;
+}
+
+.cell-fecha {
+  color: #0f766e;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.status-cerrado {
+  background: rgba(34, 197, 94, 0.16);
+  color: #166534;
+}
+
+.form-check-input {
+  cursor: pointer;
+  border-color: rgba(22, 163, 74, 0.45);
+}
+
+.form-check-input:checked {
+  background-color: #16a34a;
+  border-color: #16a34a;
+}
+
+:host ::ng-deep .incidencias-shell .dataTables_wrapper .dataTables_length,
+:host ::ng-deep .incidencias-shell .dataTables_wrapper .dataTables_filter,
+:host ::ng-deep .incidencias-shell .dataTables_wrapper .dataTables_info {
+  color: var(--ui-text-light);
+  margin: 10px 0 12px;
+}
+
+:host ::ng-deep .incidencias-shell .dataTables_wrapper .dataTables_length label,
+:host ::ng-deep .incidencias-shell .dataTables_wrapper .dataTables_filter label {
+  color: var(--ui-text-strong);
+  font-weight: 600;
+}
+
+:host ::ng-deep .incidencias-shell .dataTables_wrapper .dataTables_filter input,
+:host ::ng-deep .incidencias-shell .dataTables_wrapper .dataTables_length select {
+  height: 40px;
+  border-radius: var(--ui-radius-md) !important;
+  border: 1px solid rgba(15, 23, 42, 0.12) !important;
+  padding: 6px 10px;
+}
+
+:host ::ng-deep .incidencias-shell .dataTables_wrapper .dataTables_filter input:focus,
+:host ::ng-deep .incidencias-shell .dataTables_wrapper .dataTables_length select:focus {
+  outline: none;
+  border-color: var(--ui-primary) !important;
+  box-shadow: 0 0 0 4px rgba(29, 78, 216, 0.18) !important;
+}
+
+:host ::ng-deep .incidencias-shell .dataTables_wrapper .dataTables_paginate {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+:host ::ng-deep .incidencias-shell .dataTables_wrapper .dataTables_paginate .paginate_button {
+  border-radius: 10px !important;
+  border: 1px solid rgba(15, 23, 42, 0.1) !important;
+  background: #fff !important;
+  color: var(--ui-text-strong) !important;
+  padding: 6px 12px !important;
+}
+
+:host ::ng-deep .incidencias-shell .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+  background: rgba(29, 78, 216, 0.1) !important;
+  border-color: rgba(29, 78, 216, 0.32) !important;
+}
+
+:host ::ng-deep .incidencias-shell .dataTables_wrapper .dataTables_paginate .paginate_button.current,
+:host ::ng-deep .incidencias-shell .dataTables_wrapper .dataTables_paginate .paginate_button.current:hover {
+  background: var(--ui-primary) !important;
+  border-color: var(--ui-primary) !important;
+  color: #fff !important;
+}
+
+@media (max-width: 768px) {
+  .page-shell {
+    padding: 16px;
+  }
+
+  .page-header {
+    align-items: flex-start;
+    margin-bottom: 16px;
+  }
+
+  .incidencias-card .card-body {
+    padding: 12px;
+  }
+
+  .incidencias-table-head th {
+    font-size: 11px;
+    padding: 10px;
+  }
+
+  .incidencias-table tbody td {
+    padding: 10px;
+  }
+
+  .cell-fecha {
+    white-space: normal;
+  }
+}

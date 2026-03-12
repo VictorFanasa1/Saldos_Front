@@ -57,6 +57,8 @@ export class DashboardComponentAgent implements OnInit {
     this.destroyDT();
   }
   getRegistros(){
+    this.loading = true;
+    this.errorMsg = '';
     let usuario = localStorage.getItem('useridbd')
     
         const usuraioDto : getregistrossaldogerente = {
@@ -70,7 +72,7 @@ export class DashboardComponentAgent implements OnInit {
          this.buildDT();
       },
       error: (err) => {
-        //this.errorMsg = 'Error cargando datos';
+        this.errorMsg = 'Error cargando datos';
         console.error(err);
       },
       complete: () => (this.loading = false),
@@ -131,6 +133,31 @@ export class DashboardComponentAgent implements OnInit {
       this.dt.destroy(true);
       this.dt = null;
     }
+  }
+
+  get totalCuentas(): number {
+    return this.datoscuenta.length;
+  }
+
+  get procesadasCount(): number {
+    return this.datoscuenta.filter(item => !!item.bProcesado).length;
+  }
+
+  get pendientesCount(): number {
+    return this.totalCuentas - this.procesadasCount;
+  }
+
+  formatFechaDisplay(value: string | null | undefined): string {
+    if (!value) return 'Sin fecha';
+    const parsed = new Date(value);
+    if (Number.isNaN(parsed.getTime())) {
+      return value;
+    }
+    return new Intl.DateTimeFormat('es-MX', {
+      day: '2-digit',
+      month: 'short',
+      year: 'numeric'
+    }).format(parsed);
   }
 
 

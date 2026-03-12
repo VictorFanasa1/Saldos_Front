@@ -20,11 +20,14 @@
   box-shadow: 0 12px 40px rgba(0,0,0,0.45), inset 0 0 0 1px rgba(255,255,255,0.08);
 }
 
-/* Logo girando */
+/* Loader girando */
 .spin {
   display: block;
-  animation: rotate 2.2s linear infinite;
-  filter: drop-shadow(0 6px 18px rgba(0,0,0,0.35));
+  border-radius: 50%;
+  border: 6px solid rgba(255,255,255,0.18);
+  border-top-color: #ffffff;
+  animation: rotate 0.9s linear infinite;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.35);
 }
 
 /* Botón cerrar */

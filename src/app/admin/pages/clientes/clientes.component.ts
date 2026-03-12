@@ -24,6 +24,8 @@ export class ClientesComponent implements OnInit {
   verconincidencia = false;
   verdasboard = true;
   showfirstcard = true;
+  showCargaInformacion = false;
+  showKpis = false;
 
   periodoInicio?: string;
   periodoFin?: string;
@@ -131,7 +133,7 @@ export class ClientesComponent implements OnInit {
       .pipe(
         tap((event) => {
           if (event.type === HttpEventType.UploadProgress && event.total) {
-            this.progress = Math.round((100 * event.loaded) / event.total);
+            this.progress = this.clampPercent(Math.round((100 * event.loaded) / event.total));
           }
           if (event.type === HttpEventType.Response) {
             this.progress = 100;
@@ -195,5 +197,40 @@ export class ClientesComponent implements OnInit {
         // buttons: [{ extend: 'excel', text: 'Exportar Excel' }, { extend: 'csv', text: 'CSV' }, { extend: 'print', text: 'Imprimir' }]
       });
     }, 0);
+  }
+
+  get totalGerentes(): number {
+    return this.datacuentas.length;
+  }
+
+  get totalAuditados(): number {
+    return this.datacuentas.reduce((sum, item) => sum + Number(item.clientes_auditados ?? 0), 0);
+  }
+
+  get totalRestantes(): number {
+    return this.datacuentas.reduce((sum, item) => sum + Number(item.clientes_restantes ?? 0), 0);
+  }
+
+  get promedioPorcentaje(): number {
+    if (!this.datacuentas.length) {
+      return 0;
+    }
+    const total = this.datacuentas.reduce((sum, item) => sum + (Number(item.porcentaje ?? 0) * 100), 0);
+    return this.clampPercent(total / this.datacuentas.length);
+  }
+
+  porcentajeCliente(item: CuentasResponse): number {
+    return this.clampPercent(Number(item?.porcentaje ?? 0) * 100);
+  }
+
+  private clampPercent(value: number): number {
+    if (!Number.isFinite(value) || value < 0) {
+      return 0;
+    }
+    return Math.min(value, 100);
+  }
+
+  trackByCliente(index: number, item: CuentasResponse): string {
+    return `${item.gerente ?? 'gerente'}-${item.periodo ?? 'periodo'}-${item.mes ?? index}`;
   }
 }

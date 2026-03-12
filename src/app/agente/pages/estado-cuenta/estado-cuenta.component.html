@@ -1,97 +1,166 @@
-<div class="estado-shell">
-  <div class="estado-header">
-    <a class="btn back-btn" routerLink="/agente">
-      <i class="bi bi-arrow-left"></i>
-      Regresar
-    </a>
-    <div class="header-copy">
-      <h1 class="estado-title">Estado de cuenta</h1>
-      <p class="estado-subtitle" *ngIf="cuentaOracle">
-        Cuenta Oracle: <strong>{{ cuentaOracle }}</strong>
-      </p>
+<section class="estado-page">
+  <div class="container page-shell">
+    <div class="page-header">
+      <div class="page-heading">
+        <p class="page-eyebrow">Agente</p>
+        <div class="page-title-row">
+          <h1 class="page-title">Estado de cuenta</h1>
+          <span class="status-chip status-chip--accent" *ngIf="cuentaOracle">
+            <span class="status-chip__dot"></span>
+            {{ cuentaOracle }}
+          </span>
+        </div>
+        <p class="page-subtitle">
+          Consulta el detalle paginado de movimientos para la cuenta Oracle seleccionada.
+        </p>
+      </div>
+
+      <a class="btn-shell btn-shell--ghost" routerLink="/agente">
+        <i class="bi bi-arrow-left"></i>
+        Regresar
+      </a>
     </div>
-  </div>
 
-  <div *ngIf="loading" class="loading-wrap">
-    <div class="spinner-border loading-spinner" role="status"></div>
-    <p class="loading-text">Consultando informacion...</p>
-  </div>
+    <div class="summary-grid" *ngIf="!loading && registros.length > 0">
+      <article class="summary-card summary-card--accent">
+        <span class="summary-label">Movimientos totales</span>
+        <strong class="summary-value">{{ total }}</strong>
+        <span class="summary-meta">Total reportado por la consulta paginada.</span>
+      </article>
 
-  <div *ngIf="!loading && !registros.length" class="empty-card">
-    <i class="bi bi-inbox"></i>
-    <p>No se encontraron movimientos para esta cuenta.</p>
-  </div>
+      <article class="summary-card summary-card--success">
+        <span class="summary-label">Saldo visible</span>
+        <strong class="summary-value">{{ saldoVisible | currency:'MXN' }}</strong>
+        <span class="summary-meta">Suma de saldos mostrados en la pagina actual.</span>
+      </article>
 
-  <div *ngIf="!loading && registros.length > 0" class="table-card">
-    <div class="table-responsive">
-      <table class="table table-modern mb-0">
-        <thead class="table-modern-head">
-          <tr>
-            <th>Cliente</th>
-            <th>Documento</th>
-            <th>Fecha</th>
-            <th>Vencimiento</th>
-            
-            <th>Importe</th>
-            <th>IVA</th>
-            <th>Saldo</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let item of registros">
-            <td>{{ item.cliente }}</td>
-            <td>{{ item.documento }}</td>
-            <td>{{ item.fecha }}</td>
-          
-            <td
-              [class.amount-positive]="(item.dias_vto ?? 0) > 0"
-              [class.amount-negative]="(item.dias_vto ?? 0) < 0">
-              {{ item.dias_vto }}
-            </td>
-            <td
-              [class.amount-positive]="(item.importe_original ?? 0) > 0"
-              [class.amount-negative]="(item.importe_original ?? 0) < 0">
-              {{ item.importe_original | currency:'MXN' }}
-            </td>
-            <td
-              [class.amount-positive]="(item.iva ?? 0) > 0"
-              [class.amount-negative]="(item.iva ?? 0) < 0">
-              {{ item.iva | currency:'MXN' }}
-            </td>
-            <td
-              class="fw-bold"
-              [class.amount-positive]="(item.saldo_debido ?? 0) > 0"
-              [class.amount-negative]="(item.saldo_debido ?? 0) < 0">
-              {{ item.saldo_debido | currency:'MXN' }}
-            </td>
-          </tr>
-        </tbody>
-      </table>
+      <article class="summary-card summary-card--warning">
+        <span class="summary-label">Pagina actual</span>
+        <strong class="summary-value">{{ page }}</strong>
+        <span class="summary-meta">De {{ totalPages }} paginas disponibles.</span>
+      </article>
     </div>
-  </div>
 
-  <nav *ngIf="totalPages > 1" class="pagination-wrap">
-    <ul class="pagination justify-content-center mb-0">
-      <li class="page-item" [class.disabled]="page === 1">
-        <button class="page-link" (click)="cambiarPagina(page - 1)">
+    <div *ngIf="loading" class="loading-card">
+      <div class="loading-ring" aria-hidden="true"></div>
+      <div>
+        <p class="loading-title">Consultando informacion</p>
+        <p class="loading-copy">Espera mientras se obtienen los movimientos de la cuenta.</p>
+      </div>
+    </div>
+
+    <div *ngIf="!loading && errorMsg" class="info-banner info-banner--danger">
+      {{ errorMsg }}
+    </div>
+
+    <div *ngIf="!loading && !registros.length && !errorMsg" class="empty-card">
+      <span class="empty-icon"><i class="bi bi-inbox"></i></span>
+      <div>
+        <p class="empty-title">Sin movimientos</p>
+        <p class="empty-copy">No se encontraron registros para esta cuenta.</p>
+      </div>
+    </div>
+
+    <article *ngIf="!loading && registros.length > 0" class="table-card">
+      <div class="section-header">
+        <div class="section-title-wrap">
+          <span class="section-icon"><i class="bi bi-receipt"></i></span>
+          <div>
+            <h2 class="section-title">Detalle de movimientos</h2>
+            <p class="section-subtitle">Documentos, fechas y saldos visibles en la pagina actual.</p>
+          </div>
+        </div>
+
+        <div class="section-badges">
+          <span class="mini-chip mini-chip--success">{{ registros.length }} visibles</span>
+          <span class="mini-chip mini-chip--warning">{{ pageNumbers.length }} paginas</span>
+        </div>
+      </div>
+
+      <div class="table-wrap">
+        <table class="table table-modern mb-0">
+          <thead class="table-modern-head">
+            <tr>
+              <th>Cliente</th>
+              <th>Documento</th>
+              <th>Fecha</th>
+              <th>Vencimiento</th>
+              <th>Importe</th>
+              <th>IVA</th>
+              <th>Saldo</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of registros; trackBy: trackByRegistro">
+              <td class="cell-text">{{ item.cliente || 'Sin cliente' }}</td>
+              <td class="cell-code">{{ item.documento || 'Sin documento' }}</td>
+              <td class="cell-date">{{ formatFechaDisplay(item.fecha) }}</td>
+              <td>
+                <span
+                  class="due-chip"
+                  [ngClass]="{
+                    'due-chip--positive': (item.dias_vto ?? 0) > 0,
+                    'due-chip--negative': (item.dias_vto ?? 0) < 0,
+                    'due-chip--neutral': (item.dias_vto ?? 0) === 0
+                  }">
+                  {{ item.dias_vto ?? 0 }}
+                </span>
+              </td>
+              <td
+                class="cell-money"
+                [class.amount-positive]="(item.importe_original ?? 0) > 0"
+                [class.amount-negative]="(item.importe_original ?? 0) < 0">
+                {{ item.importe_original | currency:'MXN' }}
+              </td>
+              <td
+                class="cell-money"
+                [class.amount-positive]="(item.iva ?? 0) > 0"
+                [class.amount-negative]="(item.iva ?? 0) < 0">
+                {{ item.iva | currency:'MXN' }}
+              </td>
+              <td
+                class="cell-money cell-money--strong"
+                [class.amount-positive]="(item.saldo_debido ?? 0) > 0"
+                [class.amount-negative]="(item.saldo_debido ?? 0) < 0">
+                {{ item.saldo_debido | currency:'MXN' }}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </article>
+
+    <nav *ngIf="totalPages > 1" class="pagination-shell" aria-label="Paginacion de estado de cuenta">
+      <div class="pagination-summary">
+        Pagina {{ page }} de {{ totalPages }}
+      </div>
+
+      <div class="pagination-controls">
+        <button
+          type="button"
+          class="page-btn page-btn--nav"
+          [disabled]="page === 1"
+          (click)="cambiarPagina(page - 1)">
           Anterior
         </button>
-      </li>
 
-      <li
-        class="page-item"
-        *ngFor="let p of [].constructor(totalPages); let i = index"
-        [class.active]="page === i + 1">
-        <button class="page-link" (click)="cambiarPagina(i + 1)">
-          {{ i + 1 }}
+        <button
+          type="button"
+          class="page-btn"
+          *ngFor="let p of pageNumbers"
+          [class.page-btn--active]="page === p"
+          (click)="cambiarPagina(p)">
+          {{ p }}
         </button>
-      </li>
 
-      <li class="page-item" [class.disabled]="page === totalPages">
-        <button class="page-link" (click)="cambiarPagina(page + 1)">
+        <button
+          type="button"
+          class="page-btn page-btn--nav"
+          [disabled]="page === totalPages"
+          (click)="cambiarPagina(page + 1)">
           Siguiente
         </button>
-      </li>
-    </ul>
-  </nav>
-</div>
+      </div>
+    </nav>
+  </div>
+</section>
