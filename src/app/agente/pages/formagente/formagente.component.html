@@ -4,7 +4,7 @@
       <div class="page-heading">
         <p class="page-eyebrow">Agente</p>
         <div class="page-title-row">
-          <h1 class="page-title">Confirmacion de cliente</h1>
+          <h1 class="page-title">Confirmación de cliente</h1>
           <span
             class="status-chip"
             [ngClass]="{
@@ -25,7 +25,7 @@
           </span>
         </div>
         <p class="page-subtitle">
-          Revision de cartera, respuestas y firma del cliente con el mismo flujo actual de captura.
+          Revisión de cartera, respuestas y firma del cliente con el mismo flujo actual de captura.
         </p>
       </div>
     </div>
@@ -34,7 +34,7 @@
       <div *ngIf="submitting" class="page-blocker" aria-live="polite">
         <div class="loading-state">
           <div class="loading-ring" aria-hidden="true"></div>
-          <p class="loading-title">Registrando informacion</p>
+          <p class="loading-title">Registrando información</p>
           <p class="loading-copy">Espera mientras se procesa la captura.</p>
         </div>
       </div>
@@ -46,9 +46,9 @@
             <div class="otp-modal-header">
               <span class="otp-modal-icon"><i class="bi bi-shield-lock"></i></span>
               <div>
-                <h2 id="otp-title" class="otp-modal-title">Verificacion OTP</h2>
+                <h2 id="otp-title" class="otp-modal-title">Verificación OTP</h2>
                 <p class="otp-modal-copy">
-                  Ingresa el correo del cliente y el codigo enviado para habilitar la captura.
+                  Ingresa el correo del cliente y el código enviado para habilitar la captura.
                 </p>
               </div>
             </div>
@@ -59,17 +59,17 @@
                 id="correoOtp"
                 type="email"
                 class="modern-input"
-                placeholder="Correo electronico"
+                placeholder="Correo electrónico"
                 formControlName="correocliente" />
             </div>
 
             <div class="field-stack">
-              <label class="field-label" for="codigoOtp">Codigo OTP</label>
+              <label class="field-label" for="codigoOtp">Código OTP</label>
               <input
                 id="codigoOtp"
                 type="text"
                 class="modern-input"
-                placeholder="Ingresa el codigo"
+                placeholder="Ingresa el código"
                 maxlength="6"
                 formControlName="otp" />
             </div>
@@ -94,7 +94,7 @@
                 <div class="section-title-wrap">
                   <span class="section-icon"><i class="bi bi-building"></i></span>
                   <div>
-                    <h2 class="section-title">Informacion del cliente</h2>
+                    <h2 class="section-title">Información del cliente</h2>
                     <p class="section-subtitle">Datos base de la cuenta y del contacto validado.</p>
                   </div>
                 </div>
@@ -102,7 +102,7 @@
 
               <div class="field-grid">
                 <div class="readonly-field">
-                  <span class="field-label">Confirmacion de cliente</span>
+                  <span class="field-label">Confirmación de cliente</span>
                   <div class="field-value">{{ displayValue('confirmacionCliente', 'Se asigna al guardar') }}</div>
                 </div>
 
@@ -440,8 +440,8 @@
                 <div class="section-title-wrap">
                   <span class="section-icon"><i class="bi bi-shield-check"></i></span>
                   <div>
-                    <h2 class="section-title">Validacion de acceso</h2>
-                    <p class="section-subtitle">Confirmacion previa para capturar o revisar el registro.</p>
+                    <h2 class="section-title">Validación de acceso</h2>
+                    <p class="section-subtitle">Confirmación previa para capturar o revisar el registro.</p>
                   </div>
                 </div>
               </div>

@@ -154,7 +154,7 @@ private url = 'https://aplicacion.fanasa.com/ServiceLogAD/Auth/Ingresar';
   }
 
   getToken(): string | null {
-    return localStorage.getItem(this.USER_KEY);
+    return this.getCurrentUser()?.token ?? null;
   }
 
   getCurrentUser(): User | null {

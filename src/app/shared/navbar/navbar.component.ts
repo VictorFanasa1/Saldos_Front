@@ -18,22 +18,27 @@ export class NavbarComponent implements OnInit  {
   showAdmin$!: Observable<boolean>;
   showAdminDown$!: Observable<boolean>;
   sidebarOpen$ = this.ui.sidebarOpen$;
+  showcartera= true;
+
   constructor(public auth: AuthService, private ui: UiService) {
     this.showRepresentante$ = this.ui.showRepresentante;
     this.showAdmin$ = this.ui.showAdministrativo;
     this.showAdminDown$ = this.ui.showadmindown;
   }
 ngOnInit() {
-
-this.auth.user$.pipe(take(1)).subscribe(u => {
+  this.auth.user$.pipe(take(1)).subscribe(u => {
             this.rol = u?.role.toString() ?? ''
             this.nombreuser = u?.username.toString() ?? ''
             this.alias = u?.username.toString().charAt(0) ?? ''
             
           });
-
+          
   this.tipousuario = localStorage.getItem('nombre_rol') ?? 'NA'
-
+ if(this.tipousuario == 'Cartera'){
+  this.showcartera = true;
+ }else{
+  this.showcartera = false;
+ }
 }
 
 setPermissions(){

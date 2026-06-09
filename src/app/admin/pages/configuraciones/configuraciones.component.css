@@ -526,6 +526,19 @@
   color: var(--text-primary);
 }
 
+.btn-danger-modern {
+  background: #fff0f0;
+  border: 1px solid #f5c2c7;
+  color: #dc3545;
+}
+
+.btn-danger-modern:hover,
+.btn-danger-modern:focus {
+  background: #dc3545;
+  border-color: #dc3545;
+  color: #fff;
+}
+
 .btn-outline-modern {
   background: transparent;
   border: 1px solid var(--border);

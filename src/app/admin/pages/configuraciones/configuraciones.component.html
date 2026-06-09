@@ -2,8 +2,8 @@
   <div class="container page-shell">
     <header class="page-header">
       <div>
-        <p class="page-eyebrow">Administracion</p>
-        <h1 class="page-title">Configuracion de usuarios</h1>
+        <p class="page-eyebrow">Administración</p>
+        <h1 class="page-title">Configuración de usuarios</h1>
         <p class="page-subtitle">
           Gestiona usuarios, roles y ubicaciones desde un solo panel.
         </p>
@@ -29,13 +29,13 @@
       <article class="stat-card stat-card--accent">
         <span class="stat-label">Resultados</span>
         <strong class="stat-value">{{ filteredUsuarios.length }}</strong>
-        <span class="stat-copy">Coincidencias con la busqueda actual.</span>
+        <span class="stat-copy">Coincidencias con la búsqueda actual.</span>
       </article>
 
       <article class="stat-card stat-card--success">
         <span class="stat-label">Roles</span>
         <strong class="stat-value">{{ roles.length }}</strong>
-        <span class="stat-copy">Perfiles disponibles para asignacion.</span>
+        <span class="stat-copy">Perfiles disponibles para asignación.</span>
       </article>
 
       <article class="stat-card stat-card--warning">
@@ -51,7 +51,7 @@
         <input
           type="text"
           class="search-input"
-          placeholder="Buscar usuario por nombre..."
+          placeholder="Buscar usuario por nombre…"
           [(ngModel)]="searchTerm"
           (ngModelChange)="onSearchChange()" />
         <button
@@ -59,7 +59,7 @@
           type="button"
           class="clear-btn"
           (click)="clearSearch()"
-          aria-label="Limpiar busqueda">
+          aria-label="Limpiar búsqueda">
           <i class="bi bi-x-lg"></i>
         </button>
       </div>
@@ -114,7 +114,7 @@
                 </div>
                 <ng-template #sinUbicaciones>
                   <div class="chip-list">
-                    <span class="location-chip location-chip--empty">Sin ubicacion asignada</span>
+                    <span class="location-chip location-chip--empty">Sin ubicación asignada</span>
                   </div>
                 </ng-template>
               </div>
@@ -126,15 +126,24 @@
                 <span>Actualizado: {{ usuario.dtModificacion | date:'short' }}</span>
               </div>
 
-              <button
-                type="button"
-                class="btn btn-secondary-modern"
-                data-bs-toggle="modal"
-                data-bs-target="#editUsuarioModal"
-                (click)="onEdit(usuario)">
-                <i class="bi bi-pencil-square"></i>
-                Editar usuario
-              </button>
+              <div class="d-flex gap-2">
+                <button
+                  type="button"
+                  class="btn btn-secondary-modern"
+                  data-bs-toggle="modal"
+                  data-bs-target="#editUsuarioModal"
+                  (click)="onEdit(usuario)">
+                  <i class="bi bi-pencil-square"></i>
+                  Editar
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-danger-modern"
+                  (click)="onDelete(usuario)">
+                  <i class="bi bi-trash"></i>
+                  Eliminar
+                </button>
+              </div>
             </div>
           </article>
         </div>
@@ -181,7 +190,7 @@
       <div class="empty-state">
         <i class="bi bi-person-x"></i>
         <h3>No se encontraron usuarios</h3>
-        <p>Ajusta la busqueda o crea un nuevo usuario desde este mismo modulo.</p>
+        <p>Ajusta la búsqueda o crea un nuevo usuario desde este mismo módulo.</p>
       </div>
     </ng-template>
   </div>
@@ -197,7 +206,7 @@
     <div class="modal-content admin-modal">
       <div class="modal-header admin-modal__header">
         <div>
-          <p class="modal-kicker">Gestion de usuario</p>
+          <p class="modal-kicker">Gestión de usuario</p>
           <h5 class="modal-title" id="editUsuarioModalLabel">
             Editar usuario
             <span *ngIf="selectedUsuario">{{ selectedUsuario.nombreUsario }}</span>
@@ -282,14 +291,14 @@
                   class="form-select modern-control modern-control--multi"
                   [(ngModel)]="selectedUbicaciones"
                   multiple>
-                  <option [ngValue]="null">-- Selecciona una ubicacion --</option>
+                  <option [ngValue]="null">-- Selecciona una ubicación --</option>
                   <option
                     *ngFor="let ub of ubicaciones"
                     [ngValue]="ub.idUbicacion">
                     {{ ub.nombreUbicacion }}
                   </option>
                 </select>
-                <small class="field-hint">Usa seleccion multiple para asignar varias ubicaciones.</small>
+                <small class="field-hint">Usa selección múltiple para asignar varias ubicaciones.</small>
               </div>
 
               <div class="form-field">
@@ -302,7 +311,7 @@
               </div>
 
               <div class="form-field">
-                <label class="form-label">Ultima modificacion</label>
+                <label class="form-label">Última modificación</label>
                 <input
                   type="text"
                   class="form-control modern-control"
@@ -405,7 +414,7 @@
             <div class="panel-title-wrap">
               <span class="panel-icon"><i class="bi bi-diagram-3"></i></span>
               <div>
-                <h6 class="panel-title">Asignacion</h6>
+                <h6 class="panel-title">Asignación</h6>
                 <p class="panel-copy">Selecciona el rol operativo y sus ubicaciones.</p>
               </div>
             </div>
@@ -431,7 +440,7 @@
                   class="form-select modern-control modern-control--multi"
                   [(ngModel)]="newUserUbicaciones"
                   multiple>
-                  <option [ngValue]="null">-- Selecciona una ubicacion --</option>
+                  <option [ngValue]="null">-- Selecciona una ubicación --</option>
                   <option
                     *ngFor="let ub of ubicaciones"
                     [ngValue]="ub.idUbicacion">

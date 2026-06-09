@@ -6,6 +6,7 @@ import { ConfiguracionesComponent } from './pages/configuraciones/configuracione
 import { CuentasincidenciasComponent } from './pages/cuentasincidencias/cuentasincidencias.component';
 import { CuentasconincidenciasComponent } from './pages/cuentasconincidencias/cuentasconincidencias.component';
 import { ClientesComponent } from './pages/clientes/clientes.component';
+import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { DashboardComponentAgent } from '../agente/pages/dashboard/dashboard.component';
 
 const routes: Routes = [
@@ -17,7 +18,7 @@ const routes: Routes = [
   {path: 'clientes', component: ClientesComponent},
   {path: 'config', component: ConfiguracionesComponent},
   {path: 'agente', component: DashboardComponentAgent},
-  {path: 'cargac', redirectTo: 'clientes', pathMatch: 'full'}
+  {path: 'cargac', component: DashboardComponent}
 ];
 
 @NgModule({

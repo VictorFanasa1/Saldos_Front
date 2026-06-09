@@ -6,6 +6,7 @@ import { CrearUsuarioDto, Usuario } from 'src/app/core/shared/Usuarios.model';
 import { concatMap, tap } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { UiService } from 'src/app/shared/service/ui.service';
+import Swal from 'sweetalert2';
 @Component({
   selector: 'app-configuraciones',
   templateUrl: './configuraciones.component.html',
@@ -337,6 +338,30 @@ getNombreUbicacion(idUbicacion?: string | null): string {
 
   trackByUsuario(_: number, usuario: Usuario): number {
     return usuario.uiRow;
+  }
+
+  onDelete(usuario: Usuario): void {
+    Swal.fire({
+      title: '¿Eliminar usuario?',
+      html: `Esta acción eliminará a <strong>${usuario.nombreUsario}</strong> de forma permanente.`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar',
+      confirmButtonColor: '#dc3545'
+    }).then(result => {
+      if (!result.isConfirmed) return;
+
+      this.usuarioService.deleteUsuario(usuario.uiRow).subscribe({
+        next: () => {
+          this.usuarios = this.usuarios.filter(u => u.uiRow !== usuario.uiRow);
+          Swal.fire({ icon: 'success', title: 'Usuario eliminado', timer: 1500, showConfirmButton: false });
+        },
+        error: () => {
+          Swal.fire({ icon: 'error', title: 'No se pudo eliminar el usuario' });
+        }
+      });
+    });
   }
 
 }
