@@ -336,7 +336,9 @@
 }
 
 .table-wrap {
-  overflow: hidden;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
   border: 1px solid var(--border);
   border-radius: var(--radius);
   background: var(--surface2);
@@ -344,6 +346,7 @@
 
 .table-modern {
   width: 100%;
+  min-width: 900px;
   border-collapse: separate;
   border-spacing: 0;
   margin-bottom: 0;

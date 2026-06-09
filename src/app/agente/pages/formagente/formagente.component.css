@@ -296,12 +296,15 @@
 .table-shell {
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  overflow: hidden;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
   background: var(--surface2);
 }
 
 .aging-table {
   width: 100%;
+  min-width: 420px;
   border-collapse: collapse;
 }
 

@@ -2,7 +2,7 @@
   <div class="sb__brand">
     <div class="sb__brand-copy">
       <strong>AudiFarma</strong>
-      <small>Centro de navegacion</small>
+      <small>Centro de navegación</small>
     </div>
   </div>
 
@@ -13,13 +13,13 @@
   </div>
 
   <div class="sb__section" *ngIf="showAdmin$ | async">
-    <div class="sb__section-title">Administracion</div>
+    <div class="sb__section-title">Administración</div>
     <nav class="sb__nav">
       <a routerLink="/admin/clientes" routerLinkActive="is-active" (click)="closeMenu()">
         <span class="sb__icon"><i class="bi bi-people"></i></span>
         <span class="sb__copy">
           <strong>Clientes</strong>
-          <small>Catalogo y gestion</small>
+          <small>Catálogo y gestión</small>
         </span>
       </a>
       <a routerLink="/admin/incidencias" routerLinkActive="is-active" (click)="closeMenu()">
@@ -33,14 +33,28 @@
         <span class="sb__icon"><i class="bi bi-exclamation-diamond"></i></span>
         <span class="sb__copy">
           <strong>Cuentas con incidencias</strong>
-          <small>Revision prioritaria</small>
+          <small>Revisión prioritaria</small>
+        </span>
+      </a>
+      <a routerLink="/admin/cargac" routerLinkActive="is-active" (click)="closeMenu()">
+        <span class="sb__icon"><i class="bi bi-file-earmark-spreadsheet"></i></span>
+        <span class="sb__copy">
+          <strong>Cartera</strong>
+          <small>Carga de información</small>
         </span>
       </a>
       <a routerLink="/admin/config" routerLinkActive="is-active" (click)="closeMenu()">
         <span class="sb__icon"><i class="bi bi-gear"></i></span>
         <span class="sb__copy">
           <strong>Ajustes</strong>
-          <small>Configuracion del modulo</small>
+          <small>Configuración del módulo</small>
+        </span>
+      </a>
+      <a routerLink="/carga-ec" routerLinkActive="is-active" (click)="closeMenu()">
+        <span class="sb__icon"><i class="bi bi-file-earmark-spreadsheet"></i></span>
+        <span class="sb__copy">
+          <strong>Carga manual</strong>
+          <small>Estado de cuenta</small>
         </span>
       </a>
     </nav>
@@ -56,11 +70,18 @@
           <small>Seguimiento operativo</small>
         </span>
       </a>
+      <a routerLink="/carga-ec" routerLinkActive="is-active" (click)="closeMenu()">
+        <span class="sb__icon"><i class="bi bi-file-earmark-spreadsheet"></i></span>
+        <span class="sb__copy">
+          <strong>Carga manual</strong>
+          <small>Estado de cuenta</small>
+        </span>
+      </a>
     </nav>
   </div>
 
   <div class="sb__section" *ngIf="showAdminDown$ | async">
-    <div class="sb__section-title">Operacion</div>
+    <div class="sb__section-title">Operación</div>
     <nav class="sb__nav">
       <a routerLink="/admin/conincidencias" routerLinkActive="is-active" (click)="closeMenu()">
         <span class="sb__icon"><i class="bi bi-exclamation-diamond"></i></span>
@@ -69,12 +90,19 @@
           <small>Vista disponible para tu rol</small>
         </span>
       </a>
+      <a routerLink="/carga-ec" routerLinkActive="is-active" (click)="closeMenu()">
+        <span class="sb__icon"><i class="bi bi-file-earmark-spreadsheet"></i></span>
+        <span class="sb__copy">
+          <strong>Carga manual</strong>
+          <small>Estado de cuenta</small>
+        </span>
+      </a>
     </nav>
   </div>
 
   <div class="sb__footer">
     <span class="sb__footer-dot"></span>
-    Navegacion activa del sistema
+    Navegación activa del sistema
   </div>
 </aside>
 

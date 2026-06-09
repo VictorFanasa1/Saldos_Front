@@ -31,20 +31,20 @@
       <article class="summary-card summary-card--success">
         <span class="summary-label">Saldo visible</span>
         <strong class="summary-value">{{ saldoVisible | currency:'MXN' }}</strong>
-        <span class="summary-meta">Suma de saldos mostrados en la pagina actual.</span>
+        <span class="summary-meta">Suma de saldos mostrados en la página actual.</span>
       </article>
 
       <article class="summary-card summary-card--warning">
-        <span class="summary-label">Pagina actual</span>
+        <span class="summary-label">Página actual</span>
         <strong class="summary-value">{{ page }}</strong>
-        <span class="summary-meta">De {{ totalPages }} paginas disponibles.</span>
+        <span class="summary-meta">De {{ totalPages }} páginas disponibles.</span>
       </article>
     </div>
 
     <div *ngIf="loading" class="loading-card">
       <div class="loading-ring" aria-hidden="true"></div>
       <div>
-        <p class="loading-title">Consultando informacion</p>
+        <p class="loading-title">Consultando información</p>
         <p class="loading-copy">Espera mientras se obtienen los movimientos de la cuenta.</p>
       </div>
     </div>
@@ -130,7 +130,7 @@
       </div>
     </article>
 
-    <nav *ngIf="totalPages > 1" class="pagination-shell" aria-label="Paginacion de estado de cuenta">
+    <nav *ngIf="totalPages > 1" class="pagination-shell" aria-label="Paginación de estado de cuenta">
       <div class="pagination-summary">
         Pagina {{ page }} de {{ totalPages }}
       </div>

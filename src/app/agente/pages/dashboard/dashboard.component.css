@@ -262,7 +262,9 @@
 }
 
 .table-wrap {
-  overflow: hidden;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
   border: 1px solid var(--border);
   border-radius: var(--radius);
   background: var(--surface2);
@@ -270,6 +272,7 @@
 
 .agent-table {
   width: 100%;
+  min-width: 960px;
   border-collapse: separate;
   border-spacing: 0;
   margin-bottom: 0;

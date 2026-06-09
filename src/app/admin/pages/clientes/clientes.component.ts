@@ -24,7 +24,7 @@ export class ClientesComponent implements OnInit {
   verconincidencia = false;
   verdasboard = true;
   showfirstcard = true;
-  showCargaInformacion = false;
+  showCargaInformacion = true;
   showKpis = false;
 
   periodoInicio?: string;
@@ -55,11 +55,12 @@ export class ClientesComponent implements OnInit {
         this.buildDT();
       }
     })
-    if (this.rol == '3') {
+    if (this.rol == '3' || this.rol == '4') {
       this.setMenuAdmin();
       this.showfirstcard = false;
       
-    } else {
+    }
+    else {
       this.setMenu();
       this.showfirstcard = true;
     }
@@ -73,6 +74,8 @@ export class ClientesComponent implements OnInit {
     this.ui.showrRepresentante(false);
     this.ui.showAdminDownSet(false);
   }
+
+  
 
   setMenuAdmin() {
     this.ui.showNavbar(true);

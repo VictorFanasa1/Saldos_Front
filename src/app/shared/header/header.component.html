@@ -4,7 +4,7 @@
       <button
         class="btn btn-icon d-lg-none"
         type="button"
-        aria-label="Abrir menu"
+        aria-label="Abrir menú"
         (click)="toggleSidebar()">
         <i class="bi bi-list"></i>
       </button>
@@ -18,6 +18,16 @@
     </div>
 
     <div class="topbar-right">
+      <button
+        *ngIf="canInstall$ | async"
+        class="btn btn-sm btn-outline-primary me-2"
+        type="button"
+        (click)="onInstall()"
+        title="Instalar aplicación">
+        <i class="bi bi-download me-1"></i>
+        <span class="d-none d-md-inline">Instalar app</span>
+      </button>
+
       <div class="user-card d-none d-lg-flex">
         <div class="avatar-sm">{{ alias }}</div>
         <div class="user-meta">
@@ -36,7 +46,7 @@
         </button>
 
         <ul class="dropdown-menu dropdown-menu-end topbar-menu">
-          <li class="dropdown-header topbar-menu__header">Navegacion</li>
+          <li class="dropdown-header topbar-menu__header">Navegación</li>
 
           <li *ngIf="showAdmin$ | async">
             <a
@@ -116,7 +126,7 @@
           <li>
             <button class="dropdown-item topbar-menu__item topbar-menu__item--danger" (click)="logoutSys()">
               <i class="bi bi-box-arrow-right"></i>
-              <span>Cerrar sesion</span>
+              <span>Cerrar sesión</span>
             </button>
           </li>
         </ul>

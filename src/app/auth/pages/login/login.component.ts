@@ -114,7 +114,7 @@ export class LoginComponent implements OnInit {
             const isLoginRoute = this.redirectTo?.startsWith('/auth/login');
             let ubicaciones = '';
             const arreglo = rol.ubicacion.split(',');
-
+            console.log(JSON.stringify(rol))
             arreglo.forEach((valor) => {
               ubicaciones += `${this.getNombreUbicacion(valor.trim())},`;
             });
@@ -146,13 +146,18 @@ export class LoginComponent implements OnInit {
             user.role = role;
             this.auth.updateRole(role);
 
-            const target =
-              !isLoginRoute && this.redirectTo && this.isRedirectAllowed(role, this.redirectTo)
-                ? this.redirectTo
+            const defaultTarget =
+              rol.id_rol === 3 || rol.id_rol === 4
+                ? '/admin/conincidencias'
                 : role === 'ADMIN' || role === 'AGENTE'
                   ? '/admin'
                   : '/agente';
 
+            const target =
+              !isLoginRoute && this.redirectTo && this.isRedirectAllowed(role, this.redirectTo)
+                ? this.redirectTo
+                : defaultTarget;
+                 
             if (user.role === 'ADMIN') {
               this.ui.showNavbar(true);
               this.ui.showAdmin(true);
@@ -162,6 +167,15 @@ export class LoginComponent implements OnInit {
               this.ui.showHeaderset(true);
               this.ui.showNavbar(true);
               this.ui.showrRepresentante(true);
+              this.ui.showAdmin(false);
+            } else {
+            
+              // AGENTE: cubre id_rol 3 (Comercial) y 4 (Cartera)
+              this.ui.showNavbar(true);
+              this.ui.showHeaderset(true);
+              this.ui.showAdmin(false);
+              this.ui.showrRepresentante(false);
+              this.ui.showAdminDownSet(true)
             }
 
             this.loading = false;

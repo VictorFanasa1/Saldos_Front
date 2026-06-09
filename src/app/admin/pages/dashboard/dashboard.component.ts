@@ -154,8 +154,8 @@ private addMonths(d: Date, months: number): Date {
       sGerenteDivisional: String(this.get(row, 'GERENTE DIVISIONAL') ?? '').trim(),
       sGerenciaTerritorial: String(this.get(row, 'GERENCIA TERRITORIAL') ?? '').trim(),
       sGerenteTerritorial: String(this.get(row, 'GERENTE TERRITORIAL') ?? '').trim(),
-      sGerenciaZona: String(this.get(row, 'GERENCIA ZONA') ?? '').trim(),
-      sGerenteZona: String(this.get(row, 'GERENTE ZONA') ?? '').trim(),
+      sGerenciaZona: String(this.get(row, 'GERENCIA ZONA ID') ?? '').trim(),
+      sGerenteZona: String(this.get(row, 'GERENTE ZONA ID') ?? '').trim(),
       sCanalVenta: String(this.get(row, 'CANAL VENTA') ?? '').trim(),
       sProyectoEstrategico: String(this.get(row, 'PROYECTO ESTRATEGICO') ?? '').trim(),
       sEstatusCuenta: String(this.get(row, 'ESTATUS CUENTA') ?? '').trim(),
@@ -179,7 +179,7 @@ private addMonths(d: Date, months: number): Date {
    
     if(this.rol == '3' || this.rol == '4'){
       this.setMenuAdmin()
-      this.showfirstcard = false
+      this.showfirstcard = true
     }else{
       this.setMenu();
       this.showfirstcard = true
