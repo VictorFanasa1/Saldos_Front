@@ -74,4 +74,5 @@ export interface IncidenciasRequest {
   estatus: string | null;
   tipo_incidencia: string | null;
   id_estatus_cuenta: number | null;
+  cierre: number | null;
 }

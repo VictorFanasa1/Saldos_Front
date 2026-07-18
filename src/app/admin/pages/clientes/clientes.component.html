@@ -105,6 +105,15 @@
             <p class="section-subtitle">Vista responsiva de clientes asignados, auditados y pendientes.</p>
           </div>
         </div>
+
+        <button
+          class="btn-shell btn-shell--ghost"
+          type="button"
+          [disabled]="!datacuentas.length"
+          (click)="exportarExcel()">
+          <i class="bi bi-file-earmark-excel"></i>
+          Exportar Excel
+        </button>
       </div>
 
       <div class="table-scroll">
@@ -118,7 +127,7 @@
               <th>Cuota mensual</th>
               <th>Clientes auditados</th>
               <th>Porcentaje</th>
-              <th>Clientes restantes</th>
+             
             </tr>
           </thead>
           <tbody>
@@ -143,12 +152,10 @@
               </td>
               <td class="cell-percent" attr.data-label="Porcentaje">
                 <span class="status-badge">
-                  {{ porcentajeCliente(item) | number:'1.2-2' }} %
+                  {{ item.porcentaje }} %
                 </span>
               </td>
-              <td class="cell-number cell-number--danger" attr.data-label="Clientes restantes">
-                {{ item.clientes_restantes || 0 }}
-              </td>
+              
             </tr>
           </tbody>
         </table>

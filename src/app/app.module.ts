@@ -16,6 +16,8 @@ import { NavbarComponent } from './shared/navbar/navbar.component';
 import { AppUpdateAvailableComponent } from './shared/app-update-available/app-update-available.component';
 import { HeaderComponent } from './shared/header/header.component';
 import { EstadosCuentaComponent } from './estados-cuenta/estados-cuenta.component';
+import { SsoTestComponent } from './sso-test/sso-test.component';
+import { provideFanasaSSO } from '@fanasa/sso/angular-legacy';
 registerLocaleData(localeEsMx);
 
 @NgModule({
@@ -26,7 +28,8 @@ registerLocaleData(localeEsMx);
     NavbarComponent,
     AppUpdateAvailableComponent,
     HeaderComponent,
-    EstadosCuentaComponent
+    EstadosCuentaComponent,
+    SsoTestComponent
   ],
   imports: [
     BrowserModule,
@@ -40,7 +43,14 @@ registerLocaleData(localeEsMx);
       registrationStrategy: 'registerWhenStable:30000'
     })
   ],
-  providers: [{ provide: LOCALE_ID, useValue: 'es-MX' }],
+  providers: [
+    { provide: LOCALE_ID, useValue: 'es-MX' },
+    ...provideFanasaSSO({
+      ssoUrl:      'https://aplicacion.fanasa.com/SSO',
+      redirectUri: 'http://localhost:4200',
+      clientName:  'AudiFarma',
+    }),
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

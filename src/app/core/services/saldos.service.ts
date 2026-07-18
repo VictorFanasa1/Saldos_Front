@@ -8,6 +8,7 @@ import { CuentasSaldosProcesadoUpdateRequest } from '../shared/cuentassaldosproc
 import { getregistrossaldogerente } from '../shared/cuentasaldosporgerente.model';
 import { getRolUserRequest, UserRolResponse } from '../shared/UserResponseRol';
 import { CuentasSaldosPreguntasDto } from '../shared/cuentasPreguentasRequest';
+import { ErrorLogRequest } from '../shared/errorLogRequest.model';
 import { PreguntasResponse } from '../shared/preguntas.model';
 import { IncidenciasRequest } from '../shared/cuentasrowResponse.model';
 import { environment } from 'src/environments/environment.prod';
@@ -150,6 +151,11 @@ export class SaldosService{
 
     updateFechaProceso(req: {id: number}): Observable<{id: number;}>{
       return this.http.post<{id: number; bProcesado: boolean}>(`${this.apiUrl}/UpdateCuentas`, req)
+    }
+
+    // Requiere el endpoint LogErrorFrontend en SaldosApi (aun no existe en el backend).
+    logErrorFrontend(payload: ErrorLogRequest): Observable<any>{
+      return this.http.post<any>(`${this.apiUrl}/LogErrorFrontend`, payload)
     }
     
     updateProcesado(req: CuentasSaldosProcesadoUpdateRequest): Observable<{ id: number; bProcesado: boolean }> {

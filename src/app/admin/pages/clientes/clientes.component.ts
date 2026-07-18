@@ -8,6 +8,7 @@ import { of } from 'rxjs';
 import { catchError, finalize, tap } from 'rxjs/operators';
 import Swal from 'sweetalert2';
 import { CuentasResponse } from 'src/app/core/shared/CuentasResponse.model';
+import * as XLSX from 'xlsx';
 declare const $: any;
 @Component({
   selector: 'app-clientes',
@@ -235,5 +236,30 @@ export class ClientesComponent implements OnInit {
 
   trackByCliente(index: number, item: CuentasResponse): string {
     return `${item.gerente ?? 'gerente'}-${item.periodo ?? 'periodo'}-${item.mes ?? index}`;
+  }
+
+  exportarExcel(): void {
+    if (!this.datacuentas.length) {
+      Swal.fire({ icon: 'info', title: 'Sin datos', text: 'No hay información para exportar.' });
+      return;
+    }
+
+    const filas = this.datacuentas.map(item => ({
+      Gerente: item.gerente ?? '',
+      Periodo: item.periodo ?? '',
+      'Clientes asignados': item.clientes_asignados ?? 0,
+      Mes: item.mes ?? 0,
+      'Cuota mensual': item.cuota_mensual ?? 0,
+      'Clientes auditados': item.clientes_auditados ?? 0,
+      'Porcentaje': item.porcentaje ?? 0,
+      'Clientes restantes': item.clientes_restantes ?? 0
+    }));
+
+    const worksheet = XLSX.utils.json_to_sheet(filas);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Clientes');
+
+    const fecha = new Date().toISOString().slice(0, 10);
+    XLSX.writeFile(workbook, `clientes_${fecha}.xlsx`);
   }
 }

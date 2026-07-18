@@ -25,6 +25,7 @@
                 <th class="col-farmacia">Farmacia</th>
                 <th class="col-estatus">Estatus</th>
                 <th class="col-fecha">Fecha</th>
+                <th class="col-responsable">Usuario responsable</th>
               </tr>
             </thead>
             <tbody>
@@ -48,6 +49,7 @@
                   <span class="status-badge status-cerrado">Cerrado</span>
                 </td>
                 <td class="cell-fecha">{{ item.created_at }}</td>
+                <td class="cell-responsable">{{ item.pp_usuario_registra}}</td>
               </tr>
             </tbody>
           </table>
