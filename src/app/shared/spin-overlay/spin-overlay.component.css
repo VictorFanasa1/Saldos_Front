@@ -20,14 +20,34 @@
   box-shadow: 0 12px 40px rgba(0,0,0,0.45), inset 0 0 0 1px rgba(255,255,255,0.08);
 }
 
+/* Contenedor del anillo + logo */
+.spin-wrap {
+  position: relative;
+  display: grid;
+  place-items: center;
+}
+
 /* Loader girando */
 .spin {
+  position: absolute;
+  inset: 0;
   display: block;
   border-radius: 50%;
   border: 6px solid rgba(255,255,255,0.18);
   border-top-color: #ffffff;
   animation: rotate 0.9s linear infinite;
   box-shadow: 0 6px 18px rgba(0,0,0,0.35);
+}
+
+/* Logo centrado dentro del anillo */
+.spin-logo {
+  position: relative;
+  width: 55%;
+  height: 55%;
+  object-fit: contain;
+  border-radius: 50%;
+  background: #fff;
+  padding: 6px;
 }
 
 /* Botón cerrar */

@@ -20,6 +20,7 @@ export interface CuentasSaldosPreguntasDto {
   firma:string;
   tipo_incidencia: string,
   ubicacion: string,
-  CorreoCliente: string
+  CorreoCliente: string,
+  cierre: number
 }
 

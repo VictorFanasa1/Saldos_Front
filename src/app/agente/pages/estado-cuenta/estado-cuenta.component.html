@@ -83,10 +83,10 @@
             <tr>
               <th>Cliente</th>
               <th>Documento</th>
-              <th>Fecha</th>
-              <th>Vencimiento</th>
+              
+             
               <th>Importe</th>
-              <th>IVA</th>
+             
               <th>Saldo</th>
             </tr>
           </thead>
@@ -94,30 +94,15 @@
             <tr *ngFor="let item of registros; trackBy: trackByRegistro">
               <td class="cell-text">{{ item.cliente || 'Sin cliente' }}</td>
               <td class="cell-code">{{ item.documento || 'Sin documento' }}</td>
-              <td class="cell-date">{{ formatFechaDisplay(item.fecha) }}</td>
-              <td>
-                <span
-                  class="due-chip"
-                  [ngClass]="{
-                    'due-chip--positive': (item.dias_vto ?? 0) > 0,
-                    'due-chip--negative': (item.dias_vto ?? 0) < 0,
-                    'due-chip--neutral': (item.dias_vto ?? 0) === 0
-                  }">
-                  {{ item.dias_vto ?? 0 }}
-                </span>
-              </td>
+              
+              
               <td
                 class="cell-money"
                 [class.amount-positive]="(item.importe_original ?? 0) > 0"
                 [class.amount-negative]="(item.importe_original ?? 0) < 0">
                 {{ item.importe_original | currency:'MXN' }}
               </td>
-              <td
-                class="cell-money"
-                [class.amount-positive]="(item.iva ?? 0) > 0"
-                [class.amount-negative]="(item.iva ?? 0) < 0">
-                {{ item.iva | currency:'MXN' }}
-              </td>
+            
               <td
                 class="cell-money cell-money--strong"
                 [class.amount-positive]="(item.saldo_debido ?? 0) > 0"

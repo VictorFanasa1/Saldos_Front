@@ -55,6 +55,7 @@ export class FormresponsableComponent implements OnInit, AfterViewInit {
   latitud = '';
   longitud = '';
   iddelestatus = 0
+  cierreFarmacia = false
   firmaObjectUrl?: string;
   cargandos = true;
   firmaSafeUrl?: SafeUrl;
@@ -310,6 +311,7 @@ export class FormresponsableComponent implements OnInit, AfterViewInit {
     this.latitud = dto[0].lat;
     this.longitud = dto[0].long;
     this.iddelestatus = dto[0].id_estatus_cuenta
+    this.cierreFarmacia = Number(dto[0].cierre) === 1
     this.expectedOtp = String(dto[0].otp ?? '').trim();
     this.otpValidated = !this.expectedOtp;
     this.formularioagenteEvidencias.patchValue({
@@ -700,7 +702,11 @@ export class FormresponsableComponent implements OnInit, AfterViewInit {
       L.Icon.Default.mergeOptions({
             iconRetinaUrl: 'assets/icons/markericon.png', // Tu ruta a la imagen de alta resolución (puedes usar la misma)
             iconUrl: 'assets/icons/markericon.png',       // Tu ruta a la imagen normal
-            shadowUrl: 'assets/icons/markershadow.png',   // Tu ruta a la imagen de sombra
+            iconSize: [40, 40],
+            iconAnchor: [20, 40],
+            popupAnchor: [0, -36],
+            shadowUrl: '',
+            shadowSize: [0, 0],
           });
       const target = L.latLng(lat, lon);
       this.map.setView(target, 18);

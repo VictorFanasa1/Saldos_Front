@@ -202,13 +202,18 @@
                   <span class="section-icon"><i class="bi bi-card-checklist"></i></span>
                   <div>
                     <h2 class="section-title">Cuestionario</h2>
-                    <p class="section-subtitle">Las preguntas conservan el flujo y validaciones actuales.</p>
+                    <p class="section-subtitle" *ngIf="!esContadoEfectivo">Las preguntas conservan el flujo y validaciones actuales.</p>
+                    <p class="section-subtitle" *ngIf="esContadoEfectivo">Cliente con término de pago {{ terminoPago }}.</p>
                   </div>
                 </div>
               </div>
 
+              <div class="state-banner state-banner--success" *ngIf="esContadoEfectivo">
+                Este cliente opera en modalidad <strong>{{ terminoPago }}</strong>. Las preguntas de crédito no aplican y se registran en cero; solo se requiere responder devoluciones y reclamaciones pendientes.
+              </div>
+
               <div class="question-list">
-                <div class="question-item">
+                <div class="question-item" *ngIf="!esContadoEfectivo">
                   <p class="question-text">Estas de acuerdo con el saldo de su cuenta?</p>
                   <div class="radio-group">
                     <label class="choice-pill" for="acuerdoSi">
@@ -253,7 +258,7 @@
                   </div>
                 </div>
 
-                <div class="question-item">
+                <div class="question-item" *ngIf="!esContadoEfectivo">
                   <p class="question-text">Recibe un comprobante al realizar sus pagos?</p>
                   <div class="radio-group">
                     <label class="choice-pill" for="comprobanteSi">
@@ -296,7 +301,7 @@
                   </div>
                 </div>
 
-                <div class="question-item">
+                <div class="question-item" *ngIf="!esContadoEfectivo">
                   <p class="question-text">Identifica pagos pendientes de aplicar?</p>
                   <div class="radio-group">
                     <label class="choice-pill" for="pagosPendSi">
@@ -541,6 +546,15 @@
                     ? 'El registro sigue editable. Revisa respuestas y firma antes de guardar.'
                     : 'El registro ya fue capturado y permanece en modo solo lectura.'
                 }}
+              </div>
+
+              <div class="form-check mb-3">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  id="cierreFarmacia"
+                  formControlName="cierreFarmacia" />
+                <label class="form-check-label" for="cierreFarmacia">Cierre de farmacia</label>
               </div>
 
               <div class="action-row">

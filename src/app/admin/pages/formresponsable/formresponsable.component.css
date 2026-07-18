@@ -206,6 +206,21 @@
   grid-column: span 2;
 }
 
+.state-banner {
+  padding: 11px 13px;
+  border-radius: var(--radius-sm);
+  border: 1px solid transparent;
+  font-size: 13px;
+  line-height: 1.5;
+  margin-bottom: 14px;
+}
+
+.state-banner--danger {
+  background: var(--danger-soft);
+  border-color: #fecaca;
+  color: var(--danger);
+}
+
 .summary-label {
   font-size: 11px;
   text-transform: uppercase;

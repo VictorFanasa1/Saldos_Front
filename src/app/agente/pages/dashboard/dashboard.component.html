@@ -78,22 +78,15 @@
           <tbody>
             <tr *ngFor="let item of datoscuenta">
               <td class="cell-id">{{ item.uiRow }}</td>
-              <td class="cell-procesado" (click)="$event.stopPropagation()">
-                <label
+              <td class="cell-procesado">
+                <span
                   class="status-toggle"
                   [ngClass]="{
                     'status-toggle--success': item.bProcesado,
                     'status-toggle--warning': !item.bProcesado
                   }">
-                  <input
-                    class="form-check-input"
-                    type="checkbox"
-                    [checked]="item.bProcesado"
-                    (change)="onProcesadoChange(item, $any($event.target).checked)"
-                    aria-label="Procesado"
-                    readonly />
                   <span>{{ item.bProcesado ? 'Procesado' : 'Pendiente' }}</span>
-                </label>
+                </span>
               </td>
               <td class="cell-cuenta">{{ item.sCuentaOracle }}</td>
               <td class="cell-farmacia">{{ item.sNombreCorto }}</td>

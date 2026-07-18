@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { SaldosService } from 'src/app/core/services/saldos.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CuentasSaldosPreguntasDto } from 'src/app/core/shared/cuentasPreguentasRequest';
+import { ErrorLogRequest } from 'src/app/core/shared/errorLogRequest.model';
 import { concatMap, debounceTime, distinctUntilChanged, map, take, takeUntil } from 'rxjs/operators';
 import { AuthService } from 'src/app/core/services/auth.service';
 import Swal from 'sweetalert2';
@@ -64,8 +65,10 @@ step = 1;
   cargando = false
   folios: Array<number> = []
   idUbicacion?: string = ""
-  codigotp?:string = "" 
+  codigotp?:string = ""
   correodelcliente?:string = ""
+  esContadoEfectivo = false;
+  terminoPago = '';
 fmtMXN = (v: any) =>
   new Intl.NumberFormat('es-MX', { style:'currency', currency:'MXN', minimumFractionDigits:2 }).format(Number(v ?? 0));
   private destroy$ = new Subject<void>();
@@ -110,7 +113,8 @@ fmtMXN = (v: any) =>
     // Extras del body
     comentarios: [''],
     evidencia: [''],
-    firma: [null, Validators.required]
+    firma: [null, Validators.required],
+    cierreFarmacia: [false]
     })
 
     this.attachReasonToggler('acuerdoSaldo', 'p1_razon');
@@ -312,6 +316,12 @@ get captureStatusTone(): 'success' | 'warning' {
         vencida15a21:       '$ '+this.formatMoneyRegex(dto.dVencido15a21Dias),
         vencida22Plus:      '$ '+this.formatMoneyRegex(dto.dVencido22a28Dias)
       });
+      const termino = String(dto.sTerminoPago ?? '').trim().toUpperCase();
+      if (termino === 'EFECTIVO' || termino === 'CONTADO') {
+        this.esContadoEfectivo = true;
+        this.terminoPago = termino;
+        this.aplicarModoContadoEfectivo();
+      }
     },
     error: (err) => console.error(err)
     })
@@ -428,26 +438,93 @@ ngOnDestroy(): void {
     firma: evidencia,
     tipo_incidencia: this.tipo_incidencia.toString(),
     ubicacion: this.idUbicacion ?? '',
-    CorreoCliente: this.correodelcliente ?? ''
+    CorreoCliente: this.correodelcliente ?? '',
+    cierre: f.cierreFarmacia ? 1 : 0
   };
   
-  await this.saldosservice.registrarPeguntas(dto).toPromise();// espera al POST
-  await this.saldosservice.updateFechaProceso({id:this.cuenta_oracle}).toPromise();
+  await this.withRetry(
+    async () => {
+      await this.saldosservice.registrarPeguntas(dto).toPromise();// espera al POST
+      await this.saldosservice.updateFechaProceso({id:this.cuenta_oracle}).toPromise();
+    },
+    { contexto: 'registerWithFolio', folioIntentado: folio, usuario }
+  );
+}
+
+private async withRetry<T>(
+  fn: () => Promise<T>,
+  info: { contexto: string; folioIntentado?: string; usuario?: string },
+  retries = 2,
+  delayMs = 800
+): Promise<T> {
+  let lastErr: any;
+  for (let intento = 0; intento <= retries; intento++) {
+    try {
+      return await fn();
+    } catch (e) {
+      lastErr = e;
+      console.error(`[${info.contexto}] intento ${intento + 1}/${retries + 1} fallo:`, e);
+      if (intento < retries) {
+        await new Promise(r => setTimeout(r, delayMs));
+      }
+    }
+  }
+  this.logErrorAlBackend(lastErr, info);
+  throw lastErr;
+}
+
+private extractErrorMessage(e: any): string {
+  if (e?.status === 0) return 'No hay conexión con el servidor. Verifica tu internet.';
+  const body = e?.error;
+  if (typeof body === 'string' && body.trim()) return body;
+  if (body && typeof body === 'object') {
+    if (typeof body.error === 'string' && body.error.trim()) return body.error;
+    if (typeof body.message === 'string' && body.message.trim()) return body.message;
+  }
+  if (typeof e?.message === 'string' && e.message.trim()) return e.message;
+  return 'Ocurrió un error inesperado al guardar. Intenta de nuevo.';
+}
+
+private logErrorAlBackend(e: any, info: { contexto: string; folioIntentado?: string; usuario?: string }): void {
+  const payload: ErrorLogRequest = {
+    idCuenta: this.cuenta_oracle,
+    contexto: info.contexto,
+    mensaje: this.extractErrorMessage(e),
+    detalle: JSON.stringify({ status: e?.status, error: e?.error, message: e?.message }),
+    folioIntentado: info.folioIntentado,
+    usuario: info.usuario,
+    fecha: new Date().toISOString()
+  };
+  this.saldosservice.logErrorFrontend(payload).subscribe({
+    error: (logErr) => console.error('No se pudo registrar el error en el backend:', logErr)
+  });
 }
 volver(){
   this.router.navigate(['/agente'])
 }
 
   async grabarRespuestas(){
-      const f = this.formularioagente.value;
-      console.log(f.acuerdoSaldo)
-      console.log(f.comprobantePagos)
-      console.log(f.pagosPendientes)
-      console.log(f.devolucionesPendientes)
-      console.log(f.reclamacionesPendientes)
-  if (this.submitting) return;
+    if (this.submitting) return;
   this.submitting = true;
   try {
+
+    const f = this.formularioagente.value;
+
+    if (this.esContadoEfectivo) {
+      // devolucionesPendientes y reclamacionesPendientes siguen activas para EFECTIVO/CONTADO (van a Cartera).
+      if (!(f.devolucionesPendientes === false && f.reclamacionesPendientes === false) || f.cierreFarmacia === true) {
+        this.tipo_incidencia = 2;
+        const folioCierre = await this.getNextFolio();
+        await this.registerWithFolio(folioCierre);
+        await Swal.fire({ icon: 'success', title: 'Guardado', text: `Se guardo la información para ventas con folio ` + folioCierre });
+      } else {
+        this.tipo_incidencia = 0;
+        await this.registerWithFolio('');
+        await Swal.fire({ icon: 'success', title: 'Guardado', text: 'Su información fue cargada en el sistema' });
+      }
+      this.router.navigate(['/agente']);
+      return;
+    }
 
     if (!(f.acuerdoSaldo === true && f.comprobantePagos === true && f.pagosPendientes === false)) {
       this.tipo_incidencia = 1
@@ -457,8 +534,8 @@ volver(){
 
     }
 
-
-    if (!(f.devolucionesPendientes === false && f.reclamacionesPendientes === false)) {
+    // El cierre de farmacia siempre genera incidencia para el admin de ventas/cobranza, aunque las preguntas esten en orden.
+    if (!(f.devolucionesPendientes === false && f.reclamacionesPendientes === false) || f.cierreFarmacia === true) {
       this.tipo_incidencia = 2
       const folio2 = await this.getNextFolio();
       await this.registerWithFolio(folio2);
@@ -466,7 +543,7 @@ volver(){
     }
 
 
-    if ((f.acuerdoSaldo  === true && f.comprobantePagos === true) && (f.pagosPendientes  === false && f.devolucionesPendientes  === false && f.reclamacionesPendientes === false)) {
+    if ((f.acuerdoSaldo  === true && f.comprobantePagos === true) && (f.pagosPendientes  === false && f.devolucionesPendientes  === false && f.reclamacionesPendientes === false) && f.cierreFarmacia !== true) {
       this.tipo_incidencia = 0
       await this.registerWithFolio("");
       await Swal.fire({ icon: 'success', title: 'Guardado', text: `Su informacion fue cargada en el sistema` });
@@ -474,8 +551,10 @@ volver(){
 
     this.router.navigate(['/agente']);
   } catch (e: any) {
-    console.log(e);
-    await Swal.fire({ icon: 'error', title: 'Error', text: e.error.error });
+    console.error('[grabarRespuestas] fallo:', e);
+    const mensaje = this.extractErrorMessage(e);
+    this.logErrorAlBackend(e, { contexto: 'grabarRespuestas' });
+    await Swal.fire({ icon: 'error', title: 'No se pudo guardar', text: mensaje });
   } finally {
     this.submitting = false;
   }
@@ -487,6 +566,19 @@ volver(){
     /* Logica del folio */
 
 
+
+private aplicarModoContadoEfectivo(): void {
+  // Preguntas de crédito: no aplican para clientes EFECTIVO/CONTADO.
+  const preguntasCredito = ['acuerdoSaldo', 'comprobantePagos', 'pagosPendientes'];
+  preguntasCredito.forEach(ctrl => {
+    const c = this.formularioagente.get(ctrl)!;
+    c.clearValidators();
+    c.setValue(false, { emitEvent: false });
+    c.disable({ emitEvent: false });
+    c.updateValueAndValidity({ emitEvent: false });
+  });
+  // devolucionesPendientes y reclamacionesPendientes (van a Cartera) se mantienen activas.
+}
 
 patchRadioAndMaybeDisable(ctrlName: string, rawValue: any) {
   const tri = this.toTriBool(rawValue);
