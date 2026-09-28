@@ -1,5 +1,5 @@
 import { SendMailBodyRequest } from './../shared/sendMailClient.Model';
-import { HttpClient, HttpHeaders, HttpEvent } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpEvent, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { AdmCuentasSaldos } from '../shared/cuentasagente.model';
@@ -9,7 +9,7 @@ import { getregistrossaldogerente } from '../shared/cuentasaldosporgerente.model
 import { getRolUserRequest, UserRolResponse } from '../shared/UserResponseRol';
 import { CuentasSaldosPreguntasDto } from '../shared/cuentasPreguentasRequest';
 import { ErrorLogRequest } from '../shared/errorLogRequest.model';
-import { PreguntasResponse } from '../shared/preguntas.model';
+import { PreguntasResponse, PreguntasResponseAll } from '../shared/preguntas.model';
 import { IncidenciasRequest } from '../shared/cuentasrowResponse.model';
 import { environment } from 'src/environments/environment.prod';
 import { ClientsRequest } from '../shared/ClientsRequest.model';
@@ -20,6 +20,8 @@ import { RolesModel } from '../shared/roles.mnodel';
 import { Role } from './auth.service';
 import { RegistroCuentaApi } from '../shared/RegistroCuentaApi.model';
 import { PagedResponse } from '../shared/PagedResponse.model';
+import { ReportePregunta } from '../shared/reportePreguntas.model';
+import { PerfilGerenteResponse } from '../shared/perfilGerente.model';
 
 @Injectable({
   providedIn: 'root'
@@ -38,12 +40,24 @@ export class SaldosService{
       return this.http.get<CuentasResponse[]>(`${this.apiUrl}/GetCuentasResponse/${ubicacion}`);
     }
 
+    getPerfilGerente(idGerente: string): Observable<PerfilGerenteResponse> {
+      return this.http.get<PerfilGerenteResponse>(`${this.apiUrl}/GetPerfilGerente/${encodeURIComponent(idGerente)}`);
+    }
+
     consultaregistroid(idCuenta: Number): Observable<AdmCuentasSaldos>{
       return this.http.get<AdmCuentasSaldos>(`${this.apiUrl}/GetById/${idCuenta}`);
     }
 
-    consultaregistroPreguntas(idCuenta: Number): Observable<PreguntasResponse[]>{
-      return this.http.get<PreguntasResponse[]>(`${this.apiUrl}/GetByIdPreguntas/${idCuenta}`);
+    consultaregistroPreguntas(idCuenta: Number): Observable<PreguntasResponseAll>{
+      return this.http.get<PreguntasResponseAll>(`${this.apiUrl}/GetByIdPreguntas/${idCuenta}`);
+    }
+
+    // Fechas en formato yyyy-MM-dd; si se omiten, el backend regresa todo.
+    getReportePreguntas(fechaInicio?: string, fechaFin?: string): Observable<ReportePregunta[]>{
+      let params = new HttpParams();
+      if (fechaInicio) params = params.set('fechaInicio', fechaInicio);
+      if (fechaFin) params = params.set('fechaFin', fechaFin);
+      return this.http.get<ReportePregunta[]>(`${this.apiUrl}/GetReportePreguntas`, { params });
     }
 
     getlastfolionumber(idCuenta: Number): Observable<string>{

@@ -4,7 +4,7 @@ import { SaldosService } from 'src/app/core/services/saldos.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CuentasSaldosPreguntasDto } from 'src/app/core/shared/cuentasPreguentasRequest';
 import { ErrorLogRequest } from 'src/app/core/shared/errorLogRequest.model';
-import { concatMap, debounceTime, distinctUntilChanged, map, take, takeUntil } from 'rxjs/operators';
+import { concatMap, debounceTime, distinctUntilChanged, finalize, map, take, takeUntil } from 'rxjs/operators';
 import { AuthService } from 'src/app/core/services/auth.service';
 import Swal from 'sweetalert2';
 import { GeolocationService, GeoPoint } from 'src/app/core/shared/geolocation.service';
@@ -56,7 +56,12 @@ step = 1;
   firmaObjectUrl?: string;
   cargandos = true;
   otpConfirmado = false;
-  private tieneDatosPrevios = false;
+  tieneDatosPrevios = false;
+  // Consultas iniciales (cuenta, preguntas, firma); mientras haya pendientes se muestra el spinner y no el modal OTP.
+  private consultasPendientes = 3;
+  get cargandoDatos(): boolean { return this.consultasPendientes > 0; }
+  private consultaTerminada = () => { this.consultasPendientes--; };
+  registroPrevio: { usuario: string; fecha: string; folios: string[] } | null = null;
   firmaSafeUrl?: SafeUrl;
   sucursal = ""
   correo: string = ""
@@ -122,7 +127,42 @@ fmtMXN = (v: any) =>
   this.attachReasonToggler('pagosPendientes', 'p3_razon');
   this.attachReasonToggler('devolucionesPendientes', 'p4_razon');
   this.attachReasonToggler('reclamacionesPendientes', 'p5_razon');
+
+    this.formularioagente.get('cierreFarmacia')!.valueChanges
+      .subscribe((v: boolean) => this.aplicarCierreFarmacia(v === true));
    }
+
+get cierreActivo(): boolean {
+  return this.formularioagente.get('cierreFarmacia')?.value === true;
+}
+
+// Cierre de farmacia: las preguntas y la firma no aplican, se bloquean y se limpian.
+private aplicarCierreFarmacia(activo: boolean) {
+  const preguntas = this.esContadoEfectivo
+    ? ['devolucionesPendientes', 'reclamacionesPendientes']
+    : ['acuerdoSaldo', 'comprobantePagos', 'pagosPendientes', 'devolucionesPendientes', 'reclamacionesPendientes'];
+  const razones = ['p1_razon', 'p2_razon', 'p3_razon', 'p4_razon', 'p5_razon'];
+  const firma = this.formularioagente.get('firma')!;
+
+  if (activo) {
+    preguntas.forEach(c => {
+      const ctrl = this.formularioagente.get(c)!;
+      ctrl.setValue(null, { emitEvent: false });
+      ctrl.disable({ emitEvent: false });
+    });
+    razones.forEach(c => {
+      const ctrl = this.formularioagente.get(c)!;
+      ctrl.setValue('', { emitEvent: false });
+      ctrl.disable({ emitEvent: false });
+    });
+    if (this.canvasRef && this.ctx) this.clearSig();
+    firma.disable({ emitEvent: false });
+  } else {
+    preguntas.forEach(c => this.formularioagente.get(c)!.enable({ emitEvent: false }));
+    razones.forEach(c => this.formularioagente.get(c)!.enable({ emitEvent: false }));
+    firma.enable({ emitEvent: false });
+  }
+}
 private attachReasonToggler(booleanCtrl: string, reasonCtrl: string) {
   const bc = this.formularioagente.get(booleanCtrl)!;
   const rc = this.formularioagente.get(reasonCtrl)!;
@@ -159,12 +199,12 @@ private attachReasonToggler(booleanCtrl: string, reasonCtrl: string) {
     this.ui.showAdminDownSet(false)
     this.ui.showrRepresentante(true)
     this.consultaRegistros()
-    this.saldosservice.getFirmaBlob(this.id).subscribe({
+    this.saldosservice.getFirmaBlob(this.id).pipe(finalize(this.consultaTerminada)).subscribe({
       next: resp => {
         const blob = resp!;
         console.log(blob)
+        // Sin firma no significa que no haya datos: eso lo decide la consulta de preguntas.
         if (!blob || blob.size === 0) {
-      this.visibleBtnGuardar = true;
       this.cargandos = true;
       return;
     }
@@ -176,7 +216,6 @@ private attachReasonToggler(booleanCtrl: string, reasonCtrl: string) {
         this.otpConfirmado = true;
       },
       error: _ => {
-        this.visibleBtnGuardar = true;
         this.cargandos = true
         this.firmaSafeUrl = undefined;
         if (this.firmaObjectUrl) {
@@ -292,7 +331,7 @@ get captureStatusTone(): 'success' | 'warning' {
 }
   consultaRegistros(){
      
-    this.saldosservice.consultaregistroid(this.id).subscribe({
+    this.saldosservice.consultaregistroid(this.id).pipe(finalize(this.consultaTerminada)).subscribe({
        next: (dto) => {
         console.log(dto)
       console.log(dto.sNombreCorto)
@@ -325,52 +364,84 @@ get captureStatusTone(): 'success' | 'warning' {
     },
     error: (err) => console.error(err)
     })
-    this.saldosservice.consultaregistroPreguntas(this.id).subscribe({
+    this.saldosservice.consultaregistroPreguntas(this.id).pipe(finalize(this.consultaTerminada)).subscribe({
       next: res =>{
-        const tieneRespuestas = !!res && res.length > 0;
-
-        if (tieneRespuestas) {
+        console.log(JSON.stringify(res))
+        console.log(res.mensaje)
+        if (res?.ok === false) {
+          this.salirPorErrorPreguntas(res.mensaje);
+          return;
+        }
+        const tieneRespuestas = res.hayDatos;
+        console.log(tieneRespuestas)
+        if (res.hayDatos) {
           this.tieneDatosPrevios = true;
           this.otpConfirmado = true;
           this.visibleBtnGuardar = false;
 
-          console.log(res)
+          console.log("Respuesta de la pregunta 5: " + res.datos[0].p5)
+
+          // Puede haber un registro por incidencia (credito / ventas), cada uno con su folio.
+          const folios = res.datos
+            .map(d => (d.folio_soporte ?? '').trim())
+            .filter((f, i, arr) => f !== '' && arr.indexOf(f) === i);
+          this.registroPrevio = {
+            usuario: res.datos[0].usuario_registra ?? '',
+            fecha: res.datos[0].fecha_creacion ?? '',
+            folios
+          };
 
           this.formularioagente.patchValue({
-            p1_razon: res[0].p1_razon,
-            p2_razon: res[0].p2_razon,
-            p3_razon: res[0].p3_razon,
-            p4_razon: res[0].p4_razon,
-            p5_razon: res[0].p5_razon
+            p1_razon: res.datos[0].p1_razon,
+            p2_razon: res.datos[0].p2_razon,
+            p3_razon: res.datos[0].p3_razon,
+            p4_razon: res.datos[0].p4_razon,
+            p5_razon: res.datos[0].p5_razon
           })
+          
           this.patchvalueanddisablearea('p1_razon', false)
           this.patchvalueanddisablearea('p2_razon', false)
           this.patchvalueanddisablearea('p3_razon', false)
           this.patchvalueanddisablearea('p4_razon', false)
           this.patchvalueanddisablearea('p5_razon', false)
-          this.patchRadioAndMaybeDisable('acuerdoSaldo',            res[0].p1);
-          this.patchRadioAndMaybeDisable('comprobantePagos',        res[0].p2);
-          this.patchRadioAndMaybeDisable('pagosPendientes',         res[0].p3);
-          this.patchRadioAndMaybeDisable('devolucionesPendientes',  res[0].p4);
-          this.patchRadioAndMaybeDisable('reclamacionesPendientes', res[0].p5);
+          this.patchRadioAndMaybeDisable('acuerdoSaldo',            res.datos[0].p1);
+          this.patchRadioAndMaybeDisable('comprobantePagos',        res.datos[0].p2);
+          this.patchRadioAndMaybeDisable('pagosPendientes',         res.datos[0].p3);
+          this.patchRadioAndMaybeDisable('devolucionesPendientes',  res.datos[0].p4);
+          this.patchRadioAndMaybeDisable('reclamacionesPendientes', res.datos[0].p5);
+
+          this.visibleBtnGuardar = false;
+
         } else {
           console.log("No existe datos")
           if (!this.tieneDatosPrevios) {
             this.otpConfirmado = false;
+            this.visibleBtnGuardar = true;
           }
-          this.visibleBtnGuardar = true;
         }
       },
       error: er =>{
 
-        console.log("No hay datos")
-        if (!this.tieneDatosPrevios) {
-          this.otpConfirmado = false;
-        }
         console.error(er)
+        this.salirPorErrorPreguntas(er?.error?.mensaje);
       }
     })
   }
+
+  // Error al consultar preguntas: no se permite continuar, se regresa al inicio del agente.
+  private salirPorErrorPreguntas(mensaje?: string) {
+    this.otpConfirmado = true; // oculta el modal OTP para que no quede encima del alert
+    this.visibleBtnGuardar = false;
+    Swal.fire({
+      icon: 'error',
+      title: 'Error',
+      text: mensaje || 'Ocurrió un error al consultar las preguntas.',
+      allowOutsideClick: false,
+      allowEscapeKey: false
+    }).then(() => this.router.navigate(['/agente']));
+  }
+
+
 ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
@@ -510,6 +581,16 @@ volver(){
 
     const f = this.formularioagente.value;
 
+    // Cierre de farmacia: preguntas y firma no aplican, solo genera la incidencia para ventas.
+    if (f.cierreFarmacia === true) {
+      this.tipo_incidencia = 2;
+      const folioCierre = await this.getNextFolio();
+      await this.registerWithFolio(folioCierre);
+      await Swal.fire({ icon: 'success', title: 'Guardado', text: `Se guardo la información para ventas con folio ` + folioCierre });
+      this.router.navigate(['/agente']);
+      return;
+    }
+
     if (this.esContadoEfectivo) {
       // devolucionesPendientes y reclamacionesPendientes siguen activas para EFECTIVO/CONTADO (van a Cartera).
       if (!(f.devolucionesPendientes === false && f.reclamacionesPendientes === false) || f.cierreFarmacia === true) {
@@ -622,6 +703,7 @@ async solicitarUnaVez() {
   }
 
   onDown(e: PointerEvent) {
+    if (this.cierreActivo) return;
     (e.target as HTMLElement).setPointerCapture?.(e.pointerId);
     this.formularioagente.get('firma')!.markAsTouched();
     this.drawing = true;

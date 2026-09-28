@@ -187,6 +187,13 @@
   margin-bottom: 14px;
 }
 
+.registro-info {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 14px 0 16px;
+}
+
 .field-label {
   font-size: 11px;
   text-transform: uppercase;
@@ -444,6 +451,11 @@
 
 .sig-wrap {
   width: 100%;
+}
+
+.sig-wrap--disabled {
+  opacity: 0.45;
+  pointer-events: none;
 }
 
 .sig-canvas {

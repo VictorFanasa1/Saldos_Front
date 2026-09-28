@@ -342,11 +342,11 @@
   vertical-align: middle;
 }
 
-.table-modern tbody tr:nth-child(even) {
-  background: rgba(51, 49, 68, 0.03);
+.table-modern tbody tr:nth-child(even) > td {
+  background: rgba(15, 23, 42, 0.045);
 }
 
-.table-modern tbody tr:hover {
+.table-modern tbody tr:hover > td {
   background: rgba(29, 78, 216, 0.08);
 }
 
@@ -576,6 +576,238 @@ select.select-modern:focus,
     display: flex;
     flex-direction: column;
     align-items: flex-start;
+  }
+}
+
+/* Columnas numéricas: universo, meta y avance */
+.num-base,
+.num-meta,
+.num-avance {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.num-base {
+  color: #64748b;
+  font-weight: 500;
+}
+
+.num-base i,
+.num-meta i {
+  font-size: 0.8rem;
+  opacity: 0.7;
+}
+
+.num-meta {
+  padding: 3px 10px;
+  border-radius: 8px;
+  border: 1px dashed rgba(109, 40, 217, 0.35);
+  color: #6d28d9;
+  font-weight: 600;
+}
+
+.num-avance {
+  font-weight: 800;
+  font-size: 0.95rem;
+}
+
+.num-avance--rojo { color: #c2410c; }
+.num-avance--amarillo { color: #a16207; }
+.num-avance--azul { color: #1d4ed8; }
+.num-avance--verde { color: #15803d; }
+
+/* Semáforo de porcentaje */
+.semaforo {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+  min-width: 96px;
+}
+
+.semaforo__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.semaforo__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.semaforo__bar {
+  width: 100%;
+  height: 4px;
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.08);
+  overflow: hidden;
+}
+
+.semaforo__fill {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: currentColor;
+}
+
+.semaforo--rojo { color: #dc6b5a; }
+.semaforo--rojo .semaforo__badge { background: #fdf0ed; color: #b4533f; }
+
+.semaforo--amarillo { color: #e0a82e; }
+.semaforo--amarillo .semaforo__badge { background: #fef7e0; color: #946200; }
+
+.semaforo--azul { color: #4f86e8; }
+.semaforo--azul .semaforo__badge { background: #edf3fe; color: #1d4ed8; }
+
+.semaforo--verde { color: #34a26b; }
+.semaforo--verde .semaforo__badge { background: #e9f8ef; color: #15803d; }
+
+/* Filtro por mes */
+.table-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.filter-wrap {
+  position: relative;
+}
+
+.btn-shell--active {
+  border-color: var(--ui-primary);
+  color: var(--ui-primary);
+  background: rgba(29, 78, 216, 0.06);
+}
+
+.filter-panel {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 8px);
+  z-index: 20;
+  width: 280px;
+  padding: 14px;
+  border-radius: 14px;
+  background: #fff;
+  border: 1px solid rgba(15, 23, 42, 0.1);
+  box-shadow: 0 16px 40px rgba(2, 6, 23, 0.16);
+}
+
+.filter-panel__title {
+  display: block;
+  margin-bottom: 10px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ui-text-light, #64748b);
+}
+
+.filter-panel__options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.month-pill {
+  padding: 5px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(15, 23, 42, 0.12);
+  background: #fff;
+  color: var(--ui-text-strong);
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+.month-pill:hover {
+  border-color: var(--ui-primary);
+}
+
+.month-pill--active {
+  background: var(--ui-primary);
+  border-color: var(--ui-primary);
+  color: #fff;
+}
+
+.filter-panel__all {
+  margin-top: 12px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--ui-primary);
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+.active-filter {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 14px;
+}
+
+.active-filter__label,
+.active-filter__count {
+  font-size: 0.85rem;
+  color: var(--ui-text-light, #64748b);
+}
+
+.active-filter__label {
+  font-weight: 600;
+}
+
+.active-filter__chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 6px 4px 12px;
+  border-radius: 999px;
+  background: rgba(29, 78, 216, 0.08);
+  color: var(--ui-primary);
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.active-filter__clear {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: inherit;
+  font-size: 0.7rem;
+}
+
+.active-filter__clear:hover {
+  background: rgba(29, 78, 216, 0.16);
+}
+
+@media (max-width: 576px) {
+  .table-actions,
+  .filter-wrap {
+    width: 100%;
+  }
+
+  .filter-panel {
+    left: 0;
+    right: auto;
+    width: 100%;
   }
 }
 

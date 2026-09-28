@@ -36,6 +36,55 @@
       </article>
     </div>
 
+    <article class="dashboard-card avance-card" *ngIf="avance || cargandoAvance">
+      <div class="section-header">
+        <div class="section-title-wrap">
+          <span class="section-icon"><i class="bi bi-graph-up-arrow"></i></span>
+          <div>
+            <h2 class="section-title">Mi avance {{ avance?.mes ? 'de ' + avance?.mes : 'del mes' }}</h2>
+            <p class="section-subtitle">{{ avance?.periodo || 'Consultando periodo...' }}</p>
+          </div>
+        </div>
+        <div class="section-badges" *ngIf="avance">
+          <span class="mini-chip" [ngClass]="avancePct >= 100 ? 'mini-chip--success' : 'mini-chip--warning'">
+            {{ avance.porcentaje | number:'1.0-2' }} %
+          </span>
+        </div>
+      </div>
+
+      <ng-container *ngIf="avance; else avanceCargando">
+        <div class="avance-bar" role="progressbar" [attr.aria-valuenow]="avancePct" aria-valuemin="0" aria-valuemax="100">
+          <div class="avance-bar__fill" [style.width.%]="avancePct"></div>
+        </div>
+
+        <div class="avance-stats">
+          <div class="avance-stat">
+            <span class="summary-label">Asignados</span>
+            <strong>{{ avance.clientes_asignados || 0 }}</strong>
+          </div>
+          <div class="avance-stat">
+            <span class="summary-label">Cuota mensual</span>
+            <strong>{{ avance.cuota_mensual | number:'1.0-0' }}</strong>
+          </div>
+          <div class="avance-stat">
+            <span class="summary-label">Auditados</span>
+            <strong>{{ avance.clientes_auditados || 0 }}</strong>
+          </div>
+          <div class="avance-stat">
+            <span class="summary-label">Restantes</span>
+            <strong>{{ avance.clientes_restantes || 0 }}</strong>
+          </div>
+        </div>
+      </ng-container>
+
+      <ng-template #avanceCargando>
+        <div class="loading-panel">
+          <div class="loading-ring" aria-hidden="true"></div>
+          <p class="loading-title">Cargando avance</p>
+        </div>
+      </ng-template>
+    </article>
+
     <article class="dashboard-card">
       <div class="section-header">
         <div class="section-title-wrap">
@@ -94,11 +143,12 @@
               <td class="cell-acciones">
                 <button
                   type="button"
-                  class="action-btn action-btn--edit"
-                  title="Editar"
+                  class="action-btn"
+                  [ngClass]="item.bProcesado ? 'action-btn--view' : 'action-btn--edit'"
+                  [title]="item.bProcesado ? 'Ver' : 'Editar'"
                   (click)="goToDetalle(item.uiRow)">
-                  <i class="bi bi-pencil-fill"></i>
-                  <span>Capturar</span>
+                  <i class="bi" [ngClass]="item.bProcesado ? 'bi-eye-fill' : 'bi-pencil-fill'"></i>
+                  <span>{{ item.bProcesado ? 'Ver' : 'Capturar' }}</span>
                 </button>
                 <button
                   type="button"

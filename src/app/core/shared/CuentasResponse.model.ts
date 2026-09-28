@@ -4,7 +4,7 @@ export interface CuentasResponse {
     gerente?: string | null;
     periodo?: string | null;
     clientes_asignados?: number | null; 
-    mes?: number | null;                
+    mes?: string | number | null;                
     cuota_mensual?: number | null;      
     porcentaje?: number | null;         
     

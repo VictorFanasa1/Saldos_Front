@@ -10,6 +10,7 @@ import { ConfiguracionesComponent } from './pages/configuraciones/configuracione
 import { CuentasincidenciasComponent } from './pages/cuentasincidencias/cuentasincidencias.component';
 import { CuentasconincidenciasComponent } from './pages/cuentasconincidencias/cuentasconincidencias.component';
 import { ClientesComponent } from './pages/clientes/clientes.component';
+import { ReportesComponent } from './pages/reportes/reportes.component';
 
 
 
@@ -21,7 +22,8 @@ import { ClientesComponent } from './pages/clientes/clientes.component';
     ConfiguracionesComponent,
     CuentasincidenciasComponent,
     CuentasconincidenciasComponent,
-    ClientesComponent
+    ClientesComponent,
+    ReportesComponent
   ],
   imports: [
     CommonModule,

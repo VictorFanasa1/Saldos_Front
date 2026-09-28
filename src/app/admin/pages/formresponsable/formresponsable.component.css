@@ -39,6 +39,17 @@
 
 .page-header {
   margin-bottom: 24px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.header-back {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .page-eyebrow {
@@ -213,6 +224,12 @@
   font-size: 13px;
   line-height: 1.5;
   margin-bottom: 14px;
+}
+
+.state-banner--success {
+  background: var(--success-soft, #ecfdf5);
+  border-color: #a7f3d0;
+  color: var(--success, #059669);
 }
 
 .state-banner--danger {

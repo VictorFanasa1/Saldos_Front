@@ -4,6 +4,8 @@ import { take } from 'rxjs/operators';
 import { AuthService } from 'src/app/core/services/auth.service';
 import { SaldosService } from 'src/app/core/services/saldos.service';
 import { AdmCuentasSaldos } from 'src/app/core/shared/cuentasagente.model';
+import { CuentasResponse } from 'src/app/core/shared/CuentasResponse.model';
+import { PerfilGerente } from 'src/app/core/shared/perfilGerente.model';
 import { getregistrossaldogerente } from 'src/app/core/shared/cuentasaldosporgerente.model';
 import { UiService } from 'src/app/shared/service/ui.service';
 declare const $: any;
@@ -22,6 +24,11 @@ export class DashboardComponentAgent implements OnInit {
   loading = false;
   errorMsg = '';
   dt: any;
+  avance: CuentasResponse | null = null;
+  cargandoAvance = false;
+  perfil: PerfilGerente | null = null;
+  perfilMensaje = '';
+  cargandoPerfil = false;
 
   constructor(private router: Router, private route: ActivatedRoute ,private saldosservice: SaldosService, private auth: AuthService, private ui: UiService) {
     this.ui.showHeaderset(true)
@@ -35,6 +42,8 @@ export class DashboardComponentAgent implements OnInit {
   ngOnInit(): void {
     this.reloadModule()
     this.getRegistros()
+    this.getAvance()
+    this.getPerfil()
     //this.ui.showAdmin(false)
     //this.ui.showAdminDownSet(false)
     this.ui.showrRepresentante(true)
@@ -77,6 +86,67 @@ export class DashboardComponentAgent implements OnInit {
       },
       complete: () => (this.loading = false),
     })
+  }
+
+  // Avance mensual del agente: el endpoint regresa todos los gerentes de la ubicacion por periodo.
+  getAvance() {
+    const ubicacion = localStorage.getItem('ubicacion') ?? '';
+    if (!ubicacion) return;
+    this.cargandoAvance = true;
+    this.saldosservice.consultaRegistrosCuentas(ubicacion).subscribe({
+      next: (res) => {
+        const gerente = this.normalizar(localStorage.getItem('useridbd'));
+        const propios = (res ?? []).filter(r => this.normalizar(r.gerente) === gerente);
+        this.avance = propios.find(r => this.periodoIncluyeHoy(r.periodo)) ?? null;
+        this.cargandoAvance = false;
+      },
+      error: (err) => {
+        console.error(err);
+        this.cargandoAvance = false;
+      }
+    });
+  }
+
+  // KPIs del gerente para el periodo vigente; hayDatos=false trae el motivo en mensaje.
+  getPerfil() {
+    const idGerente = localStorage.getItem('useridbd') ?? '';
+    if (!idGerente) return;
+    this.cargandoPerfil = true;
+    this.saldosservice.getPerfilGerente(idGerente).subscribe({
+      next: (res) => {
+        this.perfil = res?.hayDatos ? res.datos : null;
+        this.perfilMensaje = res?.hayDatos ? '' : (res?.mensaje || 'No existe un periodo vigente.');
+        this.cargandoPerfil = false;
+      },
+      error: (err) => {
+        console.error(err);
+        this.perfil = null;
+        this.perfilMensaje = 'No fue posible consultar tu avance.';
+        this.cargandoPerfil = false;
+      }
+    });
+  }
+
+  private normalizar(v: string | null | undefined): string {
+    return (v ?? '').trim().replace(/\s+/g, ' ').toUpperCase();
+  }
+
+  // periodo: "dd/MM/yyyy - dd/MM/yyyy"
+  private periodoIncluyeHoy(periodo: string | null | undefined): boolean {
+    const [ini, fin] = (periodo ?? '').split('-').map(p => this.parseFecha(p));
+    if (!ini || !fin) return false;
+    const hoy = new Date();
+    hoy.setHours(0, 0, 0, 0);
+    return hoy >= ini && hoy <= fin;
+  }
+
+  private parseFecha(txt: string): Date | null {
+    const m = txt.trim().match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+    return m ? new Date(Number(m[3]), Number(m[2]) - 1, Number(m[1])) : null;
+  }
+
+  get avancePct(): number {
+    return Math.min(Math.max(Number(this.avance?.porcentaje ?? 0), 0), 100);
   }
 
   onProcesadoChange(item: AdmCuentasSaldos, checked: boolean) {

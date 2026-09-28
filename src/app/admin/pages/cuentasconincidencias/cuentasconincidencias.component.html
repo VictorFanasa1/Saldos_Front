@@ -8,6 +8,10 @@
           Seguimiento de folios, estatus y responsables de atención.
         </p>
       </div>
+      <button type="button" class="btn-export-excel" (click)="exportar()">
+        <i class="bi bi-file-earmark-excel-fill"></i>
+        Exportar Excel
+      </button>
     </div>
 
     <div class="card shadow-sm table-card conincidencias-card">
@@ -22,10 +26,12 @@
                 <th class="col-folio">Folio</th>
                 <th class="col-tipo">Tipo de incidencia</th>
                 <th class="col-cuenta">Cuenta</th>
-                <th class="col-fecha-creacion">Fecha</th>
+                <th class="col-periodo">Periodo</th>
+                <th class="col-fecha-creacion">Fecha de creación</th>
                 <th class="col-estatus">Estatus</th>
                 <th class="col-fecha-solucion">Fecha de solucion</th>
                 <th class="col-responsable">Usuario responsable</th>
+                <th class="col-acciones">Acciones</th>
               </tr>
             </thead>
             <tbody>
@@ -36,7 +42,8 @@
                 <td class="cell-folio">{{ item.folio_soporte }}</td>
                 <td class="cell-tipo">{{ item.tipo_incidencia }}</td>
                 <td class="cell-cuenta">{{ item.cuenta_oracle }}</td>
-                <td class="cell-fecha">{{ item.fecha_creacion_incidencia | date: 'dd/MM/yyyy' }}</td>
+                <td class="cell-periodo">{{ periodoDe(item) }}</td>
+                <td class="cell-fecha" [attr.data-order]="fechaCreacion(item)">{{ fechaCreacion(item) | date: 'dd/MM/yyyy' }}</td>
                 <td class="cell-estatus">
                   <span
                     class="status-badge"
@@ -49,6 +56,12 @@
                 </td>
                 <td class="cell-fecha-solucion">{{ item.fecha_solucion }}</td>
                 <td class="cell-responsable">{{ item.pp_usuario_registra}}</td>
+                <td class="cell-acciones">
+                  <button type="button" class="action-btn--view" title="Ver" (click)="goToDetalle(item.pp_uiRow, 1)">
+                    <i class="bi bi-eye-fill"></i>
+                    <span>Ver</span>
+                  </button>
+                </td>
               </tr>
             </tbody>
           </table>

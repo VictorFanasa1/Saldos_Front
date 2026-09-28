@@ -6,6 +6,7 @@ import { ConfiguracionesComponent } from './pages/configuraciones/configuracione
 import { CuentasincidenciasComponent } from './pages/cuentasincidencias/cuentasincidencias.component';
 import { CuentasconincidenciasComponent } from './pages/cuentasconincidencias/cuentasconincidencias.component';
 import { ClientesComponent } from './pages/clientes/clientes.component';
+import { ReportesComponent } from './pages/reportes/reportes.component';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { DashboardComponentAgent } from '../agente/pages/dashboard/dashboard.component';
 
@@ -16,6 +17,7 @@ const routes: Routes = [
   {path: 'incidencias', component: CuentasincidenciasComponent},
   {path: 'conincidencias', component: CuentasconincidenciasComponent},
   {path: 'clientes', component: ClientesComponent},
+  {path: 'reportes', component: ReportesComponent},
   {path: 'config', component: ConfiguracionesComponent},
   {path: 'agente', component: DashboardComponentAgent},
   {path: 'cargac', component: DashboardComponent}

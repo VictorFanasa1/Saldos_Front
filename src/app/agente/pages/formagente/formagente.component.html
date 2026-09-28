@@ -39,7 +39,15 @@
         </div>
       </div>
 
-      <ng-container *ngIf="!otpConfirmado">
+      <div *ngIf="cargandoDatos && !submitting" class="page-blocker" aria-live="polite">
+        <div class="loading-state">
+          <div class="loading-ring" aria-hidden="true"></div>
+          <p class="loading-title">Cargando información</p>
+          <p class="loading-copy">Consultando los datos de la cuenta.</p>
+        </div>
+      </div>
+
+      <ng-container *ngIf="!cargandoDatos && !otpConfirmado">
         <div class="otp-backdrop"></div>
         <div class="otp-modal-shell" role="dialog" aria-modal="true" aria-labelledby="otp-title">
           <div class="otp-modal-card">
@@ -440,7 +448,7 @@
 
         <div class="col-12 col-xl-5">
           <div class="content-stack content-stack--sm">
-            <article class="agent-card">
+            <article class="agent-card" *ngIf="!tieneDatosPrevios">
               <div class="section-header">
                 <div class="section-title-wrap">
                   <span class="section-icon"><i class="bi bi-shield-check"></i></span>
@@ -471,7 +479,7 @@
               </div>
             </article>
 
-            <article class="agent-card">
+            <article class="agent-card" *ngIf="!tieneDatosPrevios || firmaSafeUrl">
               <div class="section-header">
                 <div class="section-title-wrap">
                   <span class="section-icon"><i class="bi bi-pen"></i></span>
@@ -483,11 +491,14 @@
               </div>
 
               <ng-container *ngIf="cargandos; else signaturePreview">
-                <p class="signature-copy">
+                <p class="signature-copy" *ngIf="!cierreActivo">
                   Firma dentro del recuadro para habilitar el registro final. Puedes limpiar la firma si necesitas repetirla.
                 </p>
+                <div class="state-banner state-banner--warning" *ngIf="cierreActivo">
+                  Cierre de farmacia seleccionado: la firma no aplica.
+                </div>
 
-                <div class="sig-wrap">
+                <div class="sig-wrap" [class.sig-wrap--disabled]="cierreActivo">
                   <canvas
                     #sigCanvas
                     class="sig-canvas"
@@ -498,7 +509,7 @@
                 </div>
 
                 <div class="inline-actions">
-                  <button type="button" class="btn-shell btn-shell--ghost" (click)="clearSig()">
+                  <button type="button" class="btn-shell btn-shell--ghost" (click)="clearSig()" [disabled]="cierreActivo">
                     Limpiar firma
                   </button>
                 </div>
@@ -548,7 +559,26 @@
                 }}
               </div>
 
-              <div class="form-check mb-3">
+              <div class="registro-info" *ngIf="registroPrevio">
+                <div class="field-stack">
+                  <span class="field-label">Respondido por</span>
+                  <div class="field-value">{{ registroPrevio.usuario || 'Sin dato' }}</div>
+                </div>
+
+                <div class="field-stack">
+                  <span class="field-label">Fecha de respuesta</span>
+                  <div class="field-value">
+                    {{ registroPrevio.fecha ? (registroPrevio.fecha | date:'dd/MM/yyyy HH:mm') : 'Sin dato' }}
+                  </div>
+                </div>
+
+                <div class="field-stack" *ngIf="registroPrevio.folios.length">
+                  <span class="field-label">{{ registroPrevio.folios.length > 1 ? 'Folios asignados' : 'Folio asignado' }}</span>
+                  <div class="field-value" *ngFor="let folio of registroPrevio.folios">{{ folio }}</div>
+                </div>
+              </div>
+
+              <div class="form-check mb-3" *ngIf="visibleBtnGuardar">
                 <input
                   class="form-check-input"
                   type="checkbox"

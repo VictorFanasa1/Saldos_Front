@@ -15,10 +15,22 @@
         </p>
       </div>
 
-      <a class="btn-shell btn-shell--ghost" routerLink="/agente">
-        <i class="bi bi-arrow-left"></i>
-        Regresar
-      </a>
+      <div class="header-actions">
+        <button
+          type="button"
+          class="btn-shell btn-shell--excel"
+          *ngIf="registros.length > 0"
+          [disabled]="exportando || loading"
+          (click)="exportarExcel()">
+          <i class="bi" [ngClass]="exportando ? 'bi-hourglass-split' : 'bi-file-earmark-excel-fill'"></i>
+          {{ exportando ? 'Exportando...' : 'Exportar Excel' }}
+        </button>
+
+        <a class="btn-shell btn-shell--ghost" routerLink="/agente">
+          <i class="bi bi-arrow-left"></i>
+          Regresar
+        </a>
+      </div>
     </div>
 
     <div class="summary-grid" *ngIf="!loading && registros.length > 0">

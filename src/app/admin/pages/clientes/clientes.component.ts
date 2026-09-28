@@ -32,6 +32,11 @@ export class ClientesComponent implements OnInit {
   periodoFin?: string;
   rol = '0';
   datacuentas: CuentasResponse[ ]= []
+  // Filtro visual por mes: por defecto el mes en curso; null = todos.
+  datosVisibles: CuentasResponse[] = [];
+  mesesDisponibles: number[] = [];
+  mesFiltro: number | null = null;
+  mostrarFiltro = false;
     dt: any;
   private readonly USER_KEY = 'app_user';
   private readonly USER_ID = 'app_user_id';
@@ -52,8 +57,12 @@ export class ClientesComponent implements OnInit {
     this.excelSvc.consultaRegistrosCuentas(ubicacion).subscribe({
       next: respons =>{
         console.log(respons)
-        this.datacuentas = respons
-        this.buildDT();
+        this.datacuentas = respons ?? []
+        this.mesesDisponibles = Array.from(new Set(
+          this.datacuentas.map(c => this.mesNumero(c.mes)).filter((m): m is number => m !== null)
+        )).sort((a, b) => a - b);
+        const mesActual = new Date().getMonth() + 1;
+        this.aplicarFiltroMes(this.mesesDisponibles.includes(mesActual) ? mesActual : null);
       }
     })
     if (this.rol == '3' || this.rol == '4') {
@@ -66,6 +75,41 @@ export class ClientesComponent implements OnInit {
       this.showfirstcard = true;
     }
     console.log(localStorage.getItem('ubicacion'))
+  }
+
+  // El backend a veces manda el mes como numero (9) y a veces como nombre ("Septiembre"); solo es visual.
+  nombreMes(mes: string | number | null | undefined): string {
+    if (mes === null || mes === undefined || mes === '') return 'Sin mes';
+    const n = Number(mes);
+    if (!Number.isInteger(n) || n < 1 || n > 12) return String(mes);
+    const txt = new Intl.DateTimeFormat('es-MX', { month: 'long' }).format(new Date(2000, n - 1, 1));
+    return txt.charAt(0).toUpperCase() + txt.slice(1);
+  }
+
+  // Normaliza el mes (9, "9" o "Septiembre") a numero 1-12.
+  mesNumero(mes: string | number | null | undefined): number | null {
+    if (mes === null || mes === undefined || mes === '') return null;
+    const n = Number(mes);
+    if (Number.isInteger(n) && n >= 1 && n <= 12) return n;
+    const limpio = String(mes).trim().toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+    const idx = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto',
+      'septiembre', 'octubre', 'noviembre', 'diciembre'].indexOf(limpio);
+    return idx >= 0 ? idx + 1 : (limpio === 'setiembre' ? 9 : null);
+  }
+
+  aplicarFiltroMes(mes: number | null) {
+    this.mostrarFiltro = false;
+    this.mesFiltro = mes;
+    // DataTables se adueña del DOM de la tabla: se suelta antes de que Angular repinte las filas.
+    if (this.dt) {
+      this.dt.destroy();
+      this.dt = null;
+    }
+    this.datosVisibles = mes === null
+      ? [...this.datacuentas]
+      : this.datacuentas.filter(c => this.mesNumero(c.mes) === mes);
+    this.cdr.detectChanges();
+    this.buildDT();
   }
 
   setMenu() {
@@ -89,7 +133,7 @@ export class ClientesComponent implements OnInit {
   ngAfterViewInit() {
     setTimeout(() => {
       this.cdr.detectChanges();
-      if(this.datacuentas.length) { this.buildDT();}
+      if(this.datosVisibles.length && !this.dt) { this.buildDT();}
     }, 0);
   }
 
@@ -204,27 +248,37 @@ export class ClientesComponent implements OnInit {
   }
 
   get totalGerentes(): number {
-    return this.datacuentas.length;
+    return this.datosVisibles.length;
   }
 
   get totalAuditados(): number {
-    return this.datacuentas.reduce((sum, item) => sum + Number(item.clientes_auditados ?? 0), 0);
+    return this.datosVisibles.reduce((sum, item) => sum + Number(item.clientes_auditados ?? 0), 0);
   }
 
   get totalRestantes(): number {
-    return this.datacuentas.reduce((sum, item) => sum + Number(item.clientes_restantes ?? 0), 0);
+    return this.datosVisibles.reduce((sum, item) => sum + Number(item.clientes_restantes ?? 0), 0);
   }
 
   get promedioPorcentaje(): number {
-    if (!this.datacuentas.length) {
+    if (!this.datosVisibles.length) {
       return 0;
     }
-    const total = this.datacuentas.reduce((sum, item) => sum + (Number(item.porcentaje ?? 0) * 100), 0);
-    return this.clampPercent(total / this.datacuentas.length);
+    // porcentaje ya viene en escala 0-100 (auditados / cuota) y puede pasar de 100.
+    const total = this.datosVisibles.reduce((sum, item) => sum + Number(item.porcentaje ?? 0), 0);
+    return this.clampPercent(total / this.datosVisibles.length);
   }
 
   porcentajeCliente(item: CuentasResponse): number {
-    return this.clampPercent(Number(item?.porcentaje ?? 0) * 100);
+    return this.clampPercent(Number(item?.porcentaje ?? 0));
+  }
+
+  // Semáforo: <20 rojo suave, 20-49 amarillo, 50-99 azul, 100+ verde.
+  nivelAvance(item: CuentasResponse): 'rojo' | 'amarillo' | 'azul' | 'verde' {
+    const p = Number(item?.porcentaje ?? 0);
+    if (p >= 100) return 'verde';
+    if (p >= 50) return 'azul';
+    if (p >= 20) return 'amarillo';
+    return 'rojo';
   }
 
   private clampPercent(value: number): number {
@@ -239,16 +293,16 @@ export class ClientesComponent implements OnInit {
   }
 
   exportarExcel(): void {
-    if (!this.datacuentas.length) {
+    if (!this.datosVisibles.length) {
       Swal.fire({ icon: 'info', title: 'Sin datos', text: 'No hay información para exportar.' });
       return;
     }
 
-    const filas = this.datacuentas.map(item => ({
+    const filas = this.datosVisibles.map(item => ({
       Gerente: item.gerente ?? '',
       Periodo: item.periodo ?? '',
+      Mes: this.nombreMes(item.mes),
       'Clientes asignados': item.clientes_asignados ?? 0,
-      Mes: item.mes ?? 0,
       'Cuota mensual': item.cuota_mensual ?? 0,
       'Clientes auditados': item.clientes_auditados ?? 0,
       'Porcentaje': item.porcentaje ?? 0,
@@ -260,6 +314,6 @@ export class ClientesComponent implements OnInit {
     XLSX.utils.book_append_sheet(workbook, worksheet, 'Clientes');
 
     const fecha = new Date().toISOString().slice(0, 10);
-    XLSX.writeFile(workbook, `clientes_${fecha}.xlsx`);
+    XLSX.writeFile(workbook, `clientes${this.mesFiltro !== null ? '_' + this.nombreMes(this.mesFiltro) : ''}_${fecha}.xlsx`);
   }
 }

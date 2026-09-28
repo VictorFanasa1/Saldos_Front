@@ -106,24 +106,66 @@
           </div>
         </div>
 
-        <button
-          class="btn-shell btn-shell--ghost"
-          type="button"
-          [disabled]="!datacuentas.length"
-          (click)="exportarExcel()">
-          <i class="bi bi-file-earmark-excel"></i>
-          Exportar Excel
-        </button>
+        <div class="table-actions">
+          <div class="filter-wrap">
+            <button
+              class="btn-shell btn-shell--ghost"
+              type="button"
+              [class.btn-shell--active]="mesFiltro !== null"
+              [disabled]="!mesesDisponibles.length"
+              (click)="mostrarFiltro = !mostrarFiltro">
+              <i class="bi bi-funnel"></i>
+              Filtrar por mes
+            </button>
+            <div class="filter-panel" *ngIf="mostrarFiltro">
+              <span class="filter-panel__title">Selecciona un mes</span>
+              <div class="filter-panel__options">
+                <button
+                  *ngFor="let m of mesesDisponibles"
+                  type="button"
+                  class="month-pill"
+                  [class.month-pill--active]="m === mesFiltro"
+                  (click)="aplicarFiltroMes(m)">
+                  {{ nombreMes(m) }}
+                </button>
+              </div>
+              <button type="button" class="filter-panel__all" (click)="aplicarFiltroMes(null)">
+                Ver todos los meses
+              </button>
+            </div>
+          </div>
+
+          <button
+            class="btn-shell btn-shell--ghost"
+            type="button"
+            [disabled]="!datosVisibles.length"
+            (click)="exportarExcel()">
+            <i class="bi bi-file-earmark-excel"></i>
+            Exportar Excel
+          </button>
+        </div>
+      </div>
+
+      <div class="active-filter" *ngIf="mesFiltro !== null">
+        <span class="active-filter__label">Filtro aplicado:</span>
+        <span class="active-filter__chip">
+          <i class="bi bi-calendar3"></i>
+          {{ nombreMes(mesFiltro) }}
+          <button type="button" class="active-filter__clear" title="Quitar filtro" (click)="aplicarFiltroMes(null)">
+            <i class="bi bi-x-lg"></i>
+          </button>
+        </span>
+        <small class="active-filter__count">{{ datosVisibles.length }} de {{ datacuentas.length }} registros</small>
       </div>
 
       <div class="table-scroll">
-        <table #dTable class="table table-modern clients-table align-middle mb-0">
+        <table #dTable class="table table-striped table-modern clients-table align-middle mb-0">
           <thead class="table-modern-head clients-table-head">
             <tr>
               <th>Gerente</th>
               <th>Periodo</th>
-              <th>Clientes asignados</th>
               <th>Mes</th>
+              <th>Clientes asignados</th>
               <th>Cuota mensual</th>
               <th>Clientes auditados</th>
               <th>Porcentaje</th>
@@ -131,29 +173,45 @@
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let item of datacuentas; trackBy: trackByCliente">
+            <tr *ngFor="let item of datosVisibles; trackBy: trackByCliente">
               <td class="cell-text cell-gerente" attr.data-label="Gerente">
                 {{ item.gerente || 'Sin gerente' }}
               </td>
               <td class="cell-code" attr.data-label="Periodo">
                 {{ item.periodo || 'Sin periodo' }}
               </td>
-              <td class="cell-number" attr.data-label="Clientes asignados">
-                {{ item.clientes_asignados || 0 }}
+              <td class="cell-text" attr.data-label="Mes">
+                {{ nombreMes(item.mes) }}
               </td>
-              <td class="cell-number" attr.data-label="Mes">
-                {{ item.mes || 0 }}
-              </td>
-              <td class="cell-money" attr.data-label="Cuota mensual">
-                {{ item.cuota_mensual | number:'1.0-0' }}
-              </td>
-              <td class="cell-number" attr.data-label="Clientes auditados">
-                {{ item.clientes_auditados || 0 }}
-              </td>
-              <td class="cell-percent" attr.data-label="Porcentaje">
-                <span class="status-badge">
-                  {{ item.porcentaje }} %
+              <!-- Asignados = universo (neutro), Cuota = meta (contorno), Auditados = avance (color del semáforo) -->
+              <td class="cell-number" attr.data-label="Clientes asignados" [attr.data-order]="item.clientes_asignados || 0">
+                <span class="num-base" title="Clientes asignados">
+                  <i class="bi bi-people"></i>
+                  {{ item.clientes_asignados || 0 }}
                 </span>
+              </td>
+              <td class="cell-money" attr.data-label="Cuota mensual" [attr.data-order]="item.cuota_mensual || 0">
+                <span class="num-meta" title="Meta del mes">
+                  <i class="bi bi-bullseye"></i>
+                  {{ item.cuota_mensual | number:'1.0-0' }}
+                </span>
+              </td>
+              <td class="cell-number" attr.data-label="Clientes auditados" [attr.data-order]="item.clientes_auditados || 0">
+                <span class="num-avance" [ngClass]="'num-avance--' + nivelAvance(item)" title="Clientes auditados">
+                  <i class="bi bi-check2-circle"></i>
+                  {{ item.clientes_auditados || 0 }}
+                </span>
+              </td>
+              <td class="cell-percent" attr.data-label="Porcentaje" [attr.data-order]="item.porcentaje || 0">
+                <div class="semaforo" [ngClass]="'semaforo--' + nivelAvance(item)">
+                  <span class="semaforo__badge">
+                    <span class="semaforo__dot"></span>
+                    {{ (item.porcentaje || 0) | number:'1.0-2' }} %
+                  </span>
+                  <span class="semaforo__bar">
+                    <span class="semaforo__fill" [style.width.%]="porcentajeCliente(item)"></span>
+                  </span>
+                </div>
               </td>
               
             </tr>

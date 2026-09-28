@@ -89,6 +89,17 @@
             </a>
           </li>
 
+          <li *ngIf="showAdmin$ | async">
+            <a
+              class="dropdown-item topbar-menu__item"
+              routerLink="/admin/reportes"
+              routerLinkActive="topbar-menu__item--active"
+              (click)="closeMenu()">
+              <i class="bi bi-file-earmark-bar-graph"></i>
+              <span>Reportes</span>
+            </a>
+          </li>
+
           <li *ngIf="showAdminDown$ | async">
             <a
               class="dropdown-item topbar-menu__item"

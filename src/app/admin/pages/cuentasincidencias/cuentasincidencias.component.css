@@ -51,6 +51,26 @@
   color: var(--ui-text-light);
 }
 
+.btn-export-excel {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 40px;
+  padding: 0 16px;
+  border-radius: 999px;
+  border: 1px solid #a7f3d0;
+  background: #ecfdf5;
+  color: #047857;
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+  transition: transform 0.2s ease;
+}
+
+.btn-export-excel:hover {
+  transform: translateY(-1px);
+}
+
 .table-card {
   background: var(--ui-card);
   border: 1px solid rgba(15, 23, 42, 0.08);
@@ -88,10 +108,6 @@
 
 .incidencias-table-head .col-id {
   box-shadow: inset 0 3px 0 #38bdf8;
-}
-
-.incidencias-table-head .col-procesado {
-  box-shadow: inset 0 3px 0 #22c55e;
 }
 
 .incidencias-table-head .col-cuenta {
@@ -134,8 +150,23 @@
   cursor: pointer;
 }
 
-.cell-procesado {
-  background: rgba(34, 197, 94, 0.08);
+.action-btn--view {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: 999px;
+  border: 1px solid #a7f3d0;
+  background: #ecfdf5;
+  color: #059669;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+  transition: transform 0.2s ease;
+}
+
+.action-btn--view:hover {
+  transform: translateY(-1px);
 }
 
 .cell-cuenta {

@@ -3,6 +3,8 @@ import { ActivatedRoute } from '@angular/router';
 import { SaldosService } from 'src/app/core/services/saldos.service';
 import { PagedResponse } from 'src/app/core/shared/PagedResponse.model';
 import { RegistroCuentaApi } from 'src/app/core/shared/RegistroCuentaApi.model';
+import Swal from 'sweetalert2';
+import * as XLSX from 'xlsx';
 
 @Component({
   selector: 'app-estado-cuenta',
@@ -21,6 +23,7 @@ export class EstadoCuentaComponent implements OnInit {
 
   loading: boolean = false;
   errorMsg: string = '';
+  exportando: boolean = false;
 
   constructor(private service: SaldosService, private route: ActivatedRoute) {}
 
@@ -94,6 +97,43 @@ export class EstadoCuentaComponent implements OnInit {
       month: 'short',
       year: 'numeric'
     }).format(parsed);
+  }
+
+  // Exporta todos los movimientos de la cuenta (no solo la pagina visible) con las columnas de la tabla.
+  async exportarExcel() {
+    if (!this.cuentaOracle || this.exportando) return;
+    this.exportando = true;
+    try {
+      const tamPagina = 500;
+      const todos: RegistroCuentaApi[] = [];
+      let pagina = 1;
+      let totalPaginas = 1;
+      do {
+        const resp = await this.service.getByCuentaOraclePaged(this.cuentaOracle, pagina, tamPagina).toPromise();
+        todos.push(...(resp?.data ?? []));
+        totalPaginas = resp?.totalPages ?? 1;
+        pagina++;
+      } while (pagina <= totalPaginas);
+
+      const filas = todos.map(item => ({
+        'Cliente': item.cliente ?? '',
+        'Documento': item.documento ?? '',
+        'Importe': Number(item.importe_original ?? 0),
+        'Saldo': Number(item.saldo_debido ?? 0)
+      }));
+
+      const ws = XLSX.utils.json_to_sheet(filas);
+      ws['!cols'] = [{ wch: 40 }, { wch: 20 }, { wch: 16 }, { wch: 16 }];
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, 'Estado de cuenta');
+      const fecha = new Date().toISOString().slice(0, 10);
+      XLSX.writeFile(wb, `EstadoCuenta_${this.cuentaOracle}_${fecha}.xlsx`);
+    } catch (err) {
+      console.error(err);
+      Swal.fire({ icon: 'error', title: 'Error', text: 'No fue posible exportar el estado de cuenta.' });
+    } finally {
+      this.exportando = false;
+    }
   }
 
   trackByRegistro(_: number, item: RegistroCuentaApi): number {

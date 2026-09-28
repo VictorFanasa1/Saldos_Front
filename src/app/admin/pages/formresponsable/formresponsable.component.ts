@@ -56,6 +56,8 @@ export class FormresponsableComponent implements OnInit, AfterViewInit {
   longitud = '';
   iddelestatus = 0
   cierreFarmacia = false
+  esContadoEfectivo = false;
+  terminoPago = '';
   firmaObjectUrl?: string;
   cargandos = true;
   firmaSafeUrl?: SafeUrl;
@@ -312,6 +314,10 @@ export class FormresponsableComponent implements OnInit, AfterViewInit {
     this.longitud = dto[0].long;
     this.iddelestatus = dto[0].id_estatus_cuenta
     this.cierreFarmacia = Number(dto[0].cierre) === 1
+    // EFECTIVO/CONTADO: las preguntas de credito no aplican (mismo criterio que formagente).
+    const termino = String(dto[0].termino_pago ?? '').trim().toUpperCase();
+    this.esContadoEfectivo = termino === 'EFECTIVO' || termino === 'CONTADO';
+    this.terminoPago = termino;
     this.expectedOtp = String(dto[0].otp ?? '').trim();
     this.otpValidated = !this.expectedOtp;
     this.formularioagenteEvidencias.patchValue({
@@ -502,8 +508,9 @@ export class FormresponsableComponent implements OnInit, AfterViewInit {
     return Number.isFinite(parsed) ? parsed : 0;
   }
 
+  // Regresa al listado de origen: flag 1 = con incidencias, flag 0 = sin incidencias.
   volver() {
-    this.router.navigate(['/admin']);
+    this.router.navigate([this.flag === 1 ? '/admin/conincidencias' : '/admin/incidencias']);
   }
   async fileToBase64(file: File): Promise<string> {
     return new Promise((resolve, reject) => {
@@ -546,7 +553,7 @@ export class FormresponsableComponent implements OnInit, AfterViewInit {
           text: 'Datos guardados',
           icon: 'success',
         });
-        this.router.navigate(['/admin']);
+        this.volver();
       },
       error: (e) => {
         Swal.fire({

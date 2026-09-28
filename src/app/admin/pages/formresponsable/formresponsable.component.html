@@ -20,6 +20,11 @@
           Revisión de cartera, respuestas y soporte capturado para la cuenta.
         </p>
       </div>
+
+      <button type="button" class="btn btn-ghost-modern header-back" (click)="volver()">
+        <i class="bi bi-arrow-left"></i>
+        Regresar
+      </button>
     </div>
 
     <div class="state-banner state-banner--danger" *ngIf="cierreFarmacia">
@@ -147,8 +152,12 @@
               </div>
             </div>
 
+            <div class="state-banner state-banner--success" *ngIf="esContadoEfectivo">
+              Este cliente opera en modalidad <strong>{{ terminoPago }}</strong>. Las preguntas de crédito no aplican.
+            </div>
+
             <div class="question-list">
-              <div class="question-item" *ngIf="primerbloque">
+              <div class="question-item" *ngIf="primerbloque && !esContadoEfectivo">
                 <p class="question-text">Estas de acuerdo con el saldo de su cuenta?</p>
                 <div class="radio-group">
                   <label class="choice-pill" for="acuerdoSi">
@@ -183,7 +192,7 @@
                   readonly></textarea>
               </div>
 
-              <div class="question-item" *ngIf="primerbloque">
+              <div class="question-item" *ngIf="primerbloque && !esContadoEfectivo">
                 <p class="question-text">Recibe un comprobante al realizar sus pagos?</p>
                 <div class="radio-group">
                   <label class="choice-pill" for="comprobanteSi">
@@ -218,7 +227,7 @@
                   readonly></textarea>
               </div>
 
-              <div class="question-item" *ngIf="primerbloque">
+              <div class="question-item" *ngIf="primerbloque && !esContadoEfectivo">
                 <p class="question-text">Identifica pagos pendientes de aplicar?</p>
                 <div class="radio-group">
                   <label class="choice-pill" for="pagosPendSi">

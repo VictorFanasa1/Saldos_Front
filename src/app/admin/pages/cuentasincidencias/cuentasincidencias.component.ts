@@ -6,6 +6,7 @@ import { SaldosService } from 'src/app/core/services/saldos.service';
 import { IncidenciasRequest } from 'src/app/core/shared/cuentasrowResponse.model';
 import { UiService } from 'src/app/shared/service/ui.service';
 import Swal from 'sweetalert2';
+import { exportarExcel } from 'src/app/shared/service/excel-export';
 declare const $: any;
 @Component({
   selector: 'app-cuentasincidencias',
@@ -146,6 +147,49 @@ export class CuentasincidenciasComponent implements OnInit {
     this.ui.showHeaderset(true);
     this.ui.showrRepresentante(false);
   }
+  // Fecha de creacion de la incidencia; si no existe se usa la de la cuenta.
+  fechaCreacion(item: IncidenciasRequest): string {
+    return item.fecha_creacion_incidencia || item.created_at || '';
+  }
+
+  // El endpoint no trae periodo: se toma el mes de la fecha de creacion (ej. "Septiembre 2026").
+  periodoDe(item: IncidenciasRequest): string {
+    const fecha = new Date(this.fechaCreacion(item));
+    if (Number.isNaN(fecha.getTime())) return 'Sin periodo';
+    const txt = new Intl.DateTimeFormat('es-MX', { month: 'long', year: 'numeric' }).format(fecha).replace(' de ', ' ');
+    return txt.charAt(0).toUpperCase() + txt.slice(1);
+  }
+
+  // Exporta las filas de la tabla respetando la busqueda y el orden aplicados en DataTables.
+  private filasVisibles(datos: IncidenciasRequest[]): IncidenciasRequest[] {
+    if (!this.dt) return datos;
+    const idx: number[] = this.dt.rows({ search: 'applied', order: 'applied' }).indexes().toArray();
+    return idx.map(i => datos[i]).filter(Boolean);
+  }
+
+  private fechaExcel(v: string | null | undefined): string {
+    if (!v) return '';
+    const d = new Date(v);
+    return Number.isNaN(d.getTime()) ? String(v) : d.toLocaleDateString('es-MX', { day: '2-digit', month: '2-digit', year: 'numeric' });
+  }
+
+  exportar() {
+    const filas = this.filasVisibles(this.datoscuentaS).map(item => ({
+      '#': item.uiRow,
+      'Cuenta': item.cuenta_oracle ?? '',
+      'Farmacia': item.nombre_corto ?? '',
+      'Estatus': 'Cerrado',
+      'Periodo': this.periodoDe(item),
+      'Fecha de creación': this.fechaExcel(this.fechaCreacion(item)),
+      'Usuario responsable': item.pp_usuario_registra ?? ''
+    }));
+    if (!filas.length) {
+      Swal.fire('Atención', 'No hay registros para exportar.', 'info');
+      return;
+    }
+    exportarExcel(filas, 'Sin incidencias', 'CuentasSinIncidencias');
+  }
+
   goToDetalle(id: Number, flag: number) {
     this.router.navigate(['admin/fomrAdmin', id, flag]);
     this.destroyDT();

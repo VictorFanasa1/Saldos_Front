@@ -1,0 +1,33 @@
+export interface ReportePregunta {
+  id: number;
+  cuenta_oracle: string | null;
+  otp: string | null;
+  id_pregunta: number;
+  uiRowCuenta: number;
+  p1: string | null;
+  p2: string | null;
+  p3: string | null;
+  p4: string | null;
+  p5: string | null;
+  comentarios: string | null;
+  evidencia: string | null;
+  usuario_registra: string | null;
+  usuario_actualiza: string | null;
+  p1_razon: string | null;
+  p2_razon: string | null;
+  p3_razon: string | null;
+  p4_razon: string | null;
+  p5_razon: string | null;
+  folio_soporte: string | null;
+  fecha_solucion: string | null;
+  lat: string | null;
+  longi: string | null;
+  firma: string | null;
+  estatus: string | null;
+  tipo_incidencia: string | null;
+  ubicacion: string | null;
+  cierre: number | null;
+  cierre_farmacia: string | null;
+  fecha_creacion: string | null;
+  nombre_gerente_registro: string | null;
+}
